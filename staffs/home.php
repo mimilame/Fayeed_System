@@ -149,25 +149,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 
     <script>
-        // Decode the JSON data to use in JavaScript
-        var data = <?php echo $jsonDataCombined; ?>;
+    // Decode the JSON data to use in JavaScript
+    var dataCombined = <?php echo $jsonDataCombined; ?>;
 
+        // Morris chart for "Finished Assemblies" and "Absences"
         Morris.Line({
             // ID of the element in which to draw the chart.
             element: 'morris-line-chart',
-            // Chart data records for both data series ("Finished Assemblies" and "Absences").
-            data: data,
+            // Chart data records for "Finished Assemblies" and "Absences".
+            data: dataCombined,
             // The name of the data record attribute that contains x-values.
-            xkey: 'year',
-            // A list of names of data record attributes that contain y-values for both data series.
+            xkey: 'month',
+            // A list of names of data record attributes that contain y-values.
             ykeys: ['finished_assemblies', 'absences'],
-            // Labels for the ykeys -- will be displayed when you hover over the chart for both data series.
+            // Labels for the ykeys -- will be displayed when you hover over the chart.
             labels: ['Finished Assemblies', 'Absences'],
             // Line colors for both data series.
             lineColors: ['#ff6a00', '#00cc99'],
+            // x-axis label
+            xLabelAngle: 30,
         });
-
-
     </script>
 
 </body>

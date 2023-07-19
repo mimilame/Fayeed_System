@@ -667,51 +667,58 @@ $inlist = mysqli_query($con,"SELECT inventory.product_code,inventory.inventoryNa
 
         //-------Line Graph for branch staff
         $count = mysqli_num_rows($lllllls);
-        $id = $fetch_info['usersID'];
-        // Execute the SQL query to get counts of "Finished Assemblies" by year
-        $assemq = mysqli_query($con, "SELECT YEAR(assembly.added) AS year, COUNT(*) AS finished_count
+        // Execute the SQL query to get counts of "Finished Assemblies" by year and month
+        $assemq = mysqli_query($con, "SELECT YEAR(assembly.added) AS year, MONTH(assembly.added) AS month, COUNT(*) AS finished_count
         FROM assembly
         INNER JOIN branch_staff ON assembly.usersID = branch_staff.usersID
-        WHERE assembly.assemblyStatus = 'Finished' AND branch_staff.usersID = '$id'
-        GROUP BY YEAR(assembly.added)
-        ORDER BY YEAR(assembly.added)");
+        WHERE assembly.assemblyStatus = 'Finished' AND branch_staff.usersID = $id
+        GROUP BY YEAR(assembly.added), MONTH(assembly.added)
+        ORDER BY YEAR(assembly.added), MONTH(assembly.added)");
 
-        // Initialize an empty array to store the Morris.js data for "Finished Assemblies"
-        $dataFinishedAssemblies = array();
-
-        // Process the SQL results and format the data for Morris.js
-        while ($row = mysqli_fetch_assoc($assemq)) {
-            $dataFinishedAssemblies[] = array('year' => $row['year'], 'finished_assemblies' => $row['finished_count']);
-        }
-
-        // Encode the data into JSON format
-        $jsonDataFinishedAssemblies = json_encode($dataFinishedAssemblies);
-
-        // Execute the SQL query to get counts of "Absences" by year
-        $absenq = mysqli_query($con, "SELECT YEAR(attendance.dtrdate) AS year, COUNT(*) AS absences_count
+        // Execute the SQL query to get counts of "Absences" by year and month
+        $absenq = mysqli_query($con, "SELECT YEAR(attendance.dtrdate) AS year, MONTH(attendance.dtrdate) AS month, COUNT(*) AS absences_count
         FROM attendance
         INNER JOIN branch_staff ON attendance.usersID = branch_staff.usersID
-        WHERE attendance.absent = 1 AND branch_staff.usersID = '$id'
-        GROUP BY YEAR(attendance.dtrdate)
-        ORDER BY YEAR(attendance.dtrdate)");
+        WHERE attendance.absent = 1 AND branch_staff.usersID = $id
+        GROUP BY YEAR(attendance.dtrdate), MONTH(attendance.dtrdate)
+        ORDER BY YEAR(attendance.dtrdate), MONTH(attendance.dtrdate)");
 
-        // Initialize an empty array to store the Morris.js data for "Absences"
+        // Initialize an empty array to store the Morris.js data for "Finished Assemblies" and "Absences"
+        $dataFinishedAssemblies = array();
         $dataAbsences = array();
 
-        // Process the SQL results and format the data for Morris.js
+        // Process the SQL results and format the data for Morris.js for "Finished Assemblies"
+        while ($row = mysqli_fetch_assoc($assemq)) {
+            $dataFinishedAssemblies[] = array('year' => $row['year'], 'month' => $row['month'], 'finished_assemblies' => $row['finished_count']);
+        }
+
+        // Process the SQL results and format the data for Morris.js for "Absences"
         while ($rowAbsences = mysqli_fetch_assoc($absenq)) {
-            // Find the corresponding data point for "Absences" and update the value
-            foreach ($dataFinishedAssemblies as &$dataPoint) {
-                if ($dataPoint['year'] == $rowAbsences['year']) {
-                    $dataPoint['absences'] = $rowAbsences['absences_count'];
+            $dataAbsences[] = array('year' => $rowAbsences['year'], 'month' => $rowAbsences['month'], 'absences' => $rowAbsences['absences_count']);
+        }
+
+        // Merge the "Finished Assemblies" and "Absences" data based on year and month
+        $dataCombined = array();
+        foreach ($dataFinishedAssemblies as $assembliesData) {
+            $year = $assembliesData['year'];
+            $month = $assembliesData['month'];
+            $finishedAssemblies = $assembliesData['finished_assemblies'];
+            $absences = 0;
+
+            // Search for matching "Absences" data based on year and month
+            foreach ($dataAbsences as $absencesData) {
+                if ($absencesData['year'] == $year && $absencesData['month'] == $month) {
+                    $absences = $absencesData['absences'];
                     break;
                 }
             }
+
+            // Add the combined data to the array
+            $dataCombined[] = array('year' => $year, 'month' => $month, 'finished_assemblies' => $finishedAssemblies, 'absences' => $absences);
         }
 
         // Encode the combined data into JSON format
-        $jsonDataCombined = json_encode($jsonDataFinishedAssemblies);
-
+        $jsonDataCombined = json_encode($dataCombined);
         //</queries> ----------------------------------------------------------------------------------------------------------
 
 

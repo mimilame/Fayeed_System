@@ -215,17 +215,11 @@ $clisttrans = mysqli_num_rows($tranv);
         var data = <?php echo $jsonDataCombined; ?>;
 
         Morris.Line({
-            // ID of the element in which to draw the chart.
             element: 'morris-line-chart',
-            // Chart data records for all data series ("Finished Assemblies," "Absences," and yearly income).
-            data: dataCombined,
-            // The name of the data record attribute that contains x-values.
-            xkey: 'year',
-            // A list of names of data record attributes that contain y-values for all data series.
-            ykeys: ['finished_assemblies', 'absences', 'yearly_income'],
-            // Labels for the ykeys -- will be displayed when you hover over the chart for all data series.
-            labels: ['Finished Assemblies', 'Absences', 'Yearly Income'],
-            // Line colors for all data series.
+            data: <?php echo $jsonDataCombined; ?>,
+            xkey: 'date_group',
+            ykeys: ['finished_assemblies', 'yearly_income', 'absences'],
+            labels: ['Finished Assemblies', 'Yearly Income', 'Absences'],
             lineColors: ['#ff6a00', '#00cc99', '#428bca'],
         });
 

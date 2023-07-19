@@ -501,59 +501,65 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
 
 
         //-------Line Graph for admin
-        $assemq = mysqli_query($con, "SELECT YEAR(added) AS year, COUNT(*) AS finished_count FROM assembly WHERE assemblyStatus = 'Finished' GROUP BY YEAR(added) ORDER BY YEAR(added)");
+        $assemqMonthly = mysqli_query($con, "SELECT DATE_FORMAT(added, '%Y-%m') AS date_group, COUNT(*) AS finished_count FROM assembly WHERE assemblyStatus = 'Finished' GROUP BY DATE_FORMAT(added, '%Y-%m') ORDER BY DATE_FORMAT(added, '%Y-%m')");
 
-        // Initialize an empty array to store the Morris.js data for "Finished Assemblies"
-        $dataFinishedAssemblies = array();
+        $dataFinishedAssembliesMonthly = array();
 
-        // Process the SQL results and format the data for Morris.js
-        while ($row = mysqli_fetch_assoc($assemq)) {
-            $dataFinishedAssemblies[] = array('year' => $row['year'], 'finished_assemblies' => $row['finished_count']);
+        while ($rowMonthly = mysqli_fetch_assoc($assemqMonthly)) {
+            $dataFinishedAssembliesMonthly[] = array('date_group' => $rowMonthly['date_group'], 'finished_assemblies' => $rowMonthly['finished_count']);
         }
+        $invcYearly = mysqli_query($con, "SELECT YEAR(date) AS date_group, SUM(amount_payment) AS yearly_income FROM checkout GROUP BY YEAR(date) ORDER BY YEAR(date)");
 
-        // Encode the data into JSON format
-        $jsonDataFinishedAssemblies = json_encode($dataFinishedAssemblies);
-
-        // Execute the SQL query to get counts of "Absences" by year
-        $absenq = mysqli_query($con, "SELECT YEAR(dtrdate) AS year, COUNT(*) AS absences_count FROM attendance WHERE absent = 1 GROUP BY YEAR(dtrdate) ORDER BY YEAR(dtrdate)");
-
-        // Initialize an empty array to store the Morris.js data for "Absences"
-        $dataAbsences = array();
-
-        // Process the SQL results and format the data for Morris.js
-        while ($rowAbsences = mysqli_fetch_assoc($absenq)) {
-            // Find the corresponding data point for "Absences" and update the value
-            foreach ($dataFinishedAssemblies as &$dataPoint) {
-                if ($dataPoint['year'] == $rowAbsences['year']) {
-                    $dataPoint['absences'] = $rowAbsences['absences_count'];
-                    break;
-                }
-            }
-        }
-
-        // Encode the combined data into JSON format
-        $jsonDataCombine = json_encode($dataAbsences);
-
-
-        // Execute the SQL query to get yearly income data
-        $invc = mysqli_query($con, "SELECT YEAR(date) AS year, SUM(amount_payment) AS yearly_income FROM checkout WHERE year = '$transayear' GROUP BY YEAR(date) ORDER BY YEAR(date)");
-
-        // Initialize an empty array to store the Morris.js data for yearly income
         $dataYearlyIncome = array();
 
-        // Process the SQL results and format the data for Morris.js
-        while ($rowIncome = mysqli_fetch_assoc($invc)) {
-            // Find the corresponding data point for yearly income and update the value
-            foreach ($dataFinishedAssemblies as &$dataPoint) {
-                if ($dataPoint['year'] == $rowIncome['year']) {
-                    $dataPoint['yearly_income'] = $rowIncome['yearly_income'];
+        while ($rowYearly = mysqli_fetch_assoc($invcYearly)) {
+            $dataYearlyIncome[] = array('date_group' => $rowYearly['date_group'], 'yearly_income' => $rowYearly['yearly_income']);
+        }
+        $absenqYearly = mysqli_query($con, "SELECT YEAR(dtrdate) AS date_group, COUNT(*) AS absences_count FROM attendance WHERE absent = 1 GROUP BY YEAR(dtrdate) ORDER BY YEAR(dtrdate)");
+
+        $dataAbsencesYearly = array();
+
+        while ($rowAbsences = mysqli_fetch_assoc($absenqYearly)) {
+            $dataAbsencesYearly[] = array('date_group' => $rowAbsences['date_group'], 'absences' => $rowAbsences['absences_count']);
+        }
+
+        $dataCombined = array();
+        foreach ($dataFinishedAssembliesMonthly as $item) {
+            $dateGroup = $item['date_group'];
+
+            // Find the matching data for Yearly Income
+            $yearlyIncome = 0;
+            foreach ($dataYearlyIncome as $incm) {
+                if ($incm['date_group'] === $dateGroup) {
+                    $yearlyIncome = $incm['yearly_income'];
                     break;
                 }
             }
+
+            // Find the matching data for Number of Absences
+            $absences = 0;
+            foreach ($dataAbsencesYearly as $absence) {
+                if ($absence['date_group'] === $dateGroup) {
+                    $absences = $absence['absences'];
+                    break;
+                }
+            }
+
+            // Add the combined data to the array
+            $dataCombined[] = array(
+                'date_group' => $dateGroup,
+                'finished_assemblies' => $item['finished_assemblies'],
+                'yearly_income' => $yearlyIncome,
+                'absences' => $absences,
+            );
+
+            // Debug output
+            echo "Date Group: " . $dateGroup . ", Finished Assemblies: " . $item['finished_assemblies'] . ", Yearly Income: " . $yearlyIncome . ", Absences: " . $absences . "<br>";
         }
+        
 
         // Encode the combined data into JSON format
-        $jsonDataCombined = json_encode($dataFinishedAssemblies);
+        $jsonDataCombined = json_encode($dataCombined);
         //</queries> ----------------------------------------------------------------------------------------------------------
 
 
