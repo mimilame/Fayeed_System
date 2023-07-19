@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 16, 2023 at 08:16 AM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.0.28
+-- Generation Time: Jul 19, 2023 at 10:59 PM
+-- Server version: 10.4.24-MariaDB
+-- PHP Version: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -35,15 +35,27 @@ CREATE TABLE `assembly` (
   `assemblyName` varchar(50) NOT NULL,
   `assemblyStatus` varchar(30) DEFAULT 'Standby',
   `assemblyQuatty` int(11) NOT NULL,
-  `editor` int(11) DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `editor` int(11) DEFAULT 0,
+  `added` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `assembly`
 --
 
-INSERT INTO `assembly` (`assemblyID`, `inventoryId`, `branchID`, `usersID`, `assemblyName`, `assemblyStatus`, `assemblyQuatty`, `editor`) VALUES
-(20, 38, 10, 44, 'Create Automatic tubig Machine', 'Finished', 5, 0);
+INSERT INTO `assembly` (`assemblyID`, `inventoryId`, `branchID`, `usersID`, `assemblyName`, `assemblyStatus`, `assemblyQuatty`, `editor`, `added`, `updated`) VALUES
+(20, 38, 10, 44, 'Create Automatic tubig Machine', 'Finished', 5, 0, '2023-07-19 17:51:55', '2023-07-19 17:54:11');
+
+--
+-- Triggers `assembly`
+--
+DELIMITER $$
+CREATE TRIGGER `update_assembly` BEFORE UPDATE ON `assembly` FOR EACH ROW BEGIN
+  SET NEW.updated = CURRENT_TIMESTAMP;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -56,7 +68,7 @@ CREATE TABLE `assembly_inventory` (
   `assemblyID` int(11) NOT NULL,
   `inventory_list` int(11) NOT NULL,
   `inventory_qty` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `assembly_inventory`
@@ -86,7 +98,7 @@ CREATE TABLE `attendance` (
   `absent` varchar(50) NOT NULL,
   `dtrdate` varchar(50) NOT NULL,
   `confirm` int(1) DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `attendance`
@@ -97,7 +109,10 @@ INSERT INTO `attendance` (`attendanceID`, `branchID`, `usersID`, `enrtypic`, `mo
 (47, 11, 44, 'face.gif', 'Absent', 'Absent', '0', '0', '', 'July 15, 2023', 0),
 (48, 11, 44, 'hourglass.gif', 'Absent', 'Absent', 'Absent', 'Absent', '1', 'July 16, 2023', 0),
 (49, 11, 44, 'face.gif', 'Absent', 'Absent', '0', '0', '', 'August 16, 2023', 0),
-(50, 11, 44, 'face.gif', 'Absent', 'Absent', '0', '0', '', 'July 16, 2024', 0);
+(50, 11, 44, 'face.gif', 'Absent', 'Absent', '0', '0', '', 'July 16, 2024', 0),
+(51, 11, 43, 'face.gif', 'Absent', 'Absent', '0', '0', '', 'July 19, 2023', 0),
+(52, 11, 43, 'face.gif', '0', '0', '0', '0', '', 'July 20, 2023', 0),
+(53, 10, 43, 'face.gif', '0', '0', '0', '0', '', 'July 20, 2023', 0);
 
 -- --------------------------------------------------------
 
@@ -115,7 +130,7 @@ CREATE TABLE `branches` (
   `DateCreated` varchar(50) NOT NULL,
   `branch_email` varchar(50) NOT NULL,
   `status` int(1) DEFAULT 2
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `branches`
@@ -137,7 +152,7 @@ CREATE TABLE `branch_staff` (
   `usersID` int(11) NOT NULL,
   `assigndby` int(11) DEFAULT NULL,
   `roles` int(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `branch_staff`
@@ -147,8 +162,8 @@ INSERT INTO `branch_staff` (`staffID`, `branchID`, `usersID`, `assigndby`, `role
 (104, 11, 13, 3, 1),
 (105, 11, 16, 3, 2),
 (106, 11, 30, 3, 3),
-(107, 11, 43, 3, 3),
-(108, 11, 44, 3, 1);
+(108, 11, 44, 3, 1),
+(109, 10, 43, 3, 3);
 
 -- --------------------------------------------------------
 
@@ -172,20 +187,20 @@ CREATE TABLE `checkout` (
   `month` varchar(30) NOT NULL,
   `day` varchar(30) NOT NULL,
   `year` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `checkout`
 --
 
 INSERT INTO `checkout` (`checkoutID`, `branchID`, `usersID`, `inventoryId`, `Transaction_code`, `quantity`, `cleint_name`, `cleint_number`, `amount_payment`, `mop`, `date`, `time`, `month`, `day`, `year`) VALUES
-(6, 10, 44, 38, 'July477-593-441', 2, 'Atty Lawrence Escudero', 2147483647, 10000.00, 'Gcash', 'June 15, 2023', '1:47 pm', 'June', '12', '2023'),
-(7, 11, 44, 44, 'July361-212-457', 1, 'Fern Aragon', 2147483647, 333.00, 'Cash', 'July 16, 2023', '12:45 pm', 'July', '16', '2023'),
-(8, 11, 44, 44, 'July733-567-314', 1, 'Fern Aragon', 2147483647, 10000.00, 'Remittance', 'July 16, 2023', '12:51 pm', 'July', '16', '2023'),
-(9, 11, 44, 44, 'July588-580-642', 3, 'Fern Aragon', 2147483647, 30000.00, 'Cash', 'July 16, 2023', '12:52 pm', 'July', '16', '2023'),
-(10, 11, 44, 44, 'July464-136-281', 2, 'Fern Aragon', 2147483647, 20000.00, 'Cash', 'July 16, 2023', '1:36 pm', 'July', '16', '2023'),
-(11, 11, 44, 44, 'August669-559-804', 3, 'Fern Aragon', 2147483647, 30000.00, 'Remittance', 'August 16, 2023', '1:39 pm', 'August', '16', '2023'),
-(12, 11, 44, 46, 'July605-164-983', 4, 'dsadsss', 935824568, 80000.00, 'BankTransfer', 'July 16, 2024', '1:50 pm', 'July', '16', '2024');
+(6, 10, 44, 38, 'July477-593-441', 2, 'Atty Lawrence Escudero', 2147483647, '10000.00', 'Gcash', 'June 15, 2023', '1:47 pm', 'June', '12', '2023'),
+(7, 11, 44, 44, 'July361-212-457', 1, 'Fern Aragon', 2147483647, '333.00', 'Cash', 'July 16, 2023', '12:45 pm', 'July', '16', '2023'),
+(8, 11, 44, 44, 'July733-567-314', 1, 'Fern Aragon', 2147483647, '10000.00', 'Remittance', 'July 16, 2023', '12:51 pm', 'July', '16', '2023'),
+(9, 11, 44, 44, 'July588-580-642', 3, 'Fern Aragon', 2147483647, '30000.00', 'Cash', 'July 16, 2023', '12:52 pm', 'July', '16', '2023'),
+(10, 11, 44, 44, 'July464-136-281', 2, 'Fern Aragon', 2147483647, '20000.00', 'Cash', 'July 16, 2023', '1:36 pm', 'July', '16', '2023'),
+(11, 11, 44, 44, 'August669-559-804', 3, 'Fern Aragon', 2147483647, '30000.00', 'Remittance', 'August 16, 2023', '1:39 pm', 'August', '16', '2023'),
+(12, 11, 44, 46, 'July605-164-983', 4, 'dsadsss', 935824568, '80000.00', 'BankTransfer', 'July 16, 2024', '1:50 pm', 'July', '16', '2024');
 
 -- --------------------------------------------------------
 
@@ -203,7 +218,7 @@ CREATE TABLE `inventory` (
   `inventoryQty` int(30) NOT NULL,
   `product_code` varchar(50) NOT NULL,
   `price` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `inventory`
@@ -233,7 +248,7 @@ CREATE TABLE `logs` (
   `Activity` varchar(300) NOT NULL,
   `date` varchar(20) NOT NULL,
   `time` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `logs`
@@ -285,14 +300,14 @@ CREATE TABLE `settings` (
   `product_control` int(11) NOT NULL,
   `latetimein_morning` varchar(30) NOT NULL,
   `latetimein_afternoon` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `settings`
 --
 
 INSERT INTO `settings` (`SettingsId`, `System_Name`, `System_Email`, `System_number`, `Smtp_email`, `Smatp_password`, `Smtp_Provider`, `Smtp_port`, `System_link`, `product_control`, `latetimein_morning`, `latetimein_afternoon`) VALUES
-(1, 'Fayeed Electronicsa', 'hsfsjhdbsdjf@email.com', '09358250452', 'argonfernando453@gmail.com', 'kremkgslusntjhpr', 'smtp.gmail.com', '587', '192.168.184.153', 10, '09:15', '13:15');
+(1, 'Fayeed Electronics', 'hsfsjhdbsdjf@email.com', '09358250452', 'argonfernando453@gmail.com', 'kremkgslusntjhpr', 'smtp.gmail.com', '587', '192.168.184.153', 10, '09:15', '13:15');
 
 -- --------------------------------------------------------
 
@@ -315,7 +330,7 @@ CREATE TABLE `users` (
   `code` int(11) NOT NULL,
   `status` text NOT NULL,
   `roles` int(1) DEFAULT 2
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `users`
@@ -431,7 +446,7 @@ ALTER TABLE `assembly_inventory`
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `attendanceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `attendanceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT for table `branches`
@@ -443,7 +458,7 @@ ALTER TABLE `branches`
 -- AUTO_INCREMENT for table `branch_staff`
 --
 ALTER TABLE `branch_staff`
-  MODIFY `staffID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
+  MODIFY `staffID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
 
 --
 -- AUTO_INCREMENT for table `checkout`
