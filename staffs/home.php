@@ -92,7 +92,7 @@
                                 <?php if ($count < 5): ?>
                                     <p class="">Showing <strong><?php echo $count; ?></strong> Alerts</p>
                                 <?php else: ?>
-                                    <p class="">Showing <strong>5</strong> of <strong><?php echo $clisttrans; ?></strong> Alerts</p>
+                                    <p class="">Showing <strong>5</strong> of <strong><?php echo $count; ?></strong> Alerts</p>
                                 <?php endif; ?>
                             </div>
                             <div class="card-body">
@@ -139,35 +139,45 @@
         ***********************************-->
 
     </div>
+
     <script src="../vendor/global/global.min.js"></script>
     <script src="../js/quixnav-init.js"></script>
     <script src="../js/custom.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.usa.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 
     <script>
-    // Decode the JSON data to use in JavaScript
-    var dataCombined = <?php echo $jsonDataCombined; ?>;
+        var dataCombined = <?php echo $jsonDataCombined; ?>;
 
-        // Morris chart for "Finished Assemblies" and "Absences"
+        dataCombined.forEach(function(point) {
+            var monthNames = [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ];
+
+            var monthNumber = parseInt(point.month); // Ensure the month number is an integer
+            point.month = monthNames[monthNumber - 1];
+        });
+
         Morris.Line({
-            // ID of the element in which to draw the chart.
             element: 'morris-line-chart',
-            // Chart data records for "Finished Assemblies" and "Absences".
             data: dataCombined,
-            // The name of the data record attribute that contains x-values.
+            xLabelFormat: function (x) {
+                var year = x.getFullYear();
+                var month = x.getMonth() + 1; // Months are zero-based, so add 1.
+                return month + '/' + year;
+            },
             xkey: 'month',
-            // A list of names of data record attributes that contain y-values.
             ykeys: ['finished_assemblies', 'absences'],
-            // Labels for the ykeys -- will be displayed when you hover over the chart.
             labels: ['Finished Assemblies', 'Absences'],
-            // Line colors for both data series.
-            lineColors: ['#ff6a00', '#00cc99'],
-            // x-axis label
-            xLabelAngle: 30,
+            lineColors: ['#D97604', '#0E0E0E'],
+            continuousLine: false,
+            fillOpacity: 0.6,
+            hideHover: 'auto',
+            behaveLikeLine: true,
+            resize: true,
+            pointFillColors:['#ffffff'],
+            pointStrokeColors: ['#242423'], 
         });
     </script>
 

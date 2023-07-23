@@ -86,7 +86,7 @@ $sttafss = mysqli_fetch_assoc($sttaf);
 $imvto = mysqli_query($con," SELECT count(*) total FROM inventory WHERE branchID = $desigbranch");
 $innventory = mysqli_fetch_assoc($imvto);
 
-$assm = mysqli_query($con,"SELECT SUM(assemblyQuatty) Total FROM assembly WHERE assemblyStatus = 'Assemble' AND branchID = $desigbranch");
+$assm = mysqli_query($con,"SELECT SUM(assemblyQuatty) Total FROM assembly WHERE assemblyStatus = 'Finished' AND branchID = $desigbranch");
 $Assembly = mysqli_fetch_assoc($assm);
 
 $invc = mysqli_query($con,"SELECT SUM(amount_payment) total FROM checkout WHERE branchID = $desigbranch AND date LIKE '$mmmmnthh %'");
@@ -103,10 +103,13 @@ $cprocontrol = $settings['product_control'];
 $llllll = mysqli_query($con,"SELECT COUNT(*) alert FROM inventory WHERE inventoryQty < $cprocontrol AND branchID = $desigbranch;");
 $alertprd = mysqli_fetch_assoc($llllll);
 
-$lllllls = mysqli_query($con,"SELECT branches.Branch_Name, inventory.product_code,inventory.inventoryName,inventory.inventoryQty from inventory join branches on branches.branchID = inventory.branchID WHERE inventory.inventoryQty < $cprocontrol AND inventory.branchID =$desigbranch;");
-$tranv = mysqli_query($con,"SELECT checkout.Transaction_code , inventory.inventoryName ,checkout.quantity ,branches.Branch_Name ,checkout.amount_payment ,checkout.mop ,checkout.date ,checkout.time from checkout join inventory on inventory.inventoryId = checkout.inventoryId join branches on branches.branchID = checkout.branchID WHERE checkout.branchID = $desigbranch ORDER BY checkout.time DESC LIMIT 10 ;");
+$lllllls = mysqli_query($con,"SELECT branches.Branch_Name, inventory.product_code,inventory.inventoryName,inventory.inventoryQty from inventory join branches on branches.branchID = inventory.branchID WHERE inventory.inventoryQty < $cprocontrol AND inventory.branchID =$desigbranch");
+$tranv = mysqli_query($con,"SELECT checkout.Transaction_code , inventory.inventoryName ,checkout.quantity ,branches.Branch_Name ,checkout.amount_payment ,checkout.mop ,checkout.date ,checkout.time from checkout join inventory on inventory.inventoryId = checkout.inventoryId join branches on branches.branchID = checkout.branchID WHERE checkout.branchID = $desigbranch ORDER BY checkout.time DESC LIMIT 5");
 
-$pols = mysqli_query($con,"SELECT confirm from attendance where usersID = $id AND dtrdate ='$currentDatetransaction'");
+$count = mysqli_num_rows($tranv);
+
+
+$pols = mysqli_query($con,"SELECT confirm from attendance where usersID = $id AND STR_TO_DATE(dtrdate, '%M %e, %Y') ='$currentDatetransaction'");
 $pulse = mysqli_fetch_assoc($pols);
 
 if(isset($_POST['signin'])){
@@ -551,6 +554,114 @@ if(isset($_POST['signin'])){
             $update = mysqli_query($con,"UPDATE attendance SET enrtypic = 'hourglass.gif', morning_in = 'Absent', morning_out = 'Absent', afternoon_in = 'Absent',afternoon_out = 'Absent', absent = 1 WHERE attendanceID = $attendanceID");
             echo "<script>alert('Attendance is set to Absent');window.location.href='attendance.php'</script>";
         }
+
+
+        //-------Line Graph for branch manager------------------------
+
+        $assemqMonthly = mysqli_query($con, "SELECT DATE_FORMAT(added, '%Y-%m-%d') AS date_group, COUNT(*) AS finished_count FROM assembly WHERE assemblyStatus = 'Finished' AND branchID = $desigbranch  GROUP BY DATE_FORMAT(added, '%Y-%m-%d') ORDER BY DATE_FORMAT(added, '%Y-%m-%d')");
+
+        $dataFinishedAssembliesMonthly = array();
+
+        while ($rowMonthly = mysqli_fetch_assoc($assemqMonthly)) {
+            $dataFinishedAssembliesMonthly[] = array('date_group' => $rowMonthly['date_group'], 'finished_assemblies' => $rowMonthly['finished_count']);
+        }
+
+        $invcMonthly = mysqli_query($con, "SELECT STR_TO_DATE(date, '%M %e, %Y') AS date_group, SUM(amount_payment) AS monthly_income FROM checkout WHERE branchID = $desigbranch GROUP BY STR_TO_DATE(date, '%M %e, %Y') ORDER BY STR_TO_DATE(date, '%M %e, %Y')");
+
+        $dataMonthlyIncome = array();
+
+        while ($rowMonthly = mysqli_fetch_assoc($invcMonthly)) {
+            $dataMonthlyIncome[] = array('date_group' => $rowMonthly['date_group'], 'monthly_income' => $rowMonthly['monthly_income']);
+        }
+
+        $absenqMonthly = mysqli_query($con, "SELECT STR_TO_DATE(dtrdate, '%M %e, %Y') AS date_group, COUNT(*) AS absences_count FROM attendance WHERE absent = 1 AND branchID = $desigbranch GROUP BY STR_TO_DATE(dtrdate, '%M %e, %Y') ORDER BY STR_TO_DATE(dtrdate, '%M %e, %Y')");
+
+        $dataAbsencesMonthly = array();
+
+        while ($rowAbsences = mysqli_fetch_assoc($absenqMonthly)) {
+            $dataAbsencesMonthly[] = array('date_group' => $rowAbsences['date_group'], 'absences' => $rowAbsences['absences_count']);
+        }
+
+// Convert the date_group to month names
+foreach ($dataFinishedAssembliesMonthly as &$item) {
+    $item['date_group'] = date("F Y", strtotime($item['date_group']));
+}
+
+foreach ($dataMonthlyIncome as &$incm) {
+    $incm['date_group'] = date("F Y", strtotime($incm['date_group']));
+}
+
+foreach ($dataAbsencesMonthly as &$absence) {
+    $absence['date_group'] = date("F Y", strtotime($absence['date_group']));
+}
+
+// Create a master list of all date_groups from all datasets
+$allDateGroups = array();
+
+foreach ($dataFinishedAssembliesMonthly as $item) {
+    if (!in_array($item['date_group'], $allDateGroups)) {
+        $allDateGroups[] = $item['date_group'];
+    }
+}
+
+foreach ($dataMonthlyIncome as $incm) {
+    if (!in_array($incm['date_group'], $allDateGroups)) {
+        $allDateGroups[] = $incm['date_group'];
+    }
+}
+
+foreach ($dataAbsencesMonthly as $absence) {
+    if (!in_array($absence['date_group'], $allDateGroups)) {
+        $allDateGroups[] = $absence['date_group'];
+    }
+}
+
+$dataCombined = array();
+
+// Loop through the master list of date_groups
+foreach ($allDateGroups as $dateGroup) {
+    // Find the matching data for Yearly Assemblies
+    $finishedAssemblies = 0;
+    foreach ($dataFinishedAssembliesMonthly as $item) {
+        if ($item['date_group'] === $dateGroup) {
+            $finishedAssemblies = $item['finished_assemblies'];
+            break;
+        }
+    }
+
+    // Find the matching data for Monthly Income
+    $monthlyIncome = 0;
+    foreach ($dataMonthlyIncome as $incm) {
+        if ($incm['date_group'] === $dateGroup) {
+            $monthlyIncome = $incm['monthly_income'];
+            break;
+        }
+    }
+
+    // Find the matching data for Number of Absences
+    $absences = 0;
+    foreach ($dataAbsencesMonthly as $absence) {
+        if ($absence['date_group'] === $dateGroup) {
+            $absences = $absence['absences'];
+            break;
+        }
+    }
+
+    // Add the combined data to the array
+    $dataCombined[] = array(
+        'date_group' => $dateGroup,
+        'finished_assemblies' => $finishedAssemblies,
+        'monthly_income' => $monthlyIncome,
+        'absences' => $absences,
+    );
+
+    // Debug output for each date group
+    echo  "Date Group: " . $dateGroup . ", Finished Assemblies: " . $finishedAssemblies . ", Monthly Income: " . $monthlyIncome . ", Absences: " . $absences . "<br>";
+
+}
+
+// Encode the combined data into JSON format
+$jsonDataCombined = json_encode($dataCombined);
         
         //</queries> ----------------------------------------------------------------------------------------------------------
 
@@ -567,12 +678,19 @@ if(isset($_POST['signin'])){
     <title><?php echo $settings['System_Name']?></title>
    
     <link rel="icon" type="image/png" sizes="16x16" href="../images/site/fayeed.png">
-    <link rel="stylesheet" href="../vendor/owl-carousel/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="../vendor/owl-carousel/css/owl.theme.default.min.css">
     <link href="../vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 </head>
 <div id="preloader">
         <div class="sk-three-bounce">

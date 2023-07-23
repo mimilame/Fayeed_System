@@ -44,3 +44,16 @@
                 </nav>
             </div>
         </div>
+
+
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+
+        <script>        
+            var customCSS = document.createElement('style');
+            customCSS.innerHTML = '.morris-hover.morris-default-style { position: absolute; z-index: 0!important; }';
+            document.head.appendChild(customCSS);
+        </script>
+                                              

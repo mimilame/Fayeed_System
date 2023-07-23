@@ -32,47 +32,62 @@
                 </div>
 
                 <div class="row">
-                    
-                    <div class="col-lg-3 col-sm-6">
+                    <div class="col-lg-8 col-sm-12">
                         <div class="card">
                             <div class="stat-widget-one card-body">
-                                <i class="fi fi-rr-coins display-5" style="color:#ff0d00;"></i>
-                                <div class="stat-content d-inline-block">
-                                    <div class="stat-text">Monthly Entry</div>
-                                    <div class="stat-digit"><?php if($income['total'] == 0){ echo "₱ 0";}else{ echo "₱ ".$income['total'];}?></div>
+                                <div class="d-inline-flex flex-wrap">
+                                    <i class="bx bxs-bar-chart-square display-5" style="color:#ff6a00;"></i>
+                                    <div class="stat-text pt-3 pl-2">Stats</div>
+                                </div>
+                                <div class="stat-content">
+                                    <!-- Add a placeholder for the Morris.js chart -->
+                                    <div id="morris-line-chart"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6">
-                        <div class="card" onclick="window.location.href='assemblylist.php'; return false;">
-                            <div class="stat-widget-one card-body">
-                                <i class="fi fi-rr-list display-5" style="color:#ff0d00;"></i>
-                                <div class="stat-content d-inline-block">
-                                    <div class="stat-text">Assembly</div>
-                                    <div class="stat-digit"><?php if($Assembly['Total'] == 0){ echo "0";}else{ echo $Assembly['Total'];}?></div>
+                    <div class="col-lg-4 col-sm-12 d-inline-flex flex-wrap">
+                        <div class="col-lg-12 col-sm-6">
+                            <div class="card">
+                                <div class="stat-widget-one card-body">
+                                    <i class="fi fi-rr-coins display-5" style="color:#ff0d00;"></i>
+                                    <div class="stat-content d-inline-block">
+                                        <div class="stat-text">Monthly Entry</div>
+                                        <div class="stat-digit"><?php if($income['total'] == 0){ echo "₱ 0";}else{ echo "₱ ".$income['total'];}?></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6">
-                        <div class="card">
-                            <div class="stat-widget-one card-body">
-                                <i class="fi fi-rr-layers display-5" style="color:#ff0d00;"></i>
-                                <div class="stat-content d-inline-block">
-                                    <div class="stat-text">Inventory</div>
-                                    <div class="stat-digit"><?php echo $innventory['total']?></div>
+                        <div class="col-lg-12 col-sm-6">
+                            <div class="card" onclick="window.location.href='assemblylist.php'; return false;">
+                                <div class="stat-widget-one card-body">
+                                    <i class="fi fi-rr-list display-5" style="color:#ff0d00;"></i>
+                                    <div class="stat-content d-inline-block">
+                                        <div class="stat-text">Assembly</div>
+                                        <div class="stat-digit"><?php if($Assembly['Total'] == 0){ echo "0";}else{ echo $Assembly['Total'];}?></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6">
-                        <div class="card" onclick="window.location.href='alertproduct.php'; return false;">
-                            <div class="stat-widget-one card-body">
-                            <i class="fi fi-rr-engine-warning display-5" style="color:#ff0000;"></i>
-                                <div class="stat-content d-inline-block">
-                                    <div class="stat-text">Inventory Alert</div>
-                                    <div class="stat-digit"><?php echo $alertprd['alert']?></div>
+                        <div class="col-lg-12 col-sm-6">
+                            <div class="card">
+                                <div class="stat-widget-one card-body">
+                                    <i class="fi fi-rr-layers display-5" style="color:#ff0d00;"></i>
+                                    <div class="stat-content d-inline-block">
+                                        <div class="stat-text">Inventory</div>
+                                        <div class="stat-digit"><?php echo $innventory['total']?></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-sm-6">
+                            <div class="card" onclick="window.location.href='alertproduct.php'; return false;">
+                                <div class="stat-widget-one card-body">
+                                <i class="fi fi-rr-engine-warning display-5" style="color:#ff0000;"></i>
+                                    <div class="stat-content d-inline-block">
+                                        <div class="stat-text">Inventory Alert</div>
+                                        <div class="stat-digit"><?php echo $alertprd['alert']?></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -85,7 +100,12 @@
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">Latest Trasactions 10 Trasactions</h4>
+                                <h4 class="card-title">Latest Transactions</h4>
+                                <?php if ($count < 5): ?>
+                                    <p class="">Showing <strong><?php echo $count; ?></strong> Transactions</p>
+                                <?php else: ?>
+                                    <p class="">Showing <strong>5</strong> of <strong><?php echo $count; ?></strong> Transactions</p>
+                                <?php endif; ?>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -138,17 +158,31 @@
     <script src="../vendor/global/global.min.js"></script>
     <script src="../js/quixnav-init.js"></script>
     <script src="../js/custom.min.js"></script>
-    <script src="../vendor/raphael/raphael.min.js"></script>
-    <script src="../vendor/morris/morris.min.js"></script>
-    <script src="../vendor/circle-progress/circle-progress.min.js"></script>
-    <script src="../vendor/chart.js/Chart.bundle.min.js"></script>
-    <script src="../vendor/gaugeJS/dist/gauge.min.js"></script>
-    <script src="../vendor/flot/jquery.flot.js"></script>
-    <script src="../vendor/flot/jquery.flot.resize.js"></script>
-    <script src="../vendor/owl-carousel/js/owl.carousel.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.usa.js"></script>
-    <script src="../vendor/jquery.counterup/jquery.counterup.min.js"></script>
-    <script src="../js/dashboard/dashboard-1.js"></script>
+
+    <script>
+        var dataCombined = <?php echo $jsonDataCombined; ?>;
+
+
+
+        Morris.Area({
+            element: 'morris-line-chart',
+            data: <?php echo $jsonDataCombined; ?>,
+            xkey: 'date_group',
+            ykeys: ['finished_assemblies', 'monthly_income', 'absences'],
+            labels: ['Finished Assemblies', 'Monthly Income', 'Absences'],
+            lineColors: ['#D97604', '#FF4C00', '#0E0E0E'],
+            continuousLine: false,
+            fillOpacity: 0.6,
+            hideHover: 'auto',
+            behaveLikeLine: true,
+            resize: true,
+            pointFillColors:['#ffffff'],
+            pointStrokeColors: ['#242423'], 
+        });
+    </script>
+
+
 </body>
 </html>

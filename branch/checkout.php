@@ -91,7 +91,7 @@
                                                 <input type="text" name="time" class="form-control"  value="<?php echo $currentDateTimetrasaction?>" readonly>
                                             </div>
                                             <div class="form-group col-md-4">
-                                                <label>Cleint Name</label>
+                                                <label>Client Name</label>
                                                 <input type="text" name="name" class="form-control"  required>
                                             </div>
                                             <div class="form-group col-md-4">

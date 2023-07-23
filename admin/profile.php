@@ -41,9 +41,9 @@
                         <div class="profile">
                             <div class="profile-head">
                                 <div class="photo-content" style=" background: url(<?php if($profile['cover_photo'] == "fayeedcover.png"){ echo "../images/site/".$profile['cover_photo']; }else{ echo $profile['cover_photo']; }?>); background-size: cover;
-    background-position: center;
-    min-height: 250px;
-    width: 100%;">
+                                background-position: center;
+                                min-height: 250px;
+                                width: 100%;">
                                     <div class="cover-photo"></div>
                                     <div class="profile-photo">
                                         <img id="defaultImage" src="../images/users/<?php echo $profile['profile']?>" class="img-fluid rounded-circle" alt="">
@@ -155,41 +155,40 @@
         
     </div>
     <script>
-const defaultImage = document.getElementById('defaultImage');
-const imageInput = document.getElementById('imageInput');
-const imagePreview = document.getElementById('imagePreview');
+    const defaultImage = document.getElementById('defaultImage');
+    const imageInput = document.getElementById('imageInput');
+    const imagePreview = document.getElementById('imagePreview');
 
-imageInput.addEventListener('change', function() {
-  const file = this.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      imagePreview.src = e.target.result;
-      defaultImage.style.display = 'none'; // Hide the default image
-    };
-    reader.readAsDataURL(file);
-  } else {
-    imagePreview.src = '#';
-    defaultImage.style.display = 'inline-block'; // Show the default image
-  }
-});
+    imageInput.addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+        imagePreview.src = e.target.result;
+        defaultImage.style.display = 'none'; // Hide the default image
+        };
+        reader.readAsDataURL(file);
+    } else {
+        imagePreview.src = '#';
+        defaultImage.style.display = 'inline-block'; // Show the default image
+    }
+    });
 
 
 </script>
+
+
+
     <script src="../vendor/global/global.min.js"></script>
     <script src="../js/quixnav-init.js"></script>
     <script src="../js/custom.min.js"></script>
-    <script src="../vendor/raphael/raphael.min.js"></script>
-    <script src="../vendor/morris/morris.min.js"></script>
-    <script src="../vendor/circle-progress/circle-progress.min.js"></script>
-    <script src="../vendor/chart.js/Chart.bundle.min.js"></script>
     <script src="../vendor/gaugeJS/dist/gauge.min.js"></script>
     <script src="../vendor/flot/jquery.flot.js"></script>
     <script src="../vendor/flot/jquery.flot.resize.js"></script>
-    <script src="../vendor/owl-carousel/js/owl.carousel.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.usa.js"></script>
-    <script src="../vendor/jquery.counterup/jquery.counterup.min.js"></script>
     <script src="../js/dashboard/dashboard-1.js"></script>
+
+    
 </body>
 </html>

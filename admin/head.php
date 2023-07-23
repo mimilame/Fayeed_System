@@ -87,16 +87,33 @@ $present = mysqli_fetch_assoc($tres);
 $sttaf = mysqli_query($con,"SELECT COUNT(usersID) staffs FROM branch_staff");
 $sttafss = mysqli_fetch_assoc($sttaf);
 
-$assm = mysqli_query($con,"SELECT SUM(assemblyQuatty) Assemble_Total FROM assembly WHERE assemblyStatus = 'Assemble'");
+$assm = mysqli_query($con,"SELECT SUM(assemblyQuatty) Assemble_Total FROM assembly WHERE assemblyStatus = 'Finished'");
 $Assembly = mysqli_fetch_assoc($assm);
 
 $invc = mysqli_query($con,"SELECT SUM(amount_payment) Total FROM checkout WHERE date like '$mmmmnthh %'  AND year = '$transayear'");
 $income = mysqli_fetch_assoc($invc);
 
-$avbc = mysqli_query($con,"SELECT count(absent) absent from attendance WHERE absent = 1 AND dtrdate = '$currentDatetransaction';");
-$absent = mysqli_fetch_assoc($avbc);
 
-$afsent = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, branches.Branch_Name FROM attendance join users on users.usersID = attendance.usersID join branches on branches.branchID = attendance.branchID  WHERE attendance.absent =1 and dtrdate = '$currentDatetransaction';");
+$absencesQuery = mysqli_query($con, "SELECT COUNT(absent) AS absences FROM attendance WHERE absent = 1 AND
+MONTH(STR_TO_DATE(dtrdate, '%M %e, %Y')) <= DATE_SUB(CURDATE(), INTERVAL 3 MONTH);");
+
+// Fetch the result as an associative array
+$absencesResult = mysqli_fetch_assoc($absencesQuery);
+
+// Get the count of absences
+$absencesCount = $absencesResult['absences'];
+
+$latesQuery = mysqli_query($con, "SELECT COUNT(*) AS lates FROM attendance WHERE 
+(morning_in LIKE '%Late%' OR morning_out LIKE '%Late%' OR afternoon_in LIKE '%Late%' OR afternoon_out LIKE '%Late%')
+AND dtrdate <= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)");
+
+// Fetch the result as an associative array
+$latesResult = mysqli_fetch_assoc($latesQuery);
+
+// Get the count of lates
+$latesCount = $latesResult['lates'];
+
+$afsent = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, branches.Branch_Name FROM attendance join users on users.usersID = attendance.usersID join branches on branches.branchID = attendance.branchID  WHERE attendance.absent =1 and dtrdate = '$currentDatetransaction'");
 
 $cprocontrol = $settings['product_control'];
 $alertprof = mysqli_query($con,"SELECT COUNT(*) total_arlert FROM inventory WHERE inventoryQty < $cprocontrol;");
@@ -501,21 +518,27 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
 
 
         //-------Line Graph for admin
-        $assemqMonthly = mysqli_query($con, "SELECT DATE_FORMAT(added, '%Y-%m') AS date_group, COUNT(*) AS finished_count FROM assembly WHERE assemblyStatus = 'Finished' GROUP BY DATE_FORMAT(added, '%Y-%m') ORDER BY DATE_FORMAT(added, '%Y-%m')");
+        $assemqYearly = mysqli_query($con, "SELECT YEAR(added) AS date_group, COUNT(*) AS finished_count FROM assembly WHERE assemblyStatus = 'Finished' GROUP BY YEAR(added) ORDER BY YEAR(added)");
 
-        $dataFinishedAssembliesMonthly = array();
+        $dataFinishedAssembliesYearly = array();
 
-        while ($rowMonthly = mysqli_fetch_assoc($assemqMonthly)) {
-            $dataFinishedAssembliesMonthly[] = array('date_group' => $rowMonthly['date_group'], 'finished_assemblies' => $rowMonthly['finished_count']);
+        while ($rowYearly = mysqli_fetch_assoc($assemqYearly)) {
+            $dataFinishedAssembliesYearly[] = array('date_group' => $rowYearly['date_group'], 'finished_assemblies' => $rowYearly['finished_count']);
         }
-        $invcYearly = mysqli_query($con, "SELECT YEAR(date) AS date_group, SUM(amount_payment) AS yearly_income FROM checkout GROUP BY YEAR(date) ORDER BY YEAR(date)");
+
+        $invcYearly = mysqli_query($con, "SELECT year(STR_TO_DATE(date, '%M %e, %Y')) AS date_group, SUM(amount_payment) AS yearly_income FROM checkout GROUP BY year(STR_TO_DATE(date, '%M %e, %Y')) ORDER BY year(STR_TO_DATE(date, '%M %e, %Y'));");
 
         $dataYearlyIncome = array();
 
         while ($rowYearly = mysqli_fetch_assoc($invcYearly)) {
             $dataYearlyIncome[] = array('date_group' => $rowYearly['date_group'], 'yearly_income' => $rowYearly['yearly_income']);
         }
-        $absenqYearly = mysqli_query($con, "SELECT YEAR(dtrdate) AS date_group, COUNT(*) AS absences_count FROM attendance WHERE absent = 1 GROUP BY YEAR(dtrdate) ORDER BY YEAR(dtrdate)");
+
+        $absenqYearly = mysqli_query($con, "SELECT YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y')) AS date_group, COUNT(*) AS absences_count
+        FROM attendance
+        WHERE absent = 1
+        GROUP BY YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y'))
+        ORDER BY YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y'))");
 
         $dataAbsencesYearly = array();
 
@@ -523,9 +546,39 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
             $dataAbsencesYearly[] = array('date_group' => $rowAbsences['date_group'], 'absences' => $rowAbsences['absences_count']);
         }
 
+        // Create a master list of all date_groups from all datasets
+        $allDateGroups = array();
+
+        foreach ($dataFinishedAssembliesYearly as $item) {
+            if (!in_array($incm['date_group'], $allDateGroups)) {
+            $allDateGroups[] = $item['date_group'];
+            }
+        }
+
+        foreach ($dataYearlyIncome as $incm) {
+            if (!in_array($incm['date_group'], $allDateGroups)) {
+                $allDateGroups[] = $incm['date_group'];
+            }
+        }
+
+        foreach ($dataAbsencesYearly as $absence) {
+            if (!in_array($absence['date_group'], $allDateGroups)) {
+                $allDateGroups[] = $absence['date_group'];
+            }
+        }
+
         $dataCombined = array();
-        foreach ($dataFinishedAssembliesMonthly as $item) {
-            $dateGroup = $item['date_group'];
+
+        // Loop through the master list of date_groups
+        foreach ($allDateGroups as $dateGroup) {
+            // Find the matching data for Yearly Assemblies
+            $finishedAssemblies = 0;
+            foreach ($dataFinishedAssembliesYearly as $item) {
+                if ($item['date_group'] === $dateGroup) {
+                    $finishedAssemblies = $item['finished_assemblies'];
+                    break;
+                }
+            }
 
             // Find the matching data for Yearly Income
             $yearlyIncome = 0;
@@ -548,13 +601,14 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
             // Add the combined data to the array
             $dataCombined[] = array(
                 'date_group' => $dateGroup,
-                'finished_assemblies' => $item['finished_assemblies'],
+                'finished_assemblies' => $finishedAssemblies,
                 'yearly_income' => $yearlyIncome,
                 'absences' => $absences,
             );
 
-            // Debug output
-            echo "Date Group: " . $dateGroup . ", Finished Assemblies: " . $item['finished_assemblies'] . ", Yearly Income: " . $yearlyIncome . ", Absences: " . $absences . "<br>";
+            // Debug output for each date group
+            /* echo  "Date Group: " . $dateGroup . ", Finished Assemblies: " . $finishedAssemblies . ", Yearly Income: " . $yearlyIncome . ", Absences: " . $absences . "<br>"; */
+
         }
         
 
@@ -575,16 +629,23 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
     <title><?php echo $settings['System_Name']?></title>
 
     <link rel="icon" type="image/png" sizes="16x16" href="../images/site/fayeed.png">
-    <link rel="stylesheet" href="../vendor/owl-carousel/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="../vendor/owl-carousel/css/owl.theme.default.min.css">
     <link href="../vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.16/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/sweetalert2.min.css">
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+
+
+    <script src="../js/plugins-init/sweetalert2.min.js"></script>
+    <script scr="../js/plugins-init/sweetalert.init.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.19/sweetalert2.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    
 
 </head>
 <div id="preloader">

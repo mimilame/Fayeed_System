@@ -41,3 +41,9 @@
                 </nav>
             </div>
         </div>
+
+        <script>        
+            var customCSS = document.createElement('style');
+            customCSS.innerHTML = '.morris-hover.morris-default-style { position: absolute; z-index: 0!important; }';
+            document.head.appendChild(customCSS);
+        </script>

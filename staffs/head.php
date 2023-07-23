@@ -642,7 +642,7 @@ $inlist = mysqli_query($con,"SELECT inventory.product_code,inventory.inventoryNa
         $imvto = mysqli_query($con," SELECT count(*) total FROM inventory WHERE branchID = $desigbranch");
         $innventory = mysqli_fetch_assoc($imvto);
 
-        $assm = mysqli_query($con,"SELECT SUM(assemblyQuatty) Total FROM assembly WHERE assemblyStatus = 'Assemble' AND branchID = $desigbranch");
+        $assm = mysqli_query($con,"SELECT SUM(assemblyQuatty) AS Total FROM assembly WHERE assemblyStatus = 'Finished' AND branchID = $desigbranch");
         $Assembly = mysqli_fetch_assoc($assm);
 
         $invc = mysqli_query($con,"SELECT SUM(amount_payment) total FROM checkout WHERE branchID = $desigbranch AND date LIKE '$mmmmnthh %'");
@@ -665,23 +665,26 @@ $inlist = mysqli_query($con,"SELECT inventory.product_code,inventory.inventoryNa
         $pulse = mysqli_fetch_assoc($pols);
         $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, branches.Branch_Name ,Logs.Activity ,Logs.date,Logs.time FROM Logs join users on users.usersID = Logs.usersID join branches on branches.branchID = Logs.branchID WHERE Logs.usersID = $id ORDER BY Logs.LogsID DESC ");
 
-        //-------Line Graph for branch staff
+        //-------Line Graph for branch staff --------------------------------
         $count = mysqli_num_rows($lllllls);
+        
         // Execute the SQL query to get counts of "Finished Assemblies" by year and month
-        $assemq = mysqli_query($con, "SELECT YEAR(assembly.added) AS year, MONTH(assembly.added) AS month, COUNT(*) AS finished_count
+        $assemq = mysqli_query($con, "SELECT YEAR(assembly.added) AS year, MONTH(assembly.added) AS month, SUM(assemblyQuatty) AS finished_count, assembly.usersID
         FROM assembly
         INNER JOIN branch_staff ON assembly.usersID = branch_staff.usersID
         WHERE assembly.assemblyStatus = 'Finished' AND branch_staff.usersID = $id
-        GROUP BY YEAR(assembly.added), MONTH(assembly.added)
-        ORDER BY YEAR(assembly.added), MONTH(assembly.added)");
+        GROUP BY YEAR(assembly.added), MONTH(assembly.added), assembly.usersID
+        ORDER BY YEAR(assembly.added), MONTH(assembly.added)
+        ");
 
         // Execute the SQL query to get counts of "Absences" by year and month
-        $absenq = mysqli_query($con, "SELECT YEAR(attendance.dtrdate) AS year, MONTH(attendance.dtrdate) AS month, COUNT(*) AS absences_count
+        $absenq = mysqli_query($con, "SELECT YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y')) AS year, MONTH(STR_TO_DATE(dtrdate, '%M %e, %Y')) AS month, COUNT(*) AS absences_count
         FROM attendance
         INNER JOIN branch_staff ON attendance.usersID = branch_staff.usersID
         WHERE attendance.absent = 1 AND branch_staff.usersID = $id
-        GROUP BY YEAR(attendance.dtrdate), MONTH(attendance.dtrdate)
-        ORDER BY YEAR(attendance.dtrdate), MONTH(attendance.dtrdate)");
+        GROUP BY YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y')), MONTH(STR_TO_DATE(dtrdate, '%M %e, %Y'))
+        ORDER BY YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y')), MONTH(STR_TO_DATE(dtrdate, '%M %e, %Y'))
+        ");
 
         // Initialize an empty array to store the Morris.js data for "Finished Assemblies" and "Absences"
         $dataFinishedAssemblies = array();
@@ -697,13 +700,43 @@ $inlist = mysqli_query($con,"SELECT inventory.product_code,inventory.inventoryNa
             $dataAbsences[] = array('year' => $rowAbsences['year'], 'month' => $rowAbsences['month'], 'absences' => $rowAbsences['absences_count']);
         }
 
-        // Merge the "Finished Assemblies" and "Absences" data based on year and month
-        $dataCombined = array();
+        // Create a master list of all unique year and month combinations from both datasets
+        $allYearMonths = array();
+
         foreach ($dataFinishedAssemblies as $assembliesData) {
             $year = $assembliesData['year'];
             $month = $assembliesData['month'];
-            $finishedAssemblies = $assembliesData['finished_assemblies'];
+            $key = $year . '-' . $month;
+            $allYearMonths[$key] = array('year' => $year, 'month' => $month);
+        }
+
+        foreach ($dataAbsences as $absencesData) {
+            $year = $absencesData['year'];
+            $month = $absencesData['month'];
+            $key = $year . '-' . $month;
+            $allYearMonths[$key] = array('year' => $year, 'month' => $month);
+        }
+
+        // Sort the master list based on year and month
+        usort($allYearMonths, function($a, $b) {
+            return strcmp($a['year'] . $a['month'], $b['year'] . $b['month']);
+        });
+
+        // Merge the "Finished Assemblies" and "Absences" data based on year and month
+        $dataCombined = array();
+        foreach ($allYearMonths as $yearMonthData) {
+            $year = $yearMonthData['year'];
+            $month = $yearMonthData['month'];
+            $finishedAssemblies = 0;
             $absences = 0;
+
+            // Search for matching "Finished Assemblies" data based on year and month
+            foreach ($dataFinishedAssemblies as $assembliesData) {
+                if ($assembliesData['year'] == $year && $assembliesData['month'] == $month) {
+                    $finishedAssemblies = $assembliesData['finished_assemblies'];
+                    break;
+                }
+            }
 
             // Search for matching "Absences" data based on year and month
             foreach ($dataAbsences as $absencesData) {
@@ -716,6 +749,7 @@ $inlist = mysqli_query($con,"SELECT inventory.product_code,inventory.inventoryNa
             // Add the combined data to the array
             $dataCombined[] = array('year' => $year, 'month' => $month, 'finished_assemblies' => $finishedAssemblies, 'absences' => $absences);
         }
+
 
         // Encode the combined data into JSON format
         $jsonDataCombined = json_encode($dataCombined);
@@ -741,6 +775,13 @@ $inlist = mysqli_query($con,"SELECT inventory.product_code,inventory.inventoryNa
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+
+
 </head>
 <div id="preloader">
         <div class="sk-three-bounce">
@@ -751,10 +792,10 @@ $inlist = mysqli_query($con,"SELECT inventory.product_code,inventory.inventoryNa
     </div>
 
     <style>
-    .disabled-button {
-  pointer-events: none;
-  opacity: 0.6; /* Optional: reduce the opacity to visually indicate the disabled state */
-  cursor: not-allowed; /* Optional: change the cursor to indicate that the button is disabled */
-}
-</style>
+        .disabled-button {
+            pointer-events: none;
+            opacity: 0.6; /* Optional: reduce the opacity to visually indicate the disabled state */
+            cursor: not-allowed; /* Optional: change the cursor to indicate that the button is disabled */
+        }
+    </style>
 

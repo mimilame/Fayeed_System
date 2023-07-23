@@ -1,5 +1,5 @@
 <?php include 'head.php';
-$tranv = mysqli_query($con,"SELECT checkout.Transaction_code , inventory.inventoryName ,checkout.quantity ,branches.Branch_Name ,checkout.amount_payment ,checkout.mop ,checkout.date ,checkout.time from checkout join inventory on inventory.inventoryId = checkout.inventoryId join branches on branches.branchID = checkout.branchID ORDER BY checkout.checkoutID DESC LIMIT 10");
+$tranv = mysqli_query($con,"SELECT checkout.Transaction_code , inventory.inventoryName ,checkout.quantity ,branches.Branch_Name ,checkout.amount_payment ,checkout.mop ,checkout.date ,checkout.time from checkout join inventory on inventory.inventoryId = checkout.inventoryId join branches on branches.branchID = checkout.branchID ORDER BY checkout.checkoutID DESC LIMIT 5");
 $clisttrans = mysqli_num_rows($tranv);
 ?>
 <body>
@@ -100,7 +100,7 @@ $clisttrans = mysqli_num_rows($tranv);
                                 <i class="fi fi-rr-delete-user display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
                                         <div class="stat-text">Absent</div>
-                                        <div class="stat-digit"><?php echo $absent['absent']?></div>
+                                        <div class="stat-digit"><?php echo $absencesCount?></div>
                                     </div>
                                 </div>
                             </div>
@@ -108,10 +108,10 @@ $clisttrans = mysqli_num_rows($tranv);
                         <div class="col-lg-6 col-sm-6">
                             <div class="card">
                                 <div class="stat-widget-one card-body">
-                                <i class="fi fi-rr-check-circle display-5" style="color:#ff6a00;"></i>
+                                <i class="bx bx-alarm-exclamation display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
-                                        <div class="stat-text">Present</div>
-                                        <div class="stat-digit"><?php echo $present['present']?></div>
+                                        <div class="stat-text">Late</div>
+                                        <div class="stat-digit"><?php echo $latesCount?></div>
                                     </div>
                                 </div>
                             </div>
@@ -147,10 +147,10 @@ $clisttrans = mysqli_num_rows($tranv);
                             <div class="card-header">
                                 <h4 class="card-title">Latest Transactions</h4>
 
-                                <?php if ($clisttrans < 10): ?>
+                                <?php if ($clisttrans < 5): ?>
                                     <p class="">Showing <strong><?php echo $clisttrans; ?></strong> Transactions</p>
                                 <?php else: ?>
-                                    <p class="">Showing <strong>10</strong> of <strong><?php echo $clisttrans; ?></strong> Transactions</p>
+                                    <p class="">Showing <strong>5</strong> of <strong><?php echo $clisttrans; ?></strong> Transactions</p>
                                 <?php endif; ?>
                             </div>
                             <div class="card-body">
@@ -206,21 +206,25 @@ $clisttrans = mysqli_num_rows($tranv);
     <script src="../js/custom.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.usa.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    
 
     <script>
-        // Decode the JSON data to use in JavaScript
-        var data = <?php echo $jsonDataCombined; ?>;
 
-        Morris.Line({
+        Morris.Area({
             element: 'morris-line-chart',
             data: <?php echo $jsonDataCombined; ?>,
             xkey: 'date_group',
             ykeys: ['finished_assemblies', 'yearly_income', 'absences'],
             labels: ['Finished Assemblies', 'Yearly Income', 'Absences'],
-            lineColors: ['#ff6a00', '#00cc99', '#428bca'],
+            lineColors: ['#D97604', '#FF4C00', '#0E0E0E'],
+            continuousLine: false,
+            yMin: 0,
+            fillOpacity: 0.6,
+            hideHover: 'auto',
+            behaveLikeLine: true,
+            resize: true,
+            pointFillColors:['#ffffff'],
+            pointStrokeColors: ['#242423'], 
         });
 
 

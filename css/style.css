@@ -10275,7 +10275,8 @@ color: white; }
     list-style: none; }
   .quixnav .metismenu {
     display: flex;
-    flex-direction: column; }
+    flex-direction: column;
+    }
     .quixnav .metismenu.fixed {
       position: fixed;
       top: 0;
