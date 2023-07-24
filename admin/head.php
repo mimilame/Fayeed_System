@@ -518,98 +518,43 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
 
 
         //-------Line Graph for admin
-        $assemqYearly = mysqli_query($con, "SELECT YEAR(added) AS date_group, COUNT(*) AS finished_count FROM assembly WHERE assemblyStatus = 'Finished' GROUP BY YEAR(added) ORDER BY YEAR(added)");
+        $sqlCombined = "SELECT 
+                    date_group,
+                    SUM(finished_count) AS finished_assemblies,
+                    SUM(yearly_income) AS yearly_income,
+                    SUM(absences_count) AS absences
+                FROM
+                    (SELECT YEAR(added) AS date_group, COUNT(*) AS finished_count, 0 AS yearly_income, 0 AS absences_count
+                    FROM assembly
+                    WHERE assemblyStatus = 'Finished'
+                    GROUP BY YEAR(added)
+                    UNION ALL
+                    SELECT YEAR(STR_TO_DATE(date, '%M %e, %Y')) AS date_group, 0 AS finished_count, SUM(amount_payment) AS yearly_income, 0 AS absences_count
+                    FROM checkout
+                    GROUP BY YEAR(STR_TO_DATE(date, '%M %e, %Y'))
+                    UNION ALL
+                    SELECT YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y')) AS date_group, 0 AS finished_count, 0 AS yearly_income, COUNT(*) AS absences_count
+                    FROM attendance
+                    WHERE absent = 1
+                    GROUP BY YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y'))) AS combined_data
+                GROUP BY date_group
+                ORDER BY date_group";
 
-        $dataFinishedAssembliesYearly = array();
+// Execute the combined query
+$resultCombined = mysqli_query($con, $sqlCombined);
 
-        while ($rowYearly = mysqli_fetch_assoc($assemqYearly)) {
-            $dataFinishedAssembliesYearly[] = array('date_group' => $rowYearly['date_group'], 'finished_assemblies' => $rowYearly['finished_count']);
-        }
+// Fetch the data
+$dataCombined = array();
+while ($rowCombined = mysqli_fetch_assoc($resultCombined)) {
+    $dataCombined[] = array(
+        'date_group' => $rowCombined['date_group'],
+        'finished_assemblies' => $rowCombined['finished_assemblies'],
+        'yearly_income' => $rowCombined['yearly_income'],
+        'absences' => $rowCombined['absences'],
+    );
+}
 
-        $invcYearly = mysqli_query($con, "SELECT year(STR_TO_DATE(date, '%M %e, %Y')) AS date_group, SUM(amount_payment) AS yearly_income FROM checkout GROUP BY year(STR_TO_DATE(date, '%M %e, %Y')) ORDER BY year(STR_TO_DATE(date, '%M %e, %Y'));");
 
-        $dataYearlyIncome = array();
-
-        while ($rowYearly = mysqli_fetch_assoc($invcYearly)) {
-            $dataYearlyIncome[] = array('date_group' => $rowYearly['date_group'], 'yearly_income' => $rowYearly['yearly_income']);
-        }
-
-        $absenqYearly = mysqli_query($con, "SELECT YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y')) AS date_group, COUNT(*) AS absences_count
-        FROM attendance
-        WHERE absent = 1
-        GROUP BY YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y'))
-        ORDER BY YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y'))");
-
-        $dataAbsencesYearly = array();
-
-        while ($rowAbsences = mysqli_fetch_assoc($absenqYearly)) {
-            $dataAbsencesYearly[] = array('date_group' => $rowAbsences['date_group'], 'absences' => $rowAbsences['absences_count']);
-        }
-
-        // Create a master list of all date_groups from all datasets
-        $allDateGroups = array();
-
-        foreach ($dataFinishedAssembliesYearly as $item) {
-            if (!in_array($incm['date_group'], $allDateGroups)) {
-            $allDateGroups[] = $item['date_group'];
-            }
-        }
-
-        foreach ($dataYearlyIncome as $incm) {
-            if (!in_array($incm['date_group'], $allDateGroups)) {
-                $allDateGroups[] = $incm['date_group'];
-            }
-        }
-
-        foreach ($dataAbsencesYearly as $absence) {
-            if (!in_array($absence['date_group'], $allDateGroups)) {
-                $allDateGroups[] = $absence['date_group'];
-            }
-        }
-
-        $dataCombined = array();
-
-        // Loop through the master list of date_groups
-        foreach ($allDateGroups as $dateGroup) {
-            // Find the matching data for Yearly Assemblies
-            $finishedAssemblies = 0;
-            foreach ($dataFinishedAssembliesYearly as $item) {
-                if ($item['date_group'] === $dateGroup) {
-                    $finishedAssemblies = $item['finished_assemblies'];
-                    break;
-                }
-            }
-
-            // Find the matching data for Yearly Income
-            $yearlyIncome = 0;
-            foreach ($dataYearlyIncome as $incm) {
-                if ($incm['date_group'] === $dateGroup) {
-                    $yearlyIncome = $incm['yearly_income'];
-                    break;
-                }
-            }
-
-            // Find the matching data for Number of Absences
-            $absences = 0;
-            foreach ($dataAbsencesYearly as $absence) {
-                if ($absence['date_group'] === $dateGroup) {
-                    $absences = $absence['absences'];
-                    break;
-                }
-            }
-
-            // Add the combined data to the array
-            $dataCombined[] = array(
-                'date_group' => $dateGroup,
-                'finished_assemblies' => $finishedAssemblies,
-                'yearly_income' => $yearlyIncome,
-                'absences' => $absences,
-            );
-
-            // Debug output for each date group
-            /* echo  "Date Group: " . $dateGroup . ", Finished Assemblies: " . $finishedAssemblies . ", Yearly Income: " . $yearlyIncome . ", Absences: " . $absences . "<br>"; */
-
-        }
         
 
         // Encode the combined data into JSON format

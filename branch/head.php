@@ -557,107 +557,56 @@ if(isset($_POST['signin'])){
 
 
         //-------Line Graph for branch manager------------------------
+// Combined query
+$sql = "SELECT 
+date_group,
+SUM(finished_count) AS finished_count,
+SUM(monthly_income) AS monthly_income,
+SUM(absences_count) AS absences_count
+FROM
+(
+SELECT 
+    DATE_FORMAT(added, '%Y-%m') AS date_group,
+    COUNT(*) AS finished_count,
+    0 AS monthly_income,
+    0 AS absences_count
+FROM assembly
+WHERE assemblyStatus = 'Finished' AND branchID = $desigbranch
+GROUP BY DATE_FORMAT(added, '%Y-%m')
+UNION ALL
+SELECT 
+    DATE_FORMAT(STR_TO_DATE(date, '%M %e, %Y'), '%Y-%m') AS date_group,
+    0 AS finished_count,
+    SUM(amount_payment) AS monthly_income,
+    0 AS absences_count
+FROM checkout
+WHERE branchID = $desigbranch
+GROUP BY DATE_FORMAT(STR_TO_DATE(date, '%M %e, %Y'), '%Y-%m')
+UNION ALL
+SELECT 
+    DATE_FORMAT(STR_TO_DATE(dtrdate, '%M %e, %Y'), '%Y-%m') AS date_group,
+    0 AS finished_count,
+    0 AS monthly_income,
+    COUNT(*) AS absences_count
+FROM attendance
+WHERE absent = 1 AND branchID = $desigbranch
+GROUP BY DATE_FORMAT(STR_TO_DATE(dtrdate, '%M %e, %Y'), '%Y-%m')
+) AS combined_data
+GROUP BY date_group
+ORDER BY date_group";
 
-        $assemqMonthly = mysqli_query($con, "SELECT DATE_FORMAT(added, '%Y-%m-%d') AS date_group, COUNT(*) AS finished_count FROM assembly WHERE assemblyStatus = 'Finished' AND branchID = $desigbranch  GROUP BY DATE_FORMAT(added, '%Y-%m-%d') ORDER BY DATE_FORMAT(added, '%Y-%m-%d')");
-
-        $dataFinishedAssembliesMonthly = array();
-
-        while ($rowMonthly = mysqli_fetch_assoc($assemqMonthly)) {
-            $dataFinishedAssembliesMonthly[] = array('date_group' => $rowMonthly['date_group'], 'finished_assemblies' => $rowMonthly['finished_count']);
-        }
-
-        $invcMonthly = mysqli_query($con, "SELECT STR_TO_DATE(date, '%M %e, %Y') AS date_group, SUM(amount_payment) AS monthly_income FROM checkout WHERE branchID = $desigbranch GROUP BY STR_TO_DATE(date, '%M %e, %Y') ORDER BY STR_TO_DATE(date, '%M %e, %Y')");
-
-        $dataMonthlyIncome = array();
-
-        while ($rowMonthly = mysqli_fetch_assoc($invcMonthly)) {
-            $dataMonthlyIncome[] = array('date_group' => $rowMonthly['date_group'], 'monthly_income' => $rowMonthly['monthly_income']);
-        }
-
-        $absenqMonthly = mysqli_query($con, "SELECT STR_TO_DATE(dtrdate, '%M %e, %Y') AS date_group, COUNT(*) AS absences_count FROM attendance WHERE absent = 1 AND branchID = $desigbranch GROUP BY STR_TO_DATE(dtrdate, '%M %e, %Y') ORDER BY STR_TO_DATE(dtrdate, '%M %e, %Y')");
-
-        $dataAbsencesMonthly = array();
-
-        while ($rowAbsences = mysqli_fetch_assoc($absenqMonthly)) {
-            $dataAbsencesMonthly[] = array('date_group' => $rowAbsences['date_group'], 'absences' => $rowAbsences['absences_count']);
-        }
-
-// Convert the date_group to month names
-foreach ($dataFinishedAssembliesMonthly as &$item) {
-    $item['date_group'] = date("F Y", strtotime($item['date_group']));
-}
-
-foreach ($dataMonthlyIncome as &$incm) {
-    $incm['date_group'] = date("F Y", strtotime($incm['date_group']));
-}
-
-foreach ($dataAbsencesMonthly as &$absence) {
-    $absence['date_group'] = date("F Y", strtotime($absence['date_group']));
-}
-
-// Create a master list of all date_groups from all datasets
-$allDateGroups = array();
-
-foreach ($dataFinishedAssembliesMonthly as $item) {
-    if (!in_array($item['date_group'], $allDateGroups)) {
-        $allDateGroups[] = $item['date_group'];
-    }
-}
-
-foreach ($dataMonthlyIncome as $incm) {
-    if (!in_array($incm['date_group'], $allDateGroups)) {
-        $allDateGroups[] = $incm['date_group'];
-    }
-}
-
-foreach ($dataAbsencesMonthly as $absence) {
-    if (!in_array($absence['date_group'], $allDateGroups)) {
-        $allDateGroups[] = $absence['date_group'];
-    }
-}
+// Execute the combined query
+$result = mysqli_query($con, $sql);
 
 $dataCombined = array();
-
-// Loop through the master list of date_groups
-foreach ($allDateGroups as $dateGroup) {
-    // Find the matching data for Yearly Assemblies
-    $finishedAssemblies = 0;
-    foreach ($dataFinishedAssembliesMonthly as $item) {
-        if ($item['date_group'] === $dateGroup) {
-            $finishedAssemblies = $item['finished_assemblies'];
-            break;
-        }
-    }
-
-    // Find the matching data for Monthly Income
-    $monthlyIncome = 0;
-    foreach ($dataMonthlyIncome as $incm) {
-        if ($incm['date_group'] === $dateGroup) {
-            $monthlyIncome = $incm['monthly_income'];
-            break;
-        }
-    }
-
-    // Find the matching data for Number of Absences
-    $absences = 0;
-    foreach ($dataAbsencesMonthly as $absence) {
-        if ($absence['date_group'] === $dateGroup) {
-            $absences = $absence['absences'];
-            break;
-        }
-    }
-
-    // Add the combined data to the array
+while ($row = mysqli_fetch_assoc($result)) {
+    $dateGroup = date("M Y", strtotime($row['date_group']));
     $dataCombined[] = array(
         'date_group' => $dateGroup,
-        'finished_assemblies' => $finishedAssemblies,
-        'monthly_income' => $monthlyIncome,
-        'absences' => $absences,
+        'finished_assemblies' => $row['finished_count'],
+        'monthly_income' => $row['monthly_income'],
+        'absences' => $row['absences_count'],
     );
-
-    // Debug output for each date group
-    echo  "Date Group: " . $dateGroup . ", Finished Assemblies: " . $finishedAssemblies . ", Monthly Income: " . $monthlyIncome . ", Absences: " . $absences . "<br>";
-
 }
 
 // Encode the combined data into JSON format

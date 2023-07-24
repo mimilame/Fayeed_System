@@ -148,7 +148,7 @@
 
     <script>
         var dataCombined = <?php echo $jsonDataCombined; ?>;
-
+        console.log(dataCombined);
         dataCombined.forEach(function(point) {
             var monthNames = [
                 'January', 'February', 'March', 'April', 'May', 'June',

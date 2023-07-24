@@ -209,10 +209,12 @@ $clisttrans = mysqli_num_rows($tranv);
     
 
     <script>
+        var dataCombined = <?php echo $jsonDataCombined; ?>;
+        console.log(dataCombined);
 
         Morris.Area({
             element: 'morris-line-chart',
-            data: <?php echo $jsonDataCombined; ?>,
+            data: dataCombined,
             xkey: 'date_group',
             ykeys: ['finished_assemblies', 'yearly_income', 'absences'],
             labels: ['Finished Assemblies', 'Yearly Income', 'Absences'],

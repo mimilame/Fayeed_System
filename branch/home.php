@@ -41,7 +41,7 @@
                                 </div>
                                 <div class="stat-content">
                                     <!-- Add a placeholder for the Morris.js chart -->
-                                    <div id="morris-line-chart"></div>
+                                    <div id="morris-line-chart2"></div>
                                 </div>
                             </div>
                         </div>
@@ -162,13 +162,14 @@
     <script src="../vendor/jqvmap/js/jquery.vmap.usa.js"></script>
 
     <script>
+        
         var dataCombined = <?php echo $jsonDataCombined; ?>;
-
+        console.log(dataCombined);
 
 
         Morris.Area({
-            element: 'morris-line-chart',
-            data: <?php echo $jsonDataCombined; ?>,
+            element: 'morris-line-chart2',
+            data: dataCombined,
             xkey: 'date_group',
             ykeys: ['finished_assemblies', 'monthly_income', 'absences'],
             labels: ['Finished Assemblies', 'Monthly Income', 'Absences'],
