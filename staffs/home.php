@@ -173,7 +173,7 @@
         var dataCombined = <?php echo $jsonDataCombined; ?>;
         console.log(dataCombined);
 
-        Morris.Line({
+        Morris.Area({
             element: 'morris-line-chart',
             data: dataCombined,
             xkey: 'date_group',
