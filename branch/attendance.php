@@ -48,7 +48,7 @@ $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, user
   font-size: 14px;
   font-weight: 500;
   line-height: 19px;
-  
+
   padding: 17px 29px 17px 17px;
   transition: background 0.3s;
   color: var(--color);
@@ -227,6 +227,7 @@ $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, user
 
 
 </style>
+
 <body>
     <div id="main-wrapper">
         <div class="nav-header">
@@ -234,9 +235,8 @@ $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, user
                 <img class="logo-abbr" src="../images/site/fayeed.png" alt="">
                 <img class="logo-compact" src="../images/site/fayeed.png" alt="">
                 <h4 class="brand-title"><?php echo $branchde['city']?></h4>
-                <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
             </a>
- 
+
 
             <div class="nav-control">
                 <div class="hamburger">
@@ -244,16 +244,19 @@ $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, user
                 </div>
             </div>
         </div>
+
+        <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+        <link href="../vendor/datatables/css/responsive.dataTables.min.css" rel="stylesheet">
         <?php include 'header.php'; include 'sidebar.php'?>
-        
+
         <div class="content-body">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-xl-12 col-xxl-12">
-                        
+
                         <div class="card">
                             <div class="card-header">
-                                <h2 class="card-title">Attendance Pannel > Date : <?php echo $currentDatetransaction?> > Time : <?php echo $currentDateTimetrasaction?></h2> 
+                                <h2 class="card-title">Attendance Pannel > Date : <?php echo $currentDatetransaction?> > Time : <?php echo $currentDateTimetrasaction?></h2>
                             </div>
                             <div class="card-body"><?php
                     if(count($errors) == 1){
@@ -280,37 +283,39 @@ $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, user
                         <?php
                     }
                     ?>
-                                <div class="basic-form"> 
+                                <div class="basic-form">
                                 <form action="" method="post" enctype="multipart/form-data">
 
                                         <div class="form-row">
-                                        
+
                                             <div class="form-group col-md-3">
-                                                
+
                                                 <h5>Attendance Photo</h5><br>
-                                                <img src="../images/attendance/<?php echo $selec3['enrtypic']?>" alt="" width="250px" height="250px">
+                                                <img src="../images/attendance/<?php echo $selec3['enrtypic']?>" alt="" width="90%" height="300px">
                                                 <?php if($selec3['enrtypic'] == 'face.gif'){ ?><input type="file"  class="form-control" name="lis_img0"><br>
                                                      <button type="submit" name="morningpic" class="continue-applications"><i class="fi fi-rr-aperture" style="font-size:20px" ></i> Attendance Shot </button> <?php }elseif($selec3['enrtypic'] == 'hourglass.gif'){ echo "<br><br> <h4 class='ml-1' style='color:red;'>Absent Date : ".$currentDatetransaction."</h4>"; } else{ echo " <br><br> <h4 class='ml-1' style='color:red;'>Have a Good Work!! </h4>";}?>
-                                                     
+
                                             </div>
                                             <div class="form-group col-md-9">
                                                     <div class="table-responsive">
                                                         <h4>Daily Time Record</h4>
-                                                            <table id="example" class="display" style="min-width: 845px">
+                                                            <table id="example" class="display" style="min-width: 100%">
                                                                 <thead>
                                                                     <tr>
+                                                                        <th></th>
                                                                         <th>Date</th>
                                                                         <th>Morning Time-in </th>
                                                                         <th>Morning Time-out</th>
                                                                         <th>Afternoon Time-in </th>
                                                                         <th>Afternoon Time-out</th>
-                                                                        
+
                                                                     </tr>
                                                                 </thead>
 
                                                                 <tbody>
                                                                     <?php while($attendance = mysqli_fetch_array($allatt)){ ?>
                                                                         <tr>
+                                                                            <td></td>
                                                                             <td><p class="<?php if($attendance['dtrdate'] == "$currentDatetransaction"){ echo "bg-warning";}?>"><?php echo $attendance['dtrdate']; ?></p></td>
                                                                             <td><?php echo $attendance['morning_in']; ?></td>
                                                                             <td><?php echo $attendance['morning_out']; ?></td>
@@ -318,23 +323,23 @@ $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, user
                                                                             <td><?php echo $attendance['afternoon_out']; ?></td>
                                                                         </tr>
                                                                     <?php }?>
-                                                                    
-                                                                    
+
+
                                                                 </tbody>
-                                                                
+
                                                             </table>
                                                         </div>
-                                               
-                                                
-                                                
+
+
+
                                             </div>
                                         </div>
                                         <hr>
                                         <h3>Time inputs</h3>
                                         <div class="form-row">
-                                        
+
                                             <div class="form-group col-md-3">
-                                                
+
                                                 <button name="morningsignin" class="continue-application" <?php if($selec3['morning_in'] != 0 ){ echo "disabled";}else{  echo $disabled;}?>>
                                                     <div>
                                                         <div class="pencil"></div>
@@ -401,20 +406,20 @@ $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, user
                                             </div>
                                             <div class="form-group col-md-3">
                                             <?php if($selec3['morning_in'] == 0){ ?> <button type="submit" name="absent" class="form-control btn btn-danger"><i class="fi fi-rr-user-slash"></i> Set to Absent</button> <?php }?>
-                                            
+
                                             </div>
                                         </div>
-                                        
+
                                 </div><hr>
-                                
+
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
         </div>
-        
+
     </div>
     <script type="text/javascript">
       $(".chosen").chosen();
@@ -422,19 +427,15 @@ $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, user
     <script src="../vendor/global/global.min.js"></script>
     <script src="../js/quixnav-init.js"></script>
     <script src="../js/custom.min.js"></script>
-    <script src="../vendor/raphael/raphael.min.js"></script>
-    <script src="../vendor/morris/morris.min.js"></script>
-    <script src="../vendor/circle-progress/circle-progress.min.js"></script>
-    <script src="../vendor/chart.js/Chart.bundle.min.js"></script>
     <script src="../vendor/gaugeJS/dist/gauge.min.js"></script>
     <script src="../vendor/flot/jquery.flot.js"></script>
     <script src="../vendor/flot/jquery.flot.resize.js"></script>
-    <script src="../vendor/owl-carousel/js/owl.carousel.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.usa.js"></script>
-    <script src="../vendor/jquery.counterup/jquery.counterup.min.js"></script>
-    <script src="../js/dashboard/dashboard-1.js"></script>
+    <script src="../vendor/datatables/js/jquery-3.7.0.js"></script>
     <script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="../vendor/datatables/js/dataTables.responsive.min.js"></script>
+    <script src="../js/plugins-init/datatables-api-init.js"></script>
     <script src="../js/plugins-init/datatables.init.js"></script>
 </body>
 </html>

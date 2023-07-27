@@ -15,12 +15,12 @@
             </div>
         </div>
         <?php include 'header.php'; include 'sidebar.php'?>
-        
+
         <div class="content-body">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-xl-12 col-xxl-12">
-                        
+
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title"><?php if(isset($branch['Branch_Name'])){ echo "Update Branch <b>".$branch['Branch_Name']."'s</b> Details";}else{echo "Create New Branch";} ?></h4> <a href="branches.php" class="btn btn-primary">Back</a>
@@ -50,8 +50,8 @@
                         <?php
                     }
                     ?>
-                                <div class="basic-form"> 
-                                <form action="" method="post" enctype="multipart/form-data">
+                                <div class="basic-form">
+                                    <form action="" method="post" enctype="multipart/form-data">
 
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
@@ -80,27 +80,20 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
         </div>
-        
+
     </div>
     <script src="../vendor/global/global.min.js"></script>
     <script src="../js/quixnav-init.js"></script>
     <script src="../js/custom.min.js"></script>
-    <script src="../vendor/raphael/raphael.min.js"></script>
-    <script src="../vendor/morris/morris.min.js"></script>
-    <script src="../vendor/circle-progress/circle-progress.min.js"></script>
-    <script src="../vendor/chart.js/Chart.bundle.min.js"></script>
     <script src="../vendor/gaugeJS/dist/gauge.min.js"></script>
     <script src="../vendor/flot/jquery.flot.js"></script>
     <script src="../vendor/flot/jquery.flot.resize.js"></script>
-    <script src="../vendor/owl-carousel/js/owl.carousel.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.usa.js"></script>
-    <script src="../vendor/jquery.counterup/jquery.counterup.min.js"></script>
-    <script src="../js/dashboard/dashboard-1.js"></script>
 </body>
 </html>

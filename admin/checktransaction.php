@@ -16,8 +16,9 @@ $tranv2 = mysqli_query($con,"SELECT checkout.Transaction_code , inventory.invent
             </div>
         </div>
         <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+        <link href="../vendor/datatables/css/responsive.dataTables.min.css" rel="stylesheet">
         <?php include 'header.php'; include 'sidebar.php'?>
-        
+
      <!--**********************************
             Content body start
         ***********************************-->
@@ -30,9 +31,9 @@ $tranv2 = mysqli_query($con,"SELECT checkout.Transaction_code , inventory.invent
                         </div>
                     </div>
                     <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
-                       
+
                     </div>
-                   
+
                 </div>
                 <!-- row -->
 
@@ -45,9 +46,10 @@ $tranv2 = mysqli_query($con,"SELECT checkout.Transaction_code , inventory.invent
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="example" class="display" style="min-width: 845px">
+                                    <table id="example" class="display" style="min-width: 100%">
                                         <thead>
                                             <tr>
+                                                <th></th>
                                                 <th>Transction Code</th>
                                                 <th>Inventory Name</th>
                                                 <th>Quantity</th>
@@ -61,52 +63,49 @@ $tranv2 = mysqli_query($con,"SELECT checkout.Transaction_code , inventory.invent
                                         <tbody>
                                             <?php while($transaction = mysqli_fetch_array($tranv2)){ ?>
                                                 <tr>
+                                                    <td></td>
                                                     <td><?php echo $transaction['Transaction_code'] ?></td>
                                                     <td><?php echo $transaction['inventoryName'] ?></td>
                                                     <td><?php echo $transaction['quantity'] ?></td>
                                                     <td><?php echo $transaction['Branch_Name'] ?></td>
-                                                    <td><?php echo $transaction['amount_payment'] ?></td>
+                                                    <td>&#8369; <?php echo $transaction['amount_payment'] ?></td>
                                                     <td><?php echo $transaction['mop'] ?></td>
                                                     <td><?php echo $transaction['time']." - ".$transaction['date'] ?></td>
-                                                   
+
                                             </tr>
                                             <?php }?>
-                                            
-                                            
+
+
                                         </tbody>
-                                        
+
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
 
-        
+
         <!--**********************************
             Content body end
         ***********************************-->
-        
+
     </div>
     <script src="../vendor/global/global.min.js"></script>
     <script src="../js/quixnav-init.js"></script>
     <script src="../js/custom.min.js"></script>
-    <script src="../vendor/raphael/raphael.min.js"></script>
-    <script src="../vendor/morris/morris.min.js"></script>
-    <script src="../vendor/circle-progress/circle-progress.min.js"></script>
-    <script src="../vendor/chart.js/Chart.bundle.min.js"></script>
     <script src="../vendor/gaugeJS/dist/gauge.min.js"></script>
     <script src="../vendor/flot/jquery.flot.js"></script>
     <script src="../vendor/flot/jquery.flot.resize.js"></script>
-    <script src="../vendor/owl-carousel/js/owl.carousel.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.usa.js"></script>
-    <script src="../vendor/jquery.counterup/jquery.counterup.min.js"></script>
-    <script src="../js/dashboard/dashboard-1.js"></script>
+    <script src="../vendor/datatables/js/jquery-3.7.0.js"></script>
     <script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="../vendor/datatables/js/dataTables.responsive.min.js"></script>
+    <script src="../js/plugins-init/datatables-api-init.js"></script>
     <script src="../js/plugins-init/datatables.init.js"></script>
 </body>
 </html>

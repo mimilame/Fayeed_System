@@ -7,9 +7,8 @@ $invtyr = mysqli_query($con,"select inventory.price, inventory.inventoryName, in
                 <img class="logo-abbr" src="../images/site/fayeed.png" alt="">
                 <img class="logo-compact" src="../images/site/fayeed.png" alt="">
                 <h4 class="brand-title"><?php echo $settings['System_Name']?></h4>
-                <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
             </a>
- 
+
 
             <div class="nav-control">
                 <div class="hamburger">
@@ -17,13 +16,16 @@ $invtyr = mysqli_query($con,"select inventory.price, inventory.inventoryName, in
                 </div>
             </div>
         </div>
+
+        <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+        <link href="../vendor/datatables/css/responsive.dataTables.min.css" rel="stylesheet">
         <?php include 'header.php'; include 'sidebar.php'?>
-        
+
         <div class="content-body">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-xl-12 col-xxl-12">
-                        
+
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title">Branch Details</h4> <a href="branches.php" class="btn btn-primary">Back</a>
@@ -53,7 +55,7 @@ $invtyr = mysqli_query($con,"select inventory.price, inventory.inventoryName, in
                         <?php
                     }
                     ?>
-                                <div class="basic-form"> 
+                                <div class="basic-form">
                                 <form action="" method="post" enctype="multipart/form-data">
 
                                         <div class="form-row">
@@ -78,14 +80,15 @@ $invtyr = mysqli_query($con,"select inventory.price, inventory.inventoryName, in
                                                 <input type="email"class="form-control" value="<?php echo $branch['branch_email']?>" disabled>
                                             </div>
                                         </div>
-                                        
+
                                 </div><hr>
                                 <h4 class="card-title">Existing Inventories in this Branch</h4>
                                 <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="example" class="display" style="min-width: 845px">
+                                    <table id="example" class="display" style="min-width: 100%">
                                         <thead>
                                             <tr>
+                                                <th></th>
                                                 <th>Inventory Name</th>
                                                 <th>Quantity</th>
                                                 <th>Price</th>
@@ -98,29 +101,30 @@ $invtyr = mysqli_query($con,"select inventory.price, inventory.inventoryName, in
                                         <tbody>
                                             <?php while($inventorylist = mysqli_fetch_array($invtyr)){ ?>
                                                 <tr>
+                                                <td></td>
                                                 <td><?php echo $inventorylist['inventoryName'] ?></td>
                                                 <td><?php echo $inventorylist['inventoryQty'] ?> pcs</td>
                                                 <td><?php echo $inventorylist['price'] ?></td>
                                                 <td><?php echo $inventorylist['Branch_Name'] ?></td>
                                                 <td><?php echo $inventorylist['usersFirstName']." ".$inventorylist['usersLastName'] ?></td>
-                                                <td><a href="add-inventory.php?editinventory=<?php echo $inventorylist['inventoryId'] ?>"><i class="fi fi-rr-pencil btn btn-primary"></i></a></td>     
+                                                <td><a href="add-inventory.php?editinventory=<?php echo $inventorylist['inventoryId'] ?>"><i class="fi fi-rr-pencil btn btn-primary"></i></a></td>
                                             </tr>
                                             <?php }?>
-                                            
-                                            
+
+
                                         </tbody>
-                                        
+
                                     </table>
                                 </div>
                             </div>
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
         </div>
-        
+
     </div>
     <script type="text/javascript">
       $(".chosen").chosen();
@@ -128,19 +132,15 @@ $invtyr = mysqli_query($con,"select inventory.price, inventory.inventoryName, in
     <script src="../vendor/global/global.min.js"></script>
     <script src="../js/quixnav-init.js"></script>
     <script src="../js/custom.min.js"></script>
-    <script src="../vendor/raphael/raphael.min.js"></script>
-    <script src="../vendor/morris/morris.min.js"></script>
-    <script src="../vendor/circle-progress/circle-progress.min.js"></script>
-    <script src="../vendor/chart.js/Chart.bundle.min.js"></script>
     <script src="../vendor/gaugeJS/dist/gauge.min.js"></script>
     <script src="../vendor/flot/jquery.flot.js"></script>
     <script src="../vendor/flot/jquery.flot.resize.js"></script>
-    <script src="../vendor/owl-carousel/js/owl.carousel.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.usa.js"></script>
-    <script src="../vendor/jquery.counterup/jquery.counterup.min.js"></script>
-    <script src="../js/dashboard/dashboard-1.js"></script>
+    <script src="../vendor/datatables/js/jquery-3.7.0.js"></script>
     <script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="../vendor/datatables/js/dataTables.responsive.min.js"></script>
+    <script src="../js/plugins-init/datatables-api-init.js"></script>
     <script src="../js/plugins-init/datatables.init.js"></script>
 </body>
 </html>

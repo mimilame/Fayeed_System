@@ -7,6 +7,11 @@ html,body{
     color: #fff;
     background: #6665ee;
 }
+
+.morris-hover.morris-default-style {
+    position: absolute;
+    z-index: 0!important;
+}
 .container{
     position: absolute;
     top: 50%;

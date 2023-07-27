@@ -87,16 +87,33 @@ $present = mysqli_fetch_assoc($tres);
 $sttaf = mysqli_query($con,"SELECT COUNT(usersID) staffs FROM branch_staff");
 $sttafss = mysqli_fetch_assoc($sttaf);
 
-$assm = mysqli_query($con,"SELECT SUM(assemblyQuatty) Assemble_Total FROM assembly WHERE assemblyStatus = 'Assemble'");
+$assm = mysqli_query($con,"SELECT SUM(assemblyQuatty) Assemble_Total FROM assembly WHERE assemblyStatus = 'Standby'");
 $Assembly = mysqli_fetch_assoc($assm);
 
 $invc = mysqli_query($con,"SELECT SUM(amount_payment) Total FROM checkout WHERE date like '$mmmmnthh %'  AND year = '$transayear'");
 $income = mysqli_fetch_assoc($invc);
 
-$avbc = mysqli_query($con,"SELECT count(absent) absent from attendance WHERE absent = 1 AND dtrdate = '$currentDatetransaction';");
-$absent = mysqli_fetch_assoc($avbc);
 
-$afsent = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, branches.Branch_Name FROM attendance join users on users.usersID = attendance.usersID join branches on branches.branchID = attendance.branchID  WHERE attendance.absent =1 and dtrdate = '$currentDatetransaction';");
+$absencesQuery = mysqli_query($con, "SELECT COUNT(absent) AS absences FROM attendance WHERE absent = 1 AND
+MONTH(STR_TO_DATE(dtrdate, '%M %e, %Y')) <= DATE_SUB(CURDATE(), INTERVAL 3 MONTH);");
+
+// Fetch the result as an associative array
+$absencesResult = mysqli_fetch_assoc($absencesQuery);
+
+// Get the count of absences
+$absencesCount = $absencesResult['absences'];
+
+$latesQuery = mysqli_query($con, "SELECT COUNT(*) AS lates FROM attendance WHERE
+(morning_in LIKE '%Late%' OR morning_out LIKE '%Late%' OR afternoon_in LIKE '%Late%' OR afternoon_out LIKE '%Late%')
+AND dtrdate <= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)");
+
+// Fetch the result as an associative array
+$latesResult = mysqli_fetch_assoc($latesQuery);
+
+// Get the count of lates
+$latesCount = $latesResult['lates'];
+
+$afsent = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, branches.Branch_Name FROM attendance join users on users.usersID = attendance.usersID join branches on branches.branchID = attendance.branchID  WHERE attendance.absent =1 and dtrdate = '$currentDatetransaction'");
 
 $cprocontrol = $settings['product_control'];
 $alertprof = mysqli_query($con,"SELECT COUNT(*) total_arlert FROM inventory WHERE inventoryQty < $cprocontrol;");
@@ -501,62 +518,44 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
 
 
         //-------Line Graph for admin
-        $assemqMonthly = mysqli_query($con, "SELECT DATE_FORMAT(added, '%Y-%m') AS date_group, COUNT(*) AS finished_count FROM assembly WHERE assemblyStatus = 'Finished' GROUP BY DATE_FORMAT(added, '%Y-%m') ORDER BY DATE_FORMAT(added, '%Y-%m')");
+            $sqlCombined = "SELECT
+            CONCAT(YEAR(added), '-', MONTH(added)) AS date_group,
+            SUM(finished_count) AS finished_assemblies,
+            SUM(yearly_income) AS yearly_income,
+            SUM(absences_count) AS absences
+            FROM
+                (SELECT added, COUNT(*) AS finished_count, 0 AS yearly_income, 0 AS absences_count
+                FROM assembly
+                WHERE assemblyStatus = 'Finished'
+                GROUP BY YEAR(added), MONTH(added)
+                UNION ALL
+                SELECT STR_TO_DATE(date, '%M %e, %Y') AS added, 0 AS finished_count, SUM(amount_payment) AS yearly_income, 0 AS absences_count
+                FROM checkout
+                GROUP BY YEAR(STR_TO_DATE(date, '%M %e, %Y')), MONTH(STR_TO_DATE(date, '%M %e, %Y'))
+                UNION ALL
+                SELECT STR_TO_DATE(dtrdate, '%M %e, %Y') AS added, 0 AS finished_count, 0 AS yearly_income, COUNT(*) AS absences_count
+                FROM attendance
+                WHERE absent = 1
+                GROUP BY YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y')), MONTH(STR_TO_DATE(dtrdate, '%M %e, %Y'))) AS combined_data
+                        GROUP BY date_group
+                        ORDER BY added";
 
-        $dataFinishedAssembliesMonthly = array();
+            // Execute the combined query
+            $resultCombined = mysqli_query($con, $sqlCombined);
 
-        while ($rowMonthly = mysqli_fetch_assoc($assemqMonthly)) {
-            $dataFinishedAssembliesMonthly[] = array('date_group' => $rowMonthly['date_group'], 'finished_assemblies' => $rowMonthly['finished_count']);
-        }
-        $invcYearly = mysqli_query($con, "SELECT YEAR(date) AS date_group, SUM(amount_payment) AS yearly_income FROM checkout GROUP BY YEAR(date) ORDER BY YEAR(date)");
-
-        $dataYearlyIncome = array();
-
-        while ($rowYearly = mysqli_fetch_assoc($invcYearly)) {
-            $dataYearlyIncome[] = array('date_group' => $rowYearly['date_group'], 'yearly_income' => $rowYearly['yearly_income']);
-        }
-        $absenqYearly = mysqli_query($con, "SELECT YEAR(dtrdate) AS date_group, COUNT(*) AS absences_count FROM attendance WHERE absent = 1 GROUP BY YEAR(dtrdate) ORDER BY YEAR(dtrdate)");
-
-        $dataAbsencesYearly = array();
-
-        while ($rowAbsences = mysqli_fetch_assoc($absenqYearly)) {
-            $dataAbsencesYearly[] = array('date_group' => $rowAbsences['date_group'], 'absences' => $rowAbsences['absences_count']);
-        }
-
-        $dataCombined = array();
-        foreach ($dataFinishedAssembliesMonthly as $item) {
-            $dateGroup = $item['date_group'];
-
-            // Find the matching data for Yearly Income
-            $yearlyIncome = 0;
-            foreach ($dataYearlyIncome as $incm) {
-                if ($incm['date_group'] === $dateGroup) {
-                    $yearlyIncome = $incm['yearly_income'];
-                    break;
-                }
+            // Fetch the data
+            $dataCombined = array();
+            while ($rowCombined = mysqli_fetch_assoc($resultCombined)) {
+                $dataCombined[] = array(
+                    'date_group' => $rowCombined['date_group'],
+                    'finished_assemblies' => $rowCombined['finished_assemblies'],
+                    'yearly_income' => $rowCombined['yearly_income'],
+                    'absences' => $rowCombined['absences'],
+                );
             }
 
-            // Find the matching data for Number of Absences
-            $absences = 0;
-            foreach ($dataAbsencesYearly as $absence) {
-                if ($absence['date_group'] === $dateGroup) {
-                    $absences = $absence['absences'];
-                    break;
-                }
-            }
 
-            // Add the combined data to the array
-            $dataCombined[] = array(
-                'date_group' => $dateGroup,
-                'finished_assemblies' => $item['finished_assemblies'],
-                'yearly_income' => $yearlyIncome,
-                'absences' => $absences,
-            );
 
-            // Debug output
-            echo "Date Group: " . $dateGroup . ", Finished Assemblies: " . $item['finished_assemblies'] . ", Yearly Income: " . $yearlyIncome . ", Absences: " . $absences . "<br>";
-        }
-        
 
         // Encode the combined data into JSON format
         $jsonDataCombined = json_encode($dataCombined);
@@ -575,16 +574,23 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
     <title><?php echo $settings['System_Name']?></title>
 
     <link rel="icon" type="image/png" sizes="16x16" href="../images/site/fayeed.png">
-    <link rel="stylesheet" href="../vendor/owl-carousel/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="../vendor/owl-carousel/css/owl.theme.default.min.css">
     <link href="../vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.16/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/sweetalert2.min.css">
+
+    <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="../vendor/datatables/css/responsive.dataTables.min.css" rel="stylesheet">
+
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+
+
+
+    <script src="../js/plugins-init/sweetalert2.min.js"></script>
+    <script scr="../js/plugins-init/sweetalert.init.js"></script>
+
+
 
 </head>
 <div id="preloader">

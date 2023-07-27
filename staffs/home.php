@@ -1,4 +1,8 @@
 <?php include 'head.php';?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+<link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="../vendor/datatables/css/responsive.dataTables.min.css" rel="stylesheet">
 <body>
     <div id="main-wrapper">
         <div class="nav-header">
@@ -92,14 +96,15 @@
                                 <?php if ($count < 5): ?>
                                     <p class="">Showing <strong><?php echo $count; ?></strong> Alerts</p>
                                 <?php else: ?>
-                                    <p class="">Showing <strong>5</strong> of <strong><?php echo $clisttrans; ?></strong> Alerts</p>
+                                    <p class="">Showing <strong>5</strong> of <strong><?php echo $count; ?></strong> Alerts</p>
                                 <?php endif; ?>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table student-data-table m-t-20">
+                                    <table id="notable" class="display" style="min-width: 100%">
                                     <thead>
                                             <tr>
+                                                <th></th>
                                                 <th>Branch Name</th>
                                                 <th>Product Code</th>
                                                 <th>Inventory Name</th>
@@ -110,6 +115,7 @@
                                         <tbody>
                                             <?php while($inventorylist = mysqli_fetch_array($lllllls)){ ?>
                                                 <tr>
+                                                <td></td>
                                                 <td><?php echo $inventorylist['Branch_Name'] ?></td>
                                                 <td><?php echo $inventorylist['product_code'] ?></td>
                                                 <td><?php echo $inventorylist['inventoryName'] ?></td>
@@ -122,7 +128,7 @@
 
                                         </tbody>
                                     </table>
-                                    <a href="alertproduct.php" class="btn btn-primary">View all Inventory Alerts</a>
+                                    <a href="alertproduct.php" class="btn btn-primary mt-3">View all Inventory Alerts</a>
                                 </div>
                             </div>
                         </div>
@@ -139,35 +145,48 @@
         ***********************************-->
 
     </div>
+
     <script src="../vendor/global/global.min.js"></script>
     <script src="../js/quixnav-init.js"></script>
     <script src="../js/custom.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.usa.js"></script>
+    <script src="../vendor/datatables/js/jquery-3.7.0.js"></script>
+    <script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="../vendor/datatables/js/dataTables.responsive.min.js"></script>
+    <script src="../js/plugins-init/datatables-api-init.js"></script>
+    <script src="../js/plugins-init/datatables.init.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.19/sweetalert2.min.js"></script>
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 
     <script>
-    // Decode the JSON data to use in JavaScript
-    var dataCombined = <?php echo $jsonDataCombined; ?>;
+        var customCSS = document.createElement('style');
+        customCSS.innerHTML = '.morris-hover.morris-default-style { position: absolute; z-index: 0!important; }';
+        document.head.appendChild(customCSS);
+    </script>
+    <script>
+        var dataCombined = <?php echo $jsonDataCombined; ?>;
+        console.log(dataCombined);
 
-        // Morris chart for "Finished Assemblies" and "Absences"
         Morris.Line({
-            // ID of the element in which to draw the chart.
             element: 'morris-line-chart',
-            // Chart data records for "Finished Assemblies" and "Absences".
             data: dataCombined,
-            // The name of the data record attribute that contains x-values.
-            xkey: 'month',
-            // A list of names of data record attributes that contain y-values.
+            xkey: 'date_group',
             ykeys: ['finished_assemblies', 'absences'],
-            // Labels for the ykeys -- will be displayed when you hover over the chart.
             labels: ['Finished Assemblies', 'Absences'],
-            // Line colors for both data series.
-            lineColors: ['#ff6a00', '#00cc99'],
-            // x-axis label
-            xLabelAngle: 30,
+            lineColors: ['#D97604', '#0E0E0E'],
+            continuousLine: false,
+            fillOpacity: 0.6,
+            hideHover: 'auto',
+            behaveLikeLine: true,
+            resize: true,
+            pointFillColors:['#ffffff'],
+            pointStrokeColors: ['#242423'],
         });
     </script>
 

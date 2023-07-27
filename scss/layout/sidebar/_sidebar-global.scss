@@ -57,7 +57,8 @@
     //     left: 6rem;
     // }
     .quixnav-scroll {
-        position: relative;
+        position: fixed;
+        width: inherit;
         height: 100%;
         // overflow: visible!important;
         // border-top-left-radius: 5px;

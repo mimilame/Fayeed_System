@@ -15,7 +15,7 @@
             </div>
         </div>
         <?php include 'header.php'; include 'sidebar.php'?>
-        
+
      <!--**********************************
             Content body start
         ***********************************-->
@@ -26,32 +26,44 @@
                     <?php while( $dtr = mysqli_fetch_array($attengg)){ ?>
 
                         <div class="col-xl-4 col-xxl-6 col-lg-6 col-sm-6">
-                            <div class="card text-white bg-success">
+                            <div class="card text-white bg-secondary">
                                 <div class="card-header">
                                     <h5 class="card-title text-white">Daily Time Record Profile</h5>
                                 </div>
                                 <div class="card-body mb-0">
-                                    <div class="row">
-                                        <div class="col-xl-4 col-xxl-6 col-lg-6 col-sm-6"><p class="card-text">Email : <a class="btn" href="mailto:<?php echo $dtr['email']?>"><?php echo $dtr['email']?></a>  <br>  Contact : <a class="btn" href="tel:<?php echo $dtr['CellNumber']?>"><?php echo $dtr['CellNumber']?></a>  <br> Branch : <?php echo $dtr['Branch_Name']?> </p></div>
-                                        <div class="col-xl-4 col-xxl-6 col-lg-6 col-sm-6"><a href="dtr-target.php?dtr=<?php echo $dtr['usersID']?>" class="btn btn-dark btn-card">Name : <?php echo $dtr['usersFirstName']." ".$dtr['usersLastName']?></a></div>
+                                    <div class="row align-items-center">
+                                        <div class="col-md-6">
+                                            <p class="card-text">
+                                                <strong>Email:</strong> <a class="text-light font-weight-bold" href="mailto:<?php echo $dtr['email']?>"><?php echo $dtr['email']?></a><br>
+                                                <strong>Contact:</strong> <a class="text-light font-weight-bold" href="tel:<?php echo $dtr['CellNumber']?>"><?php echo $dtr['CellNumber']?></a><br>
+                                                <strong>Branch:</strong> <?php echo $dtr['Branch_Name']?>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <?php if($dtrpic = mysqli_fetch_array($ckatt)) { ?>
+                                                <img src="../images/attendance/<?php echo $dtrpic['enrtypic'] ?>" alt="Attendance Image" class="img-fluid img-thumbnail rounded float-md-right w-75 h-25 pb-2">
+                                            <?php } else { ?>
+                                                <img src="../images/attendance/default-image.png" alt="Default Image" class="img-fluid rounded float-md-right w-75 h-25 pb-2">
+                                            <?php } ?>
+                                            <a href="dtr-target.php?dtr=<?php echo $dtr['usersID']?>" class="btn btn-dark btn-card float-md-right">
+                                                <h5 class="font-weight-bold mb-0">Name:</h5> <?php echo $dtr['usersFirstName']." ".$dtr['usersLastName']?>
+                                            </a>
+                                        </div>
                                     </div>
-                                    
-                                   
                                 </div>
-                                
                             </div>
                         </div>
 
                     <?php }?>
-                    
+
                 </div>
             </div>
         </div>
-        
+
         <!--**********************************
             Content body end
         ***********************************-->
-        
+
     </div>
     <script src="../vendor/global/global.min.js"></script>
     <script src="../js/quixnav-init.js"></script>

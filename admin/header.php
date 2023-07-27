@@ -4,9 +4,9 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
                         <div class="search_bar dropdown mt-3">
-                               
+
                                     <h4><?php echo $title?></h4>
-                             
+
                             </div>
                         </div>
 
@@ -15,10 +15,10 @@
                                 <a class="nav-link" href="#" role="button" data-toggle="dropdown">
                                     <i class="fi fi-rr-badge-check"></i>
                                     <?php if($pulse['total'] > 0){ ?> <div class="pulse-css"></div> <?php }?>
-                                    
+
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right">
-                                    
+
                                     <a class="all-notification btn" href="attandance.php">Check Attendance<i
                                             class="fi fi-rr-badge-check"></i></a>
                                 </div>
@@ -32,7 +32,7 @@
                                         <i class="fi fi-rr-circle-user"></i>
                                         <span class="ml-2">Profile </span>
                                     </a>
-                                    
+
                                     <a href="../logout-user.php" class="dropdown-item">
                                         <i class="fi fi-rr-power"></i>
                                         <span class="ml-2">Logout </span>
@@ -44,3 +44,10 @@
                 </nav>
             </div>
         </div>
+
+
+
+
+
+
+

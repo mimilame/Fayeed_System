@@ -1,21 +1,22 @@
+
 (function($) {
     'use strict';
 
     $(document).ready(function() {
         $(".bs-submit").click(function() {
-      
+
           //Fetch form to apply custom Bootstrap validation
           var form = $(".needs-validation")
-      
+
           if (form[0].checkValidity() === false) {
             event.preventDefault()
             event.stopPropagation()
           }
 
           form.addClass('was-validated');
-      
+
           //Make ajax call here
-      
+
         })
       });
 
