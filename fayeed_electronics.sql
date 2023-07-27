@@ -1,5 +1,5 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
@@ -38,7 +38,7 @@ CREATE TABLE `assembly` (
   `editor` int(11) DEFAULT 0,
   `added` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `assembly`
@@ -108,7 +108,7 @@ CREATE TABLE `attendance` (
   `absent` varchar(50) NOT NULL,
   `dtrdate` varchar(50) NOT NULL,
   `confirm` int(1) DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `attendance`
@@ -164,7 +164,7 @@ CREATE TABLE `branches` (
   `DateCreated` varchar(50) NOT NULL,
   `branch_email` varchar(50) NOT NULL,
   `status` int(1) DEFAULT 2
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `branches`
@@ -186,7 +186,7 @@ CREATE TABLE `branch_staff` (
   `usersID` int(11) NOT NULL,
   `assigndby` int(11) DEFAULT NULL,
   `roles` int(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `branch_staff`
@@ -222,7 +222,7 @@ CREATE TABLE `checkout` (
   `month` varchar(30) NOT NULL,
   `day` varchar(30) NOT NULL,
   `year` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `checkout`
@@ -289,7 +289,7 @@ CREATE TABLE `logs` (
   `Activity` varchar(300) NOT NULL,
   `date` varchar(20) NOT NULL,
   `time` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `logs`
@@ -346,7 +346,7 @@ CREATE TABLE `settings` (
   `product_control` int(11) NOT NULL,
   `latetimein_morning` varchar(30) NOT NULL,
   `latetimein_afternoon` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `settings`
@@ -376,7 +376,7 @@ CREATE TABLE `users` (
   `code` int(11) NOT NULL,
   `status` text NOT NULL,
   `roles` int(1) DEFAULT 2
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
@@ -499,7 +499,7 @@ ALTER TABLE `attendance`
 -- AUTO_INCREMENT for table `branches`
 --
 ALTER TABLE `branches`
-  MODIFY `branchID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `branchID` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `branch_staff`
@@ -517,7 +517,7 @@ ALTER TABLE `checkout`
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `inventoryId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `inventoryId` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `logs`
@@ -529,7 +529,7 @@ ALTER TABLE `logs`
 -- AUTO_INCREMENT for table `settings`
 --
 ALTER TABLE `settings`
-  MODIFY `SettingsId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `SettingsId` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`

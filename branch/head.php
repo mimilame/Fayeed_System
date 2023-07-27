@@ -642,7 +642,6 @@ if(isset($_POST['signin'])){
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css"/>
-
 </head>
 <div id="preloader">
         <div class="sk-three-bounce">

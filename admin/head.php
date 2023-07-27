@@ -114,6 +114,7 @@ $latesResult = mysqli_fetch_assoc($latesQuery);
 $latesCount = $latesResult['lates'];
 
 $afsent = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, branches.Branch_Name FROM attendance join users on users.usersID = attendance.usersID join branches on branches.branchID = attendance.branchID  WHERE attendance.absent =1 and dtrdate = '$currentDatetransaction'");
+$afsent = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, branches.Branch_Name FROM attendance join users on users.usersID = attendance.usersID join branches on branches.branchID = attendance.branchID  WHERE attendance.absent =1 and dtrdate = '$currentDatetransaction'");
 
 $cprocontrol = $settings['product_control'];
 $alertprof = mysqli_query($con,"SELECT COUNT(*) total_arlert FROM inventory WHERE inventoryQty < $cprocontrol;");
@@ -543,18 +544,57 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
             // Execute the combined query
             $resultCombined = mysqli_query($con, $sqlCombined);
 
-            // Fetch the data
-            $dataCombined = array();
-            while ($rowCombined = mysqli_fetch_assoc($resultCombined)) {
-                $dataCombined[] = array(
-                    'date_group' => $rowCombined['date_group'],
-                    'finished_assemblies' => $rowCombined['finished_assemblies'],
-                    'yearly_income' => $rowCombined['yearly_income'],
-                    'absences' => $rowCombined['absences'],
-                );
+        while ($rowMonthly = mysqli_fetch_assoc($assemqMonthly)) {
+            $dataFinishedAssembliesMonthly[] = array('date_group' => $rowMonthly['date_group'], 'finished_assemblies' => $rowMonthly['finished_count']);
+        }
+        $invcYearly = mysqli_query($con, "SELECT YEAR(date) AS date_group, SUM(amount_payment) AS yearly_income FROM checkout GROUP BY YEAR(date) ORDER BY YEAR(date)");
+
+        $dataYearlyIncome = array();
+
+        while ($rowYearly = mysqli_fetch_assoc($invcYearly)) {
+            $dataYearlyIncome[] = array('date_group' => $rowYearly['date_group'], 'yearly_income' => $rowYearly['yearly_income']);
+        }
+        $absenqYearly = mysqli_query($con, "SELECT YEAR(dtrdate) AS date_group, COUNT(*) AS absences_count FROM attendance WHERE absent = 1 GROUP BY YEAR(dtrdate) ORDER BY YEAR(dtrdate)");
+
+        $dataAbsencesYearly = array();
+
+        while ($rowAbsences = mysqli_fetch_assoc($absenqYearly)) {
+            $dataAbsencesYearly[] = array('date_group' => $rowAbsences['date_group'], 'absences' => $rowAbsences['absences_count']);
+        }
+
+        $dataCombined = array();
+        foreach ($dataFinishedAssembliesMonthly as $item) {
+            $dateGroup = $item['date_group'];
+
+            // Find the matching data for Yearly Income
+            $yearlyIncome = 0;
+            foreach ($dataYearlyIncome as $incm) {
+                if ($incm['date_group'] === $dateGroup) {
+                    $yearlyIncome = $incm['yearly_income'];
+                    break;
+                }
             }
 
+            // Find the matching data for Number of Absences
+            $absences = 0;
+            foreach ($dataAbsencesYearly as $absence) {
+                if ($absence['date_group'] === $dateGroup) {
+                    $absences = $absence['absences'];
+                    break;
+                }
+            }
 
+            // Add the combined data to the array
+            $dataCombined[] = array(
+                'date_group' => $dateGroup,
+                'finished_assemblies' => $item['finished_assemblies'],
+                'yearly_income' => $yearlyIncome,
+                'absences' => $absences,
+            );
+
+            // Debug output
+            echo "Date Group: " . $dateGroup . ", Finished Assemblies: " . $item['finished_assemblies'] . ", Yearly Income: " . $yearlyIncome . ", Absences: " . $absences . "<br>";
+        }
 
 
         // Encode the combined data into JSON format
@@ -590,6 +630,15 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
     <script src="../js/plugins-init/sweetalert2.min.js"></script>
     <script scr="../js/plugins-init/sweetalert.init.js"></script>
 
+
+
+
+    <script src="../js/plugins-init/sweetalert2.min.js"></script>
+    <script scr="../js/plugins-init/sweetalert.init.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.19/sweetalert2.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 
 
 </head>
