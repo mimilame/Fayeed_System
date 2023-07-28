@@ -1,4 +1,8 @@
 <?php include 'head.php'?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+<link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="../vendor/datatables/css/responsive.dataTables.min.css" rel="stylesheet">
 <body>
     <div id="main-wrapper">
         <div class="nav-header">
@@ -15,7 +19,7 @@
             </div>
         </div>
         <?php include 'header.php'; include 'sidebar.php'?>
-        
+
      <!--**********************************
             Content body start
         ***********************************-->
@@ -28,7 +32,7 @@
                             <p class="mb-0"><h4><?php echo $formattedDate; ?></h4></p>
                         </div>
                     </div>
-                    
+
                 </div>
 
                 <div class="row">
@@ -50,7 +54,7 @@
                         <div class="col-lg-12 col-sm-6">
                             <div class="card">
                                 <div class="stat-widget-one card-body">
-                                    <i class="fi fi-rr-coins display-5" style="color:#ff0d00;"></i>
+                                    <i class="fi fi-rr-coins display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
                                         <div class="stat-text">Monthly Entry</div>
                                         <div class="stat-digit"><?php if($income['total'] == 0){ echo "₱ 0";}else{ echo "₱ ".$income['total'];}?></div>
@@ -61,7 +65,7 @@
                         <div class="col-lg-12 col-sm-6">
                             <div class="card" onclick="window.location.href='assemblylist.php'; return false;">
                                 <div class="stat-widget-one card-body">
-                                    <i class="fi fi-rr-list display-5" style="color:#ff0d00;"></i>
+                                    <i class="fi fi-rr-list display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
                                         <div class="stat-text">Assembly</div>
                                         <div class="stat-digit"><?php if($Assembly['Total'] == 0){ echo "0";}else{ echo $Assembly['Total'];}?></div>
@@ -72,7 +76,7 @@
                         <div class="col-lg-12 col-sm-6">
                             <div class="card">
                                 <div class="stat-widget-one card-body">
-                                    <i class="fi fi-rr-layers display-5" style="color:#ff0d00;"></i>
+                                    <i class="fi fi-rr-layers display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
                                         <div class="stat-text">Inventory</div>
                                         <div class="stat-digit"><?php echo $innventory['total']?></div>
@@ -83,7 +87,7 @@
                         <div class="col-lg-12 col-sm-6">
                             <div class="card" onclick="window.location.href='alertproduct.php'; return false;">
                                 <div class="stat-widget-one card-body">
-                                <i class="fi fi-rr-engine-warning display-5" style="color:#ff0000;"></i>
+                                <i class="fi fi-rr-engine-warning display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
                                         <div class="stat-text">Inventory Alert</div>
                                         <div class="stat-digit"><?php echo $alertprd['alert']?></div>
@@ -92,10 +96,10 @@
                             </div>
                         </div>
                     </div>
-                    
-                    
+
+
                 </div>
-                
+
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card">
@@ -109,9 +113,10 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table student-data-table m-t-20">
+                                    <table id="notable" class="display" style="min-width: 100%">
                                         <thead>
                                             <tr>
+                                                <th></th>
                                                 <th>Transction Code</th>
                                                 <th>Inventory Name</th>
                                                 <th>Quantity</th>
@@ -124,6 +129,7 @@
                                         <tbody>
                                             <?php while($transaction = mysqli_fetch_array($tranv)){   ?>
                                                 <tr>
+                                                    <td></td>
                                                     <td><?php echo $transaction['Transaction_code'] ?></td>
                                                     <td><?php echo $transaction['inventoryName'] ?></td>
                                                     <td><?php echo $transaction['quantity'] ?></td>
@@ -131,38 +137,55 @@
                                                     <td><?php echo "₱ ".$transaction['amount_payment'] ?></td>
                                                     <td><?php echo $transaction['mop'] ?></td>
                                                     <td><?php echo $transaction['time']." - ".$transaction['date'] ?></td>
-                                                
+
                                                 </tr>
                                             <?php }?>
-                                            
-                                            
+
+
                                         </tbody>
                                     </table>
-                                    <a href="checktransaction.php" class="btn btn-primary">View all Trasactions</a>
+                                    <a href="checktransaction.php" class="btn btn-primary mt-3">View all Trasactions</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    
-                
+
+
+
             </div>
         </div>
 
-        
+
         <!--**********************************
             Content body end
         ***********************************-->
-        
+
     </div>
     <script src="../vendor/global/global.min.js"></script>
     <script src="../js/quixnav-init.js"></script>
     <script src="../js/custom.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.usa.js"></script>
+    <script src="../vendor/datatables/js/jquery-3.7.0.js"></script>
+    <script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="../vendor/datatables/js/dataTables.responsive.min.js"></script>
+    <script src="../js/plugins-init/datatables-api-init.js"></script>
+    <script src="../js/plugins-init/datatables.init.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.19/sweetalert2.min.js"></script>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 
     <script>
-        
+        var customCSS = document.createElement('style');
+        customCSS.innerHTML = '.morris-hover.morris-default-style { position: absolute; z-index: 0!important; }';
+        document.head.appendChild(customCSS);
+    </script>
+    <script>
+
         var dataCombined = <?php echo $jsonDataCombined; ?>;
         console.log(dataCombined);
 
@@ -180,7 +203,8 @@
             behaveLikeLine: true,
             resize: true,
             pointFillColors:['#ffffff'],
-            pointStrokeColors: ['#242423'], 
+            pointStrokeColors: ['#242423'],
+            xLabelAngle: 45,
         });
     </script>
 

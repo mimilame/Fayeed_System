@@ -10264,7 +10264,8 @@ color: white; }
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   transition: all .2s ease; }
   .quixnav .quixnav-scroll {
-    position: relative;
+    position: fixed;
+    width: inherit;
     height: 100%; }
   @media only screen and (min-width: 1200px) and (max-width: 1350px) {
     .quixnav {
@@ -16727,7 +16728,7 @@ table.dataTable tbody td {
   padding: 15px 18px; }
 
 table.dataTable tr.selected {
-  color: #593bdb; }
+  color: #9a2900; }
 
 table.dataTable tfoot th {
   color: #454545;

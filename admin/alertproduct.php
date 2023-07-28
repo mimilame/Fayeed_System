@@ -17,7 +17,7 @@ $alert_prod = mysqli_query($con,"SELECT branches.Branch_Name, inventory.product_
         </div>
         <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
         <?php include 'header.php'; include 'sidebar.php'?>
-        
+
      <!--**********************************
             Content body start
         ***********************************-->
@@ -31,7 +31,7 @@ $alert_prod = mysqli_query($con,"SELECT branches.Branch_Name, inventory.product_
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="example" class="display" style="min-width: 845px">
+                                    <table id="example" class="display" style="min-width: 100%">
                                         <thead>
                                             <tr>
                                                 <th>Branch Name</th>
@@ -48,29 +48,29 @@ $alert_prod = mysqli_query($con,"SELECT branches.Branch_Name, inventory.product_
                                                 <td><?php echo $inventorylist['product_code'] ?></td>
                                                 <td><?php echo $inventorylist['inventoryName'] ?></td>
                                                 <td><p class="bg-danger text-light text-center"><?php echo $inventorylist['inventoryQty'] ?></td>
-                                                
-                                                   
+
+
                                             </tr>
                                             <?php }?>
-                                            
-                                            
+
+
                                         </tbody>
-                                        
+
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
 
-        
+
         <!--**********************************
             Content body end
         ***********************************-->
-        
+
     </div>
     <script src="../vendor/global/global.min.js"></script>
     <script src="../js/quixnav-init.js"></script>

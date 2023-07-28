@@ -1,4 +1,8 @@
 <?php include 'head.php'?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+<link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="../vendor/datatables/css/responsive.dataTables.min.css" rel="stylesheet">
 <body>
     <div id="main-wrapper">
         <div class="nav-header">
@@ -15,7 +19,7 @@
             </div>
         </div>
         <?php include 'header.php'; include 'sidebar.php'?>
-        
+
      <!--**********************************
             Content body start
         ***********************************-->
@@ -28,59 +32,78 @@
                             <p class="mb-0"><h4><?php echo $formattedDate; ?></h4></p>
                         </div>
                     </div>
-                    
+
                 </div>
 
                 <div class="row">
-                 
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="card" onclick="window.location.href='assemblylist.php'; return false;">
-                            <div class="stat-widget-one card-body">
-                                <i class="fi fi-rr-list display-5" style="color:#ff0d00;"></i>
-                                <div class="stat-content d-inline-block">
-                                    <div class="stat-text">Assembly</div>
-                                    <div class="stat-digit"><?php if($Assembly['Total'] == 0){ echo "0";}else{ echo $Assembly['Total'];}?></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6">
+                    <div class="col-lg-8 col-sm-12">
                         <div class="card">
                             <div class="stat-widget-one card-body">
-                                <i class="fi fi-rr-layers display-5" style="color:#ff0d00;"></i>
-                                <div class="stat-content d-inline-block">
-                                    <div class="stat-text">Inventory</div>
-                                    <div class="stat-digit"><?php echo $innventory['total']?></div>
+                                <div class="d-inline-flex flex-wrap">
+                                    <i class="bx bxs-bar-chart-square display-5" style="color:#ff6a00;"></i>
+                                    <div class="stat-text pt-3 pl-2">Warehouse</div>
+                                </div>
+                                <div class="stat-content">
+                                    <!-- Add a placeholder for the Morris.js chart -->
+                                    <div id="morris-line-chart2"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="card" onclick="window.location.href='alertproduct.php'; return false;">
-                            <div class="stat-widget-one card-body">
-                            <i class="fi fi-rr-engine-warning display-5" style="color:#ff0000;"></i>
-                                <div class="stat-content d-inline-block">
-                                    <div class="stat-text">Inventory Alert</div>
-                                    <div class="stat-digit"><?php echo $alertprd['alert']?></div>
+                    <div class="col-lg-4 col-sm-12 d-inline-flex flex-wrap">
+                        <div class="col-lg-12 col-sm-6">
+                            <div class="card" onclick="window.location.href='assemblylist.php'; return false;">
+                                <div class="stat-widget-one card-body">
+                                    <i class="fi fi-rr-list display-5" style="color:#ff6a00;"></i>
+                                    <div class="stat-content d-inline-block">
+                                        <div class="stat-text">Assembly</div>
+                                        <div class="stat-digit"><?php if($Assembly['Total'] == 0){ echo "0";}else{ echo $Assembly['Total'];}?></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-sm-6">
+                            <div class="card">
+                                <div class="stat-widget-one card-body">
+                                    <i class="fi fi-rr-layers display-5" style="color:#ff6a00;"></i>
+                                    <div class="stat-content d-inline-block">
+                                        <div class="stat-text">Inventory</div>
+                                        <div class="stat-digit"><?php echo $innventory['total']?></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-sm-6">
+                            <div class="card" onclick="window.location.href='alertproduct.php'; return false;">
+                                <div class="stat-widget-one card-body">
+                                <i class="fi fi-rr-engine-warning display-5" style="color:#ff6a00;"></i>
+                                    <div class="stat-content d-inline-block">
+                                        <div class="stat-text">Inventory Alert</div>
+                                        <div class="stat-digit"><?php echo $alertprd['alert']?></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    
                 </div>
-                
+
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">Latest Inventory 5 Alert</h4>
+                                <h4 class="card-title">Latest Inventory</h4>
+                                <?php if ($count < 5): ?>
+                                    <p class="">Showing <strong><?php echo $count; ?></strong> Alert</p>
+                                <?php else: ?>
+                                    <p class="">Showing <strong>5</strong> of <strong><?php echo $count; ?></strong> Alert</p>
+                                <?php endif; ?>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table student-data-table m-t-20">
+                                    <table id="notable" class="display" style="min-width: 100%">
                                     <thead>
                                             <tr>
+                                                <th></th>
                                                 <th>Branch Name</th>
                                                 <th>Product Code</th>
                                                 <th>Inventory Name</th>
@@ -91,49 +114,80 @@
                                         <tbody>
                                             <?php while($inventorylist = mysqli_fetch_array($lllllls)){ ?>
                                                 <tr>
+                                                <td></td>
                                                 <td><?php echo $inventorylist['Branch_Name'] ?></td>
                                                 <td><?php echo $inventorylist['product_code'] ?></td>
                                                 <td><?php echo $inventorylist['inventoryName'] ?></td>
                                                 <td><p class="bg-danger text-light text-center"><?php echo $inventorylist['inventoryQty'] ?></td>
-                                                
-                                                   
+
+
                                             </tr>
                                             <?php }?>
-                                            
-                                            
+
+
                                         </tbody>
                                     </table>
-                                    <a href="alertproduct.php" class="btn btn-primary">View all Inventory Alerts</a>
+                                    <a href="alertproduct.php" class="btn btn-primary mt-3">View all Inventory Alerts</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    
-                
+
+
+
             </div>
         </div>
 
-        
+
         <!--**********************************
             Content body end
         ***********************************-->
-        
+
     </div>
     <script src="../vendor/global/global.min.js"></script>
     <script src="../js/quixnav-init.js"></script>
     <script src="../js/custom.min.js"></script>
-    <script src="../vendor/raphael/raphael.min.js"></script>
-    <script src="../vendor/morris/morris.min.js"></script>
-    <script src="../vendor/circle-progress/circle-progress.min.js"></script>
-    <script src="../vendor/chart.js/Chart.bundle.min.js"></script>
-    <script src="../vendor/gaugeJS/dist/gauge.min.js"></script>
-    <script src="../vendor/flot/jquery.flot.js"></script>
-    <script src="../vendor/flot/jquery.flot.resize.js"></script>
-    <script src="../vendor/owl-carousel/js/owl.carousel.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.usa.js"></script>
-    <script src="../vendor/jquery.counterup/jquery.counterup.min.js"></script>
-    <script src="../js/dashboard/dashboard-1.js"></script>
+    <script src="../vendor/datatables/js/jquery-3.7.0.js"></script>
+    <script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="../vendor/datatables/js/dataTables.responsive.min.js"></script>
+    <script src="../js/plugins-init/datatables-api-init.js"></script>
+    <script src="../js/plugins-init/datatables.init.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.19/sweetalert2.min.js"></script>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    <script>
+        var customCSS = document.createElement('style');
+        customCSS.innerHTML = '.morris-hover.morris-default-style { position: absolute; z-index: 0!important; }';
+        document.head.appendChild(customCSS);
+    </script>
+    <script>
+
+        var dataCombined = <?php echo $jsonDataCombined; ?>;
+        console.log(dataCombined);
+
+
+        Morris.Area({
+            element: 'morris-line-chart2',
+            data: dataCombined,
+            xkey: 'date_group',
+            ykeys: ['finished_assemblies', 'monthly_alerts', 'absences'],
+            labels: ['Finished Assemblies', 'Monthly Alerts', 'Absences'],
+            lineColors: ['#D97604', '#FF4C00', '#0E0E0E'],
+            continuousLine: false,
+            fillOpacity: 0.6,
+            hideHover: 'auto',
+            behaveLikeLine: true,
+            resize: true,
+            pointFillColors:['#ffffff'],
+            pointStrokeColors: ['#242423'],
+            xLabelAngle: 45,
+        });
+    </script>
 </body>
 </html>

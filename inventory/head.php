@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once "../controllerUserData.php";
 $email = $_SESSION['email'];
 $password = $_SESSION['password'];
@@ -20,7 +20,7 @@ if($email != false && $password != false){
         }
         if($roles == 1 ){
             header('Location: ../admin/home.php');
-           
+
         }
         if($roles == 2){
            $rlss = mysqli_query($con,"SELECT * FROM branch_staff WHERE usersID = $id");
@@ -119,7 +119,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                         }else{
                             $cover = $_POST['cover'];
                         }
-                        
+
                         $first = $_POST['firstname'];
                         $last = $_POST['lastname'];
                         $age = $_POST['ages'];
@@ -127,7 +127,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                         $username = $_POST['username'];
                         $contact = $_POST['controlnumber'];
                             move_uploaded_file($tempname, $folder);
-                            $update = mysqli_query($con,"UPDATE users SET profile='$lis_img0',cover_photo = '$cover', usersFirstName='$first', username='$username', usersLastName='$last', age='$age' , Address='$address', CellNumber='$contact' WHERE usersID =$id ");  
+                            $update = mysqli_query($con,"UPDATE users SET profile='$lis_img0',cover_photo = '$cover', usersFirstName='$first', username='$username', usersLastName='$last', age='$age' , Address='$address', CellNumber='$contact' WHERE usersID =$id ");
                             echo "<script>alert('Update Successfully');window.location.href='profile.php'</script>";
                 }
         // Profile.php ---------------------------------------------------------------------------------------------------
@@ -137,8 +137,8 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                             $s = mysqli_query($con,"SELECT * FROM users WHERE usersID = $profileid");
                             $ckprofile =mysqli_fetch_assoc($s);
                         }
-        
-        
+
+
         // Check-Profile.php ---------------------------------------------------------------------------------------------------
         // Branches.php ---------------------------------------------------------------------------------------------------
         if(isset($_GET['delete'])){
@@ -152,7 +152,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
         $branch = mysqli_fetch_assoc($brans);
         $branchIDD = $branch['branchID'];
        }
-        
+
         if(isset($_POST['createbranch'])){
             if(empty($_POST['branch_name'])){
                 $errors['branch_name'] = "Please Provide a Branch Name";
@@ -199,7 +199,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                     }
                 }
             }
-            
+
         }
         // Branches.php ---------------------------------------------------------------------------------------------------
 
@@ -240,11 +240,11 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                     Assign Password: <b style='color: orange;'>$password</b><br>
                     <hr>
                     To complete the email verification process, kindly enter the above OTP code on our website. If you did not request this verification or have any concerns, please contact our customer support team immediately.
-                    
+
                     At Fayeed Electronics, we prioritize the safety and privacy of our customers. By verifying your email address, we can enhance the security of your account and provide you with a seamless browsing experience.
-                    
+
                     Thank you for your cooperation.
-                    
+
                     Best regards";
                     if(assignemail($email, $subject, $message)){
                         $info = "We've sent a verification code to your email - $email";
@@ -266,7 +266,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
 
         if(isset($_POST['addroles'])){
 
-            
+
             if($_POST['userid'] =="#"){
                 $errors['userroles'] = "Please Select user appoint";
             }else{
@@ -282,7 +282,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                 $insert = mysqli_query($con,"INSERT INTO  branch_staff(branchID,usersID,roles,assigndby) VALUES('$editbranch','$userids','$roles','$id')");
             echo "<script>alert('Appoint Successfully');window.location.href = 'assign-branch.php?branch=$editbranch'</script>";
             }
-            
+
         }
 
 
@@ -316,7 +316,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
             echo "<script>alert('Deleted Inventory Successfully');window.location.href = 'inventorylist.php'</script>";
         }
         if(isset($_POST['addinventory'])){
-            
+
             if(isset($_POST['inventoryname'])){
                 $inventoryname = $_POST['inventoryname'];
             }else{
@@ -334,7 +334,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                         $code = strtoupper($_POST['code']);
                     }
                 }
-                
+
             }else{
                 $errors['code'] = "Please Insert a inventory code";
             }
@@ -371,9 +371,9 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                     }else{
                         echo "<script>alert('No Update');window.location.href='inventorylist.php'</script>";
                     }
-                    
+
                 }
-                
+
             }
         }
 
@@ -398,9 +398,9 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                 $update = mysqli_query($con,"UPDATE branch_staff SET roles = 1  WHERE staffID = $rolechange");
                 echo "<script>alert('Role Set to Branch Maniger');window.location.href='detail-branch.php?branch=$brnjID'</script>";
             }
-            
+
         }
-       
+
         if(isset($_GET['editassembly'])){
             $editassembly =  $_GET['editassembly'];
             $ed = mysqli_query($con,"SELECT inventory.inventoryName,assembly.inventoryId,assembly.assemblyName,assembly.assemblyID, assembly.assemblyQuatty from assembly join inventory on inventory.inventoryId = assembly.inventoryId WHERE assemblyID = $editassembly;");
@@ -408,7 +408,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
         }
 
         if(isset($_POST['assembly'])){
-            
+
             if($invenID == "#"){
                 $errors['quanty'] = "Please Select Inventory";
             }else{
@@ -440,7 +440,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                             echo "<script>alert('Assembly $Assemblyname Error');window.location.href='add-assembly.php'</script>";
                         }
                     }
-                    
+
                 }else{
                     $logdetail ="Update Assemble Details of Inventory Named :<b>$Assemblyname</b> for this Branch - Inventory Maniger";
                         $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
@@ -471,7 +471,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                 echo "<script>alert('Congratulations, $checkname set to Finished');window.location.href='assemblylist.php'</script>";
            }elseif ($checkstat == 'Finished') {
                 echo "<script>alert('Congratulations, $checkname set to Finished');window.location.href='add-assembly.php'</script>";
-               
+
            }
         }
 
@@ -523,10 +523,10 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
 
 
 
-      
+
         $mtime = $settings['latetimein_morning'];
         $ftime = $settings['latetimein_afternoon'];
-        
+
         $att = mysqli_query($con,"SELECT * FROM attendance WHERE branchID = $desigbranch && usersID =$id && dtrdate = '$currentDatetransaction'");
         if(mysqli_num_rows($att) > 0){
                 $select = mysqli_query($con,"SELECT * FROM attendance WHERE branchID = $desigbranch && usersID =$id && dtrdate = '$currentDatetransaction'");
@@ -534,7 +534,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                 $attendanceID = $selecy['attendanceID'];
                 $select2x = mysqli_query($con,"SELECT * FROM attendance WHERE attendanceID = $attendanceID");
                 $selec3 = mysqli_fetch_assoc($select2x);
-               
+
                 if($selec3['enrtypic'] == 'face.gif'){
                     $disabled = "disabled";
                 }else{
@@ -550,7 +550,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                         $update = mysqli_query($con,"UPDATE attendance SET morning_in = 'Absent', morning_out = 'Absent' WHERE attendanceID = $attendanceID");
                         echo "<script>window.location.href='attendance.php'</script>";
                     }else{
-    
+
                     }
                 }
         }else{
@@ -582,7 +582,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                 $update = mysqli_query($con,"UPDATE attendance SET morning_in = '$currentDateTimetrasaction' WHERE attendanceID = $attendanceID");
                 echo "<script>alert('Morninng Time in $currentDateTimetrasaction');window.location.href='attendance.php'</script>";
             }
-               
+
         }
 
         if(isset($_POST['morningout'])){
@@ -591,7 +591,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
         }
 
         if(isset($_POST['afternoonsignin'])){
-        
+
             $xdatetime = DateTime::createFromFormat('g:i a', $currentDateTimetrasaction);
             $formattedTime = $xdatetime->format('H:i');
             if($formattedTime > $ftime){
@@ -601,7 +601,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                 $update = mysqli_query($con,"UPDATE attendance SET afternoon_in = '$currentDateTimetrasaction' WHERE attendanceID = $attendanceID");
             echo "<script>alert('Afternoon Time in $currentDateTimetrasaction');window.location.href='attendance.php'</script>";
             }
-            
+
         }
         if(isset($_POST['afternoonout'])){
             $update = mysqli_query($con,"UPDATE attendance SET afternoon_out = '$currentDateTimetrasaction' WHERE attendanceID = $attendanceID");
@@ -617,11 +617,11 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
         $brc = mysqli_query($con,"SELECT * FROM branches WHERE branchID = $desigbranch");
         $branchde = mysqli_fetch_assoc($brc);
 
-        
+
         $imvto = mysqli_query($con," SELECT count(*) total FROM inventory WHERE branchID = $desigbranch");
         $innventory = mysqli_fetch_assoc($imvto);
 
-        $assm = mysqli_query($con,"SELECT SUM(assemblyQuatty) Total FROM assembly WHERE assemblyStatus = 'Assemble' AND branchID = $desigbranch");
+        $assm = mysqli_query($con,"SELECT SUM(assemblyQuatty) Total FROM assembly WHERE assemblyStatus = 'Standby' AND branchID = $desigbranch");
         $Assembly = mysqli_fetch_assoc($assm);
 
         $invc = mysqli_query($con,"SELECT SUM(amount_payment) total FROM checkout WHERE branchID = $desigbranch AND date LIKE '$mmmmnthh %'");
@@ -642,9 +642,86 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
 
         $pols = mysqli_query($con,"SELECT confirm from attendance where usersID = $id AND dtrdate ='$currentDatetransaction'");
         $pulse = mysqli_fetch_assoc($pols);
-        
-        
+
+
         $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, branches.Branch_Name ,Logs.Activity ,Logs.date,Logs.time FROM Logs join users on users.usersID = Logs.usersID join branches on branches.branchID = Logs.branchID WHERE Logs.usersID = $id ORDER BY Logs.LogsID DESC ");
+        $logg = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, branches.Branch_Name, Logs.Activity, Logs.date, Logs.time
+        FROM Logs
+        JOIN users ON users.usersID = Logs.usersID
+        JOIN branches ON branches.branchID = Logs.branchID
+        WHERE Logs.Activity LIKE '%inventory%'
+        ORDER BY Logs.LogsID DESC;
+         ");
+
+
+
+        //-------Line Graph for branch staff --------------------------------
+        $count = mysqli_num_rows($lllllls);
+
+        $sql = "SELECT
+        CONCAT(YEAR(added), '-', MONTH(added)) AS date_group,
+        SUM(finished_count) AS finished_count,
+        SUM(absences_count) AS absences_count,
+        SUM(monthly_alerts_count) AS monthly_alerts_count
+    FROM
+        (
+            SELECT
+                added,
+                COUNT(*) AS finished_count,
+                0 AS absences_count,
+                0 AS monthly_alerts_count
+            FROM assembly
+            WHERE assemblyStatus = 'Finished' AND branchID = $desigbranch
+            GROUP BY YEAR(added), MONTH(added)
+
+            UNION ALL
+
+            SELECT
+                CONCAT(YEAR(added_date), '-', MONTH(added_date)) AS date_group,
+                0 AS finished_count,
+                0 AS absences_count,
+                SUM(inventoryQty < $cprocontrol) AS monthly_alerts_count
+            FROM inventory
+            WHERE branchID = $desigbranch
+            GROUP BY YEAR(added_date), MONTH(added_date)
+
+            UNION ALL
+
+            SELECT
+                CONCAT(YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y')), '-', MONTH(STR_TO_DATE(dtrdate, '%M %e, %Y'))) AS date_group,
+                0 AS finished_count,
+                COUNT(*) AS absences_count,
+                0 AS monthly_alerts_count
+            FROM attendance
+            INNER JOIN branch_staff ON attendance.usersID = branch_staff.usersID
+            WHERE attendance.absent = 1 AND branch_staff.usersID = $id
+            GROUP BY YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y')), MONTH(STR_TO_DATE(dtrdate, '%M %e, %Y'))
+        ) AS combined_data
+    GROUP BY date_group
+    ORDER BY date_group";
+
+        // Execute the combined query
+        $result = mysqli_query($con, $sql);
+
+        $dataCombined = array();
+        while ($row = mysqli_fetch_assoc($result)) {
+            // Check if date_group is not null before adding to the array
+            if ($row['date_group'] !== null) {
+                $dataCombined[] = array(
+                    'date_group' => $row['date_group'],
+                    'finished_assemblies' => $row['finished_count'],
+                    'monthly_alerts' => $row['monthlyAlerts_count'],
+                    'absences' => $row['absences_count'],
+                );
+            }
+        }
+
+
+        // Encode the combined data into JSON format
+        $jsonDataCombined = json_encode($dataCombined);
+
+
+
         //</queries> ----------------------------------------------------------------------------------------------------------
 
 
@@ -658,14 +735,19 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title><?php echo $settings['System_Name']?></title>
-   
+
     <link rel="icon" type="image/png" sizes="16x16" href="../images/site/fayeed.png">
-    <link rel="stylesheet" href="../vendor/owl-carousel/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="../vendor/owl-carousel/css/owl.theme.default.min.css">
     <link href="../vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 </head>
 <div id="preloader">
         <div class="sk-three-bounce">

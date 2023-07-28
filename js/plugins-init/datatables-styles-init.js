@@ -6,7 +6,7 @@
     var table = $('#example').DataTable({
         createdRow: function ( row, data, index ) {
            $(row).addClass('selected')
-        } 
+        }
     });
 
 })(jQuery);

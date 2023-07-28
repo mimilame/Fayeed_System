@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once "../controllerUserData.php";
 $email = $_SESSION['email'];
 $password = $_SESSION['password'];
@@ -20,7 +20,7 @@ if($email != false && $password != false){
         }
         if($roles == 1 ){
             header('Location: ../admin/home.php');
-           
+
         }
         if($roles == 2){
            $rlss = mysqli_query($con,"SELECT * FROM branch_staff WHERE usersID = $id");
@@ -86,7 +86,7 @@ $sttafss = mysqli_fetch_assoc($sttaf);
 $imvto = mysqli_query($con," SELECT count(*) total FROM inventory WHERE branchID = $desigbranch");
 $innventory = mysqli_fetch_assoc($imvto);
 
-$assm = mysqli_query($con,"SELECT SUM(assemblyQuatty) Total FROM assembly WHERE assemblyStatus = 'Finished' AND branchID = $desigbranch");
+$assm = mysqli_query($con,"SELECT SUM(assemblyQuatty) Total FROM assembly WHERE assemblyStatus = 'Standby' AND branchID = $desigbranch");
 $Assembly = mysqli_fetch_assoc($assm);
 
 $invc = mysqli_query($con,"SELECT SUM(amount_payment) total FROM checkout WHERE branchID = $desigbranch AND date LIKE '$mmmmnthh %'");
@@ -98,6 +98,13 @@ $absent = mysqli_fetch_assoc($avbc);
 $afsent = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, branches.Branch_Name FROM attendance join users on users.usersID = attendance.usersID join branches on branches.branchID = attendance.branchID  WHERE attendance.absent =1 and dtrdate = '$currentDatetransaction';");
 
 $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, branches.Branch_Name ,Logs.Activity ,Logs.date,Logs.time FROM Logs join users on users.usersID = Logs.usersID join branches on branches.branchID = Logs.branchID WHERE Logs.branchID = $desigbranch ORDER BY Logs.LogsID DESC ");
+$logg = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, branches.Branch_Name, Logs.Activity, Logs.date, Logs.time
+FROM Logs
+JOIN users ON users.usersID = Logs.usersID
+JOIN branches ON branches.branchID = Logs.branchID
+WHERE (Logs.Activity LIKE '%transaction%' OR Logs.Activity LIKE '%create%' OR Logs.Activity LIKE '%finished%')
+ORDER BY Logs.LogsID DESC;
+");
 
 $cprocontrol = $settings['product_control'];
 $llllll = mysqli_query($con,"SELECT COUNT(*) alert FROM inventory WHERE inventoryQty < $cprocontrol AND branchID = $desigbranch;");
@@ -160,7 +167,7 @@ if(isset($_POST['signin'])){
                         }else{
                             $cover = $_POST['cover'];
                         }
-                        
+
                         $first = $_POST['firstname'];
                         $last = $_POST['lastname'];
                         $age = $_POST['ages'];
@@ -168,7 +175,7 @@ if(isset($_POST['signin'])){
                         $username = $_POST['username'];
                         $contact = $_POST['controlnumber'];
                             move_uploaded_file($tempname, $folder);
-                            $update = mysqli_query($con,"UPDATE users SET profile='$lis_img0',cover_photo = '$cover', usersFirstName='$first', username='$username', usersLastName='$last', age='$age' , Address='$address', CellNumber='$contact' WHERE usersID =$id ");  
+                            $update = mysqli_query($con,"UPDATE users SET profile='$lis_img0',cover_photo = '$cover', usersFirstName='$first', username='$username', usersLastName='$last', age='$age' , Address='$address', CellNumber='$contact' WHERE usersID =$id ");
                             echo "<script>alert('Update Successfully');window.location.href='profile.php'</script>";
                 }
         // Profile.php ---------------------------------------------------------------------------------------------------
@@ -178,8 +185,8 @@ if(isset($_POST['signin'])){
                             $s = mysqli_query($con,"SELECT * FROM users WHERE usersID = $profileid");
                             $ckprofile =mysqli_fetch_assoc($s);
                         }
-        
-        
+
+
         // Check-Profile.php ---------------------------------------------------------------------------------------------------
         // Branches.php ---------------------------------------------------------------------------------------------------
         if(isset($_GET['delete'])){
@@ -193,7 +200,7 @@ if(isset($_POST['signin'])){
         $branch = mysqli_fetch_assoc($brans);
         $branchIDD = $branch['branchID'];
        }
-        
+
         if(isset($_POST['createbranch'])){
             if(empty($_POST['branch_name'])){
                 $errors['branch_name'] = "Please Provide a Branch Name";
@@ -240,16 +247,16 @@ if(isset($_POST['signin'])){
                     }
                 }
             }
-            
+
         }
         // Branches.php ---------------------------------------------------------------------------------------------------
 
-       
+
 
 
         if(isset($_POST['addroles'])){
 
-            
+
             if($_POST['userid'] =="#"){
                 $errors['userroles'] = "Please Select user appoint";
             }else{
@@ -261,13 +268,13 @@ if(isset($_POST['signin'])){
                 $roles = $_POST['roles'];
             }
             if(count($errors) === 0){
-                
+
             $logdetail ="Add New Branch Staff with specific role of code $roles - Branch Maniger";
             $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
                 $insert = mysqli_query($con,"INSERT INTO  branch_staff(branchID,usersID,roles,assigndby) VALUES('$editbranch','$userids','$roles','$id')");
             echo "<script>alert('Appoint Successfully');window.location.href = 'assign-branch.php?branch=$editbranch'</script>";
             }
-            
+
         }
 
 
@@ -294,14 +301,14 @@ if(isset($_POST['signin'])){
         }
         if(isset($_GET['delnventory'])){
             $delin = $_GET['delnventory'];
-            
+
             $logdetail ="The One Item Has been Deleted  - Branch Maniger";
             $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
             $sh = mysqli_query($con,"DELETE FROM inventory WHERE inventoryId = $delin");
             echo "<script>alert('Deleted Inventory Successfully');window.location.href = 'inventorylist.php'</script>";
         }
         if(isset($_POST['addinventory'])){
-            
+
             if(isset($_POST['inventoryname'])){
                 $inventoryname = $_POST['inventoryname'];
             }else{
@@ -319,7 +326,7 @@ if(isset($_POST['signin'])){
                         $code = strtoupper($_POST['code']);
                     }
                 }
-                
+
             }else{
                 $errors['code'] = "Please Insert a inventory code";
             }
@@ -343,7 +350,7 @@ if(isset($_POST['signin'])){
 
             if(count($errors) === 0){
                 if($invenID == ""){
-                    
+
                     $logdetail ="Created New inventory Name :<b>$inventoryname</b> with Product code of <b>$code</b> and Price tag of <b>₱ $price</b>  - Branch Maniger";
                     $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
                     $insert = mysqli_query($con,"INSERT INTO inventory(usersID,branchID,inventoryName,inventoryDesc,inventoryQty,product_code,price) VALUES ('$id','$desigbranch','$inventoryname','$description','$quanty','$code','$price')");
@@ -357,9 +364,9 @@ if(isset($_POST['signin'])){
                     }else{
                         echo "<script>alert('No Update');window.location.href='inventorylist.php'</script>";
                     }
-                    
+
                 }
-                
+
             }
         }
 
@@ -385,7 +392,7 @@ if(isset($_POST['signin'])){
                 $update = mysqli_query($con,"UPDATE branch_staff SET roles = 2  WHERE staffID = $rolechange");
                 echo "<script>alert('Role Set to Inventory Maniger');window.location.href='detail-branch.php?branch=$brnjID'</script>";
             }
-            
+
         }
 
 
@@ -393,7 +400,7 @@ if(isset($_POST['signin'])){
             do {
                 $Transaction_code =  $transamont."".rand(111, 999) . "-" . rand(111, 999) . "-" . rand(111, 999);
                 $chkcn = mysqli_query($con, "SELECT Transaction_code FROM checkout WHERE Transaction_code = '$random_number'");
-            } while (mysqli_num_rows($chkcn) > 0); 
+            } while (mysqli_num_rows($chkcn) > 0);
 
            if($_POST['invenID'] != '#'){
                 $invenID = $_POST['invenID'];
@@ -420,7 +427,7 @@ if(isset($_POST['signin'])){
            }else{
                 $errors['quanty'] = "Please Provide Details For ";
            }
-           
+
            if($_POST['mop'] != '#'){
                 $mop = $_POST['mop'];
            }else{
@@ -454,20 +461,20 @@ if(isset($_POST['signin'])){
                 }else{
                     $errors['err'] = " Error Inventory Connection";
                 }
-                
-                                                        
+
+
            }
-           
-           
+
+
         }
-        
 
 
-        
-       
+
+
+
         $mtime = $settings['latetimein_morning'];
         $ftime = $settings['latetimein_afternoon'];
-        
+
         $att = mysqli_query($con,"SELECT * FROM attendance WHERE branchID = $desigbranch && usersID =$id && dtrdate = '$currentDatetransaction'");
         if(mysqli_num_rows($att) > 0){
                 $select = mysqli_query($con,"SELECT * FROM attendance WHERE branchID = $desigbranch && usersID =$id && dtrdate = '$currentDatetransaction'");
@@ -475,7 +482,7 @@ if(isset($_POST['signin'])){
                 $attendanceID = $selecy['attendanceID'];
                 $select2x = mysqli_query($con,"SELECT * FROM attendance WHERE attendanceID = $attendanceID");
                 $selec3 = mysqli_fetch_assoc($select2x);
-               
+
                 if($selec3['enrtypic'] == 'face.gif'){
                     $disabled = "disabled";
                 }else{
@@ -491,7 +498,7 @@ if(isset($_POST['signin'])){
                         $update = mysqli_query($con,"UPDATE attendance SET morning_in = 'Absent', morning_out = 'Absent' WHERE attendanceID = $attendanceID");
                         echo "<script>window.location.href='attendance.php'</script>";
                     }else{
-    
+
                     }
                 }
         }else{
@@ -523,7 +530,7 @@ if(isset($_POST['signin'])){
                 $update = mysqli_query($con,"UPDATE attendance SET morning_in = '$currentDateTimetrasaction' WHERE attendanceID = $attendanceID");
                 echo "<script>alert('Morninng Time in $currentDateTimetrasaction');window.location.href='attendance.php'</script>";
             }
-               
+
         }
 
         if(isset($_POST['morningout'])){
@@ -532,7 +539,7 @@ if(isset($_POST['signin'])){
         }
 
         if(isset($_POST['afternoonsignin'])){
-        
+
             $xdatetime = DateTime::createFromFormat('g:i a', $currentDateTimetrasaction);
             $formattedTime = $xdatetime->format('H:i');
             if($formattedTime > $ftime){
@@ -542,7 +549,7 @@ if(isset($_POST['signin'])){
                 $update = mysqli_query($con,"UPDATE attendance SET afternoon_in = '$currentDateTimetrasaction' WHERE attendanceID = $attendanceID");
             echo "<script>alert('Afternoon Time in $currentDateTimetrasaction');window.location.href='attendance.php'</script>";
             }
-            
+
         }
         if(isset($_POST['afternoonout'])){
             $update = mysqli_query($con,"UPDATE attendance SET afternoon_out = '$currentDateTimetrasaction' WHERE attendanceID = $attendanceID");
@@ -557,61 +564,64 @@ if(isset($_POST['signin'])){
 
 
         //-------Line Graph for branch manager------------------------
-// Combined query
-$sql = "SELECT 
-date_group,
-SUM(finished_count) AS finished_count,
-SUM(monthly_income) AS monthly_income,
-SUM(absences_count) AS absences_count
-FROM
-(
-SELECT 
-    DATE_FORMAT(added, '%Y-%m') AS date_group,
-    COUNT(*) AS finished_count,
-    0 AS monthly_income,
-    0 AS absences_count
-FROM assembly
-WHERE assemblyStatus = 'Finished' AND branchID = $desigbranch
-GROUP BY DATE_FORMAT(added, '%Y-%m')
-UNION ALL
-SELECT 
-    DATE_FORMAT(STR_TO_DATE(date, '%M %e, %Y'), '%Y-%m') AS date_group,
-    0 AS finished_count,
-    SUM(amount_payment) AS monthly_income,
-    0 AS absences_count
-FROM checkout
-WHERE branchID = $desigbranch
-GROUP BY DATE_FORMAT(STR_TO_DATE(date, '%M %e, %Y'), '%Y-%m')
-UNION ALL
-SELECT 
-    DATE_FORMAT(STR_TO_DATE(dtrdate, '%M %e, %Y'), '%Y-%m') AS date_group,
-    0 AS finished_count,
-    0 AS monthly_income,
-    COUNT(*) AS absences_count
-FROM attendance
-WHERE absent = 1 AND branchID = $desigbranch
-GROUP BY DATE_FORMAT(STR_TO_DATE(dtrdate, '%M %e, %Y'), '%Y-%m')
-) AS combined_data
-GROUP BY date_group
-ORDER BY date_group";
 
-// Execute the combined query
-$result = mysqli_query($con, $sql);
+        $sql = "SELECT
+            CONCAT(YEAR(added), '-', MONTH(added)) AS date_group,
+            SUM(finished_count) AS finished_count,
+            SUM(monthly_income) AS monthly_income,
+            SUM(absences_count) AS absences_count
+        FROM
+            (
+                SELECT
+                    added,
+                    COUNT(*) AS finished_count,
+                    0 AS monthly_income,
+                    0 AS absences_count
+                FROM assembly
+                WHERE assemblyStatus = 'Finished' AND branchID = $desigbranch
+                GROUP BY YEAR(added), MONTH(added)
 
-$dataCombined = array();
-while ($row = mysqli_fetch_assoc($result)) {
-    $dateGroup = date("M Y", strtotime($row['date_group']));
-    $dataCombined[] = array(
-        'date_group' => $dateGroup,
-        'finished_assemblies' => $row['finished_count'],
-        'monthly_income' => $row['monthly_income'],
-        'absences' => $row['absences_count'],
-    );
-}
+                UNION ALL
 
-// Encode the combined data into JSON format
-$jsonDataCombined = json_encode($dataCombined);
-        
+                SELECT
+                    STR_TO_DATE(date, '%M %e, %Y') AS added,
+                    0 AS finished_count,
+                    SUM(amount_payment) AS monthly_income,
+                    0 AS absences_count
+                FROM checkout
+                WHERE branchID = $desigbranch
+                GROUP BY YEAR(STR_TO_DATE(date, '%M %e, %Y')), MONTH(STR_TO_DATE(date, '%M %e, %Y'))
+
+                UNION ALL
+
+                SELECT
+                    STR_TO_DATE(dtrdate, '%M %e, %Y') AS added,
+                    COUNT(*) AS finished_count, -- Use 0 if you want the zero values to be included
+                    0 AS monthly_income,
+                    0 AS absences_count
+                FROM attendance
+                WHERE absent = 1 AND branchID = $desigbranch
+                GROUP BY YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y')), MONTH(STR_TO_DATE(dtrdate, '%M %e, %Y'))
+            ) AS combined_data
+        GROUP BY date_group
+        ORDER BY added";
+
+        // Execute the combined query
+        $result = mysqli_query($con, $sql);
+
+        $dataCombined = array();
+        while ($row = mysqli_fetch_assoc($result)) {
+            $dataCombined[] = array(
+                'date_group' => $row['date_group'],
+                'finished_assemblies' => $row['finished_count'],
+                'monthly_income' => $row['monthly_income'],
+                'absences' => $row['absences_count'],
+            );
+        }
+
+
+        // Encode the combined data into JSON format
+        $jsonDataCombined = json_encode($dataCombined);
         //</queries> ----------------------------------------------------------------------------------------------------------
 
 
@@ -625,21 +635,13 @@ $jsonDataCombined = json_encode($dataCombined);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title><?php echo $settings['System_Name']?></title>
-   
+
     <link rel="icon" type="image/png" sizes="16x16" href="../images/site/fayeed.png">
     <link href="../vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 </head>
 <div id="preloader">
         <div class="sk-three-bounce">

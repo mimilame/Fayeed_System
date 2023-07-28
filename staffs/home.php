@@ -1,4 +1,8 @@
 <?php include 'head.php';?>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+<link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="../vendor/datatables/css/responsive.dataTables.min.css" rel="stylesheet">
 <body>
     <div id="main-wrapper">
         <div class="nav-header">
@@ -97,9 +101,10 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table student-data-table m-t-20">
+                                    <table id="notable" class="display" style="min-width: 100%">
                                     <thead>
                                             <tr>
+                                                <th></th>
                                                 <th>Branch Name</th>
                                                 <th>Product Code</th>
                                                 <th>Inventory Name</th>
@@ -110,6 +115,7 @@
                                         <tbody>
                                             <?php while($inventorylist = mysqli_fetch_array($lllllls)){ ?>
                                                 <tr>
+                                                <td></td>
                                                 <td><?php echo $inventorylist['Branch_Name'] ?></td>
                                                 <td><?php echo $inventorylist['product_code'] ?></td>
                                                 <td><?php echo $inventorylist['inventoryName'] ?></td>
@@ -122,7 +128,7 @@
 
                                         </tbody>
                                     </table>
-                                    <a href="alertproduct.php" class="btn btn-primary">View all Inventory Alerts</a>
+                                    <a href="alertproduct.php" class="btn btn-primary mt-3">View all Inventory Alerts</a>
                                 </div>
                             </div>
                         </div>
@@ -145,29 +151,32 @@
     <script src="../js/custom.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.usa.js"></script>
+    <script src="../vendor/datatables/js/jquery-3.7.0.js"></script>
+    <script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="../vendor/datatables/js/dataTables.responsive.min.js"></script>
+    <script src="../js/plugins-init/datatables-api-init.js"></script>
+    <script src="../js/plugins-init/datatables.init.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.19/sweetalert2.min.js"></script>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+
+    <script>
+        var customCSS = document.createElement('style');
+        customCSS.innerHTML = '.morris-hover.morris-default-style { position: absolute; z-index: 0!important; }';
+        document.head.appendChild(customCSS);
+    </script>
     <script>
         var dataCombined = <?php echo $jsonDataCombined; ?>;
         console.log(dataCombined);
-        dataCombined.forEach(function(point) {
-            var monthNames = [
-                'January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'
-            ];
 
-            var monthNumber = parseInt(point.month); // Ensure the month number is an integer
-            point.month = monthNames[monthNumber - 1];
-        });
-
-        Morris.Line({
+        Morris.Area({
             element: 'morris-line-chart',
             data: dataCombined,
-            xLabelFormat: function (x) {
-                var year = x.getFullYear();
-                var month = x.getMonth() + 1; // Months are zero-based, so add 1.
-                return month + '/' + year;
-            },
-            xkey: 'month',
+            xkey: 'date_group',
             ykeys: ['finished_assemblies', 'absences'],
             labels: ['Finished Assemblies', 'Absences'],
             lineColors: ['#D97604', '#0E0E0E'],
@@ -177,7 +186,7 @@
             behaveLikeLine: true,
             resize: true,
             pointFillColors:['#ffffff'],
-            pointStrokeColors: ['#242423'], 
+            pointStrokeColors: ['#242423'],
         });
     </script>
 

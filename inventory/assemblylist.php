@@ -15,8 +15,9 @@
             </div>
         </div>
         <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+        <link href="../vendor/datatables/css/responsive.dataTables.min.css" rel="stylesheet">
         <?php include 'header.php'; include 'sidebar.php'?>
-        
+
      <!--**********************************
             Content body start
         ***********************************-->
@@ -33,7 +34,7 @@
                             <li class="breadcrumb-item"><a href="add-assembly.php" class="btn btn-secondary text-light">Add Assembly Item</a></li>
                         </ol>
                     </div>
-                   
+
                 </div>
                 <!-- row -->
 
@@ -46,9 +47,10 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="example" class="display" style="min-width: 845px">
+                                    <table id="example" class="display" style="min-width: 100%">
                                         <thead>
                                             <tr>
+                                                <th></th>
                                                 <th>Assembly Name</th>
                                                 <th>Status</th>
                                                 <th>Target Inventory</th>
@@ -61,6 +63,7 @@
                                         <tbody>
                                             <?php while($inventorylist = mysqli_fetch_array($assemlist)){ ?>
                                                 <tr>
+                                                <td></td>
                                                 <td><?php echo $inventorylist['assemblyName'] ?></td>
                                                 <td>
                                                 <?php $butch = mysqli_query($con,"SELECT count(assemblyID) idchej from assembly_inventory where assemblyID = '".$inventorylist['assemblyID']."'");
@@ -74,51 +77,48 @@
                                                 <td><?php echo $inventorylist['assemblyQuatty'] ?></td>
                                                 <td><?php echo $inventorylist['usersFirstName']." ".$inventorylist['usersLastName'] ?></td>
                                                 <td>
-                                                    <?php if($inventorylist['assemblyStatus']!="Assemble"){?> 
+                                                    <?php if($inventorylist['assemblyStatus']!="Assemble"){?>
                                                     <a href="add-assembly.php?editassembly=<?php echo $inventorylist['assemblyID'] ?>"><i class="fi fi-rr-pencil btn btn-primary"></i></a>
                                                 <a href="add-assembly.php?delassembly=<?php echo $inventorylist['assemblyID'] ?>"><i class="fi fi-rr-trash btn btn-danger"></i></a>
                                                 <?php }else{ ?> No Action Available<?php } ?>
-                                                
-                                                </td> 
-                                                   
+
+                                                </td>
+
                                             </tr>
                                             <?php }?>
-                                            
-                                            
+
+
                                         </tbody>
-                                        
+
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
 
-        
+
         <!--**********************************
             Content body end
         ***********************************-->
-        
+
     </div>
     <script src="../vendor/global/global.min.js"></script>
     <script src="../js/quixnav-init.js"></script>
     <script src="../js/custom.min.js"></script>
-    <script src="../vendor/raphael/raphael.min.js"></script>
-    <script src="../vendor/morris/morris.min.js"></script>
-    <script src="../vendor/circle-progress/circle-progress.min.js"></script>
-    <script src="../vendor/chart.js/Chart.bundle.min.js"></script>
     <script src="../vendor/gaugeJS/dist/gauge.min.js"></script>
     <script src="../vendor/flot/jquery.flot.js"></script>
     <script src="../vendor/flot/jquery.flot.resize.js"></script>
-    <script src="../vendor/owl-carousel/js/owl.carousel.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.usa.js"></script>
-    <script src="../vendor/jquery.counterup/jquery.counterup.min.js"></script>
-    <script src="../js/dashboard/dashboard-1.js"></script>
+    <script src="../vendor/datatables/js/jquery-3.7.0.js"></script>
     <script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="../vendor/datatables/js/dataTables.responsive.min.js"></script>
+    <script src="../js/plugins-init/datatables-api-init.js"></script>
     <script src="../js/plugins-init/datatables.init.js"></script>
+
 </body>
 </html>

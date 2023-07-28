@@ -14,16 +14,18 @@
                 </div>
             </div>
         </div>
+
         <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+        <link href="../vendor/datatables/css/responsive.dataTables.min.css" rel="stylesheet">
         <?php include 'header.php'; include 'sidebar.php'?>
-        
+
      <!--**********************************
             Content body start
         ***********************************-->
         <div class="content-body">
             <div class="container-fluid">
                 <div class="row page-titles mx-0">
-                   
+
                 </div>
 
 
@@ -35,9 +37,10 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="example" class="display" style="min-width: 845px">
+                                    <table id="example" class="display" style="min-width: 100%">
                                         <thead>
                                             <tr>
+                                                <th></th>
                                                 <th>Branch Name</th>
                                                 <th>Address</th>
                                                 <th>City</th>
@@ -50,6 +53,7 @@
                                         <tbody>
                                             <?php while($branch = mysqli_fetch_array($brc)){ ?>
                                                 <tr>
+                                                <td></td>
                                                 <td><?php echo $branch['Branch_Name'] ?></td>
                                                 <td><?php echo $branch['Branch_Address'] ?></td>
                                                 <td><?php echo $branch['city'] ?></td>
@@ -62,51 +66,48 @@
                                                 <a class="btn btn-danger" href="check-profile.php?delete=<?php echo $branch['branchID']?>"><i class="fi fi-rr-trash-list"></i></a></td>
                                             </tr>
                                             <?php }?>
-                                            
-                                            
+
+
                                         </tbody>
-                                        
+
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
 
-        
+
         <!--**********************************
             Content body end
         ***********************************-->
-        
+
     </div>
     <script>
-        $('.js-data-example-ajax').select2({
-  ajax: {
-    url: 'https://api.github.com/search/repositories',
-    dataType: 'json'
-    // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
-  }
-});
+            $('.js-data-example-ajax').select2({
+    ajax: {
+        url: 'https://api.github.com/search/repositories',
+        dataType: 'json'
+        // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
+    }
+    });
     </script>
     <script src="../vendor/global/global.min.js"></script>
     <script src="../js/quixnav-init.js"></script>
     <script src="../js/custom.min.js"></script>
-    <script src="../vendor/raphael/raphael.min.js"></script>
-    <script src="../vendor/morris/morris.min.js"></script>
-    <script src="../vendor/circle-progress/circle-progress.min.js"></script>
-    <script src="../vendor/chart.js/Chart.bundle.min.js"></script>
     <script src="../vendor/gaugeJS/dist/gauge.min.js"></script>
     <script src="../vendor/flot/jquery.flot.js"></script>
     <script src="../vendor/flot/jquery.flot.resize.js"></script>
-    <script src="../vendor/owl-carousel/js/owl.carousel.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.min.js"></script>
     <script src="../vendor/jqvmap/js/jquery.vmap.usa.js"></script>
-    <script src="../vendor/jquery.counterup/jquery.counterup.min.js"></script>
-    <script src="../js/dashboard/dashboard-1.js"></script>
+    <script src="../vendor/datatables/js/jquery-3.7.0.js"></script>
     <script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="../vendor/datatables/js/dataTables.responsive.min.js"></script>
+    <script src="../js/plugins-init/datatables-api-init.js"></script>
     <script src="../js/plugins-init/datatables.init.js"></script>
+
 </body>
 </html>

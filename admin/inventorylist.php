@@ -14,7 +14,6 @@
                 </div>
             </div>
         </div>
-        <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
         <?php include 'header.php'; include 'sidebar.php'?>
 
      <!--**********************************
@@ -48,9 +47,11 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="example" class="display" style="min-width: 845px">
+                                    <table id="example" class="display" style="min-width: 100%">
                                         <thead>
-                                            <tr><th>Inventory Code</th>
+                                            <tr>
+                                                <th></th>
+                                                <th>Inventory Code</th>
                                                 <th>Inventory Name</th>
                                                 <th>Quantity</th>
                                                 <th>Price</th>
@@ -63,10 +64,15 @@
                                         <tbody>
                                             <?php while($inventorylist = mysqli_fetch_array($inlist)){ ?>
                                                 <tr>
+                                                <td></td>
                                                 <td><?php echo $inventorylist['product_code'] ?></td>
                                                 <td><?php echo $inventorylist['inventoryName'] ?></td>
-                                                <td> <p class="<?php if($settingss['product_control'] > $inventorylist['inventoryQty']){ echo "bg-danger text-light text-center";}?>"><?php echo $inventorylist['inventoryQty']?></p></td>
-                                                <td><?php echo $inventorylist['price'] ?></td>
+                                                <td>
+                                                    <p class="<?php if($settingss['product_control'] > $inventorylist['inventoryQty']){ echo "bg-danger text-light text-center";}?>">
+                                                    <?php echo $inventorylist['inventoryQty']?>
+                                                    </p>
+                                                </td>
+                                                <td>&#8369; <?php echo $inventorylist['price'] ?></td>
                                                 <td><?php echo $inventorylist['Branch_Name'] ?></td>
                                                 <td><?php echo $inventorylist['usersFirstName']." ".$inventorylist['usersLastName'] ?></td>
                                                 <td><a href="add-inventory.php?editinventory=<?php echo $inventorylist['inventoryId'] ?>"><i class="fi fi-rr-pencil btn btn-primary"></i></a>
@@ -110,7 +116,10 @@
     <script src="../vendor/jqvmap/js/jquery.vmap.usa.js"></script>
     <script src="../vendor/jquery.counterup/jquery.counterup.min.js"></script>
     <script src="../js/dashboard/dashboard-1.js"></script>
+    <script src="../vendor/datatables/js/jquery-3.7.0.js"></script>
     <script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="../vendor/datatables/js/dataTables.responsive.min.js"></script>
+    <script src="../js/plugins-init/datatables-api-init.js"></script>
     <script src="../js/plugins-init/datatables.init.js"></script>
 </body>
 </html>

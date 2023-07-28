@@ -5,7 +5,7 @@
                         <div class="header-left">
                         <div class="search_bar dropdown mt-4">
                                     <h4><?php echo $title?></h4>
-                        
+
                             </div>
                         </div>
 
@@ -15,7 +15,7 @@
                                     <i class="fi fi-rr-badge-check"></i>
                                     <?php if($pulse['confirm'] == 1){ ?> <div class="pulse-css"></div> <?php }?>
                                 </a>
-                                
+
                             </li>
                             <li class="nav-item dropdown header-profile">
                                 <a class="nav-link" href="#" role="button" data-toggle="dropdown">
@@ -42,8 +42,3 @@
             </div>
         </div>
 
-        <script>        
-            var customCSS = document.createElement('style');
-            customCSS.innerHTML = '.morris-hover.morris-default-style { position: absolute; z-index: 0!important; }';
-            document.head.appendChild(customCSS);
-        </script>
