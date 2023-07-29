@@ -88,6 +88,7 @@ $sttaf = mysqli_query($con,"SELECT COUNT(usersID) staffs FROM branch_staff");
 $sttafss = mysqli_fetch_assoc($sttaf);
 
 $assm = mysqli_query($con,"SELECT SUM(assemblyQuatty) Assemble_Total FROM assembly WHERE assemblyStatus = 'Standby'");
+$assm = mysqli_query($con,"SELECT SUM(assemblyQuatty) Assemble_Total FROM assembly WHERE assemblyStatus = 'Standby'");
 $Assembly = mysqli_fetch_assoc($assm);
 
 $invc = mysqli_query($con,"SELECT SUM(amount_payment) Total FROM checkout WHERE date like '$mmmmnthh %'  AND year = '$transayear'");
@@ -541,21 +542,19 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
     GROUP BY date_group
     ORDER BY date_group";
 
-// Execute the combined query
-$resultCombined = mysqli_query($con, $sqlCombined);
+            // Execute the combined query
+            $resultCombined = mysqli_query($con, $sqlCombined);
 
-// Fetch the data
-$dataCombined = array();
-while ($rowCombined = mysqli_fetch_assoc($resultCombined)) {
-$dataCombined[] = array(
-'date_group' => $rowCombined['date_group'],
-'finished_assemblies' => $rowCombined['finished_assemblies'],
-'yearly_income' => $rowCombined['yearly_income'],
-'absences' => $rowCombined['absences'],
-);
-}
-
-
+        // Fetch the data
+        $dataCombined = array();
+        while ($rowCombined = mysqli_fetch_assoc($resultCombined)) {
+            $dataCombined[] = array(
+            'date_group' => $rowCombined['date_group'],
+            'finished_assemblies' => $rowCombined['finished_assemblies'],
+            'yearly_income' => $rowCombined['yearly_income'],
+            'absences' => $rowCombined['absences'],
+            );
+        }
 
         // Encode the combined data into JSON format
         $jsonDataCombined = json_encode($dataCombined);

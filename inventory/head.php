@@ -1,4 +1,5 @@
 <?php
+<?php
 require_once "../controllerUserData.php";
 $email = $_SESSION['email'];
 $password = $_SESSION['password'];
@@ -20,6 +21,7 @@ if($email != false && $password != false){
         }
         if($roles == 1 ){
             header('Location: ../admin/home.php');
+
 
         }
         if($roles == 2){
@@ -128,6 +130,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                         $contact = $_POST['controlnumber'];
                             move_uploaded_file($tempname, $folder);
                             $update = mysqli_query($con,"UPDATE users SET profile='$lis_img0',cover_photo = '$cover', usersFirstName='$first', username='$username', usersLastName='$last', age='$age' , Address='$address', CellNumber='$contact' WHERE usersID =$id ");
+                            $update = mysqli_query($con,"UPDATE users SET profile='$lis_img0',cover_photo = '$cover', usersFirstName='$first', username='$username', usersLastName='$last', age='$age' , Address='$address', CellNumber='$contact' WHERE usersID =$id ");
                             echo "<script>alert('Update Successfully');window.location.href='profile.php'</script>";
                 }
         // Profile.php ---------------------------------------------------------------------------------------------------
@@ -137,6 +140,8 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                             $s = mysqli_query($con,"SELECT * FROM users WHERE usersID = $profileid");
                             $ckprofile =mysqli_fetch_assoc($s);
                         }
+
+
 
 
         // Check-Profile.php ---------------------------------------------------------------------------------------------------
@@ -152,6 +157,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
         $branch = mysqli_fetch_assoc($brans);
         $branchIDD = $branch['branchID'];
        }
+
 
         if(isset($_POST['createbranch'])){
             if(empty($_POST['branch_name'])){
@@ -200,6 +206,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                 }
             }
 
+
         }
         // Branches.php ---------------------------------------------------------------------------------------------------
 
@@ -243,7 +250,9 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
 
                     At Fayeed Electronics, we prioritize the safety and privacy of our customers. By verifying your email address, we can enhance the security of your account and provide you with a seamless browsing experience.
 
+
                     Thank you for your cooperation.
+
 
                     Best regards";
                     if(assignemail($email, $subject, $message)){
@@ -265,6 +274,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
 
 
         if(isset($_POST['addroles'])){
+
 
 
             if($_POST['userid'] =="#"){
@@ -622,6 +632,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
         $innventory = mysqli_fetch_assoc($imvto);
 
         $assm = mysqli_query($con,"SELECT SUM(assemblyQuatty) Total FROM assembly WHERE assemblyStatus = 'Standby' AND branchID = $desigbranch");
+        $assm = mysqli_query($con,"SELECT SUM(assemblyQuatty) Total FROM assembly WHERE assemblyStatus = 'Standby' AND branchID = $desigbranch");
         $Assembly = mysqli_fetch_assoc($assm);
 
         $invc = mysqli_query($con,"SELECT SUM(amount_payment) total FROM checkout WHERE branchID = $desigbranch AND date LIKE '$mmmmnthh %'");
@@ -741,6 +752,13 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
     <link href="../css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
