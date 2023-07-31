@@ -1,9 +1,73 @@
 <?php include 'head.php';
-if(isset($_GET['deletexx'])){
-    $del = $_GET['deletexx'];
-    $dell = mysqli_query($con,"DELETE from users WHERE usersID = $del");
-    echo "<script>alert('Deleted Successfully');window.location.href='noroles.php'</script>";
-}?>
+    if(isset($_GET['deletexx'])){
+        $del = $_GET['deletexx'];
+        $dell = mysqli_query($con,"DELETE from users WHERE usersID = $del");
+        echo $_SESSION['delete_user'] = true;
+        header("Location: noroles.php?delete_user=1");
+    }
+
+    if (isset($_GET['delete_user']) && $_GET['delete_user'] == '1' && isset($_SESSION['delete_user'])) {
+        echo <<<EOL
+            <script>
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: 'Deleted Successfully!',
+                    showConfirmButton: false,
+                    position: 'top-end',
+                    timerProgressBar: true,
+                    timer: 5000
+                }).then(() => {
+                    window.location.href = 'noroles.php';
+                });
+            </script>
+        EOL;
+        unset($_SESSION['delete_user']);
+    } if (isset($_GET['add_user']) && $_GET['add_user'] == '2' && isset($_SESSION['add_user'])) {
+        echo <<<EOL
+            <script>
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: 'Deleted Successfully!',
+                    showConfirmButton: false,
+                    position: 'top-end',
+                    timerProgressBar: true,
+                    timer: 5000
+                }).then(() => {
+                    window.location.href = 'noroles.php';
+                });
+            </script>
+        EOL;
+        unset($_SESSION['add_user']);
+    }
+    if ($deletionSuccessful) {
+        $_SESSION['disrole'] = true;
+
+        echo <<<EOL
+            <script>
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: 'User successfully Disroled!',
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    position: 'top-end',
+                    timer: 5000
+                }).then(() => {
+                    // Redirect back to the appropriate page based on the 'page' parameter
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const page = urlParams.get('page');
+                    window.location.href = page;
+                });
+            </script>
+        EOL;
+        unset($_SESSION['disrole']);
+    }
+
+
+?>
+
 <body>
     <div id="main-wrapper">
         <div class="nav-header">

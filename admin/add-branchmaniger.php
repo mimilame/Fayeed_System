@@ -15,15 +15,15 @@
             </div>
         </div>
         <?php include 'header.php'; include 'sidebar.php'?>
-        
+
         <div class="content-body">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-xl-12 col-xxl-12">
-                        
+
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title"><?php if(isset($branch['Branch_Name'])){ echo "Update Branch <b>".$branch['Branch_Name']."'s</b> Details";}else{echo "Add Staffs";} ?></h4> <a href="branches.php" class="btn btn-primary">Back</a>
+                                <h4 class="card-title"><?php if(isset($branch['Branch_Name'])){ echo "Update Branch <b>".$branch['Branch_Name']."'s</b> Details";}else{echo "Add Staffs";} ?></h4> <a href="noroles.php" class="btn btn-primary">Back</a>
                             </div>
                             <div class="card-body"><?php
                     if(count($errors) == 1){
@@ -50,7 +50,7 @@
                         <?php
                     }
                     ?>
-                                <div class="basic-form"> 
+                                <div class="basic-form">
                                 <form action="" method="post" enctype="multipart/form-data">
 
                                         <div class="form-row">
@@ -61,9 +61,9 @@
                                             <div class="form-group col-md-6">
                                                 <label>Email</label>
                                                 <input type="email" name="email" class="form-control" value="<?php echo $branch['Branch_Address']?>" required>
-                                               
+
                                             </div>
-                                           
+
                                             <div class="form-group col-md-6">
                                                 <label>Password</label>
                                                 <input type="password" name="password" class="form-control" value="<?php echo $branch['branch_email']?>" required>
@@ -78,14 +78,14 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
         </div>
-        
+
     </div>
-    
+
 
     <script src="../vendor/global/global.min.js"></script>
     <script src="../js/quixnav-init.js"></script>

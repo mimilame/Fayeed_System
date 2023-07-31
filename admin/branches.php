@@ -1,5 +1,59 @@
 <?php include 'head.php'?>
 <body>
+<?php
+    if (isset($_GET['delete_branc']) && $_GET['delete_branc'] == '1' && isset($_SESSION['delete_branc'])) {
+        echo <<<EOL
+            <script>
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: 'Successfully Deleted!',
+                    showConfirmButton: false,
+                    position: 'top-end',
+                    timerProgressBar: true,
+                    timer: 5000
+                }).then(() => {
+                    window.location.href = 'branches.php';
+                });
+            </script>
+        EOL;
+        unset($_SESSION['delete_branc']);
+    } if (isset($_GET['addbranch']) && $_GET['addbranch'] == '2' && isset($_SESSION['addbranch'])) {
+        echo <<<EOL
+            <script>
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: 'Branch Successfully Created',
+                    showConfirmButton: false,
+                    position: 'top-end',
+                    timerProgressBar: true,
+                    timer: 5000
+                }).then(() => {
+                    window.location.href = 'branches.php';
+                });
+            </script>
+        EOL;
+        unset($_SESSION['addbranch']);
+    } if (isset($_GET['updatedbranch']) && $_GET['updatedbranch'] == '1' && isset($_SESSION['updatedbranch'])) {
+        echo <<<EOL
+            <script>
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: 'Branch Successfully Updated',
+                    showConfirmButton: false,
+                    position: 'top-end',
+                    timerProgressBar: true,
+                    timer: 5000
+                }).then(() => {
+                    window.location.href = 'branches.php';
+                });
+            </script>
+        EOL;
+        unset($_SESSION['updatedbranch']);
+    }
+?>
     <div id="main-wrapper">
         <div class="nav-header">
             <a href="index.html" class="brand-logo">

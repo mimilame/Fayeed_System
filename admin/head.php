@@ -49,7 +49,8 @@ $pr = mysqli_query($con,"SELECT * FROM users WHERE usersID = $id");
 $profile = mysqli_fetch_assoc($pr);
 if($do != 1){
     if(empty($profile['usersFirstName']) || empty($profile['usersLastName']) || empty($profile['age']) || empty($profile['Address']) || empty($profile['username']) || empty($profile['CellNumber'])){
-        echo "<script>alert('Please update your account credentials');window.location.href='profile.php'</script>";
+        echo $_SESSION['loggedin_success'] = true;
+        header("Location: profile.php?log_success=1");
         }
 }
 date_default_timezone_set('Asia/Manila');
@@ -87,6 +88,7 @@ $present = mysqli_fetch_assoc($tres);
 $sttaf = mysqli_query($con,"SELECT COUNT(usersID) staffs FROM branch_staff");
 $sttafss = mysqli_fetch_assoc($sttaf);
 
+$assm = mysqli_query($con,"SELECT SUM(assemblyQuatty) Assemble_Total FROM assembly WHERE assemblyStatus = 'Standby'");
 $assm = mysqli_query($con,"SELECT SUM(assemblyQuatty) Assemble_Total FROM assembly WHERE assemblyStatus = 'Standby'");
 $Assembly = mysqli_fetch_assoc($assm);
 
@@ -174,7 +176,8 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
                         $contact = $_POST['controlnumber'];
                             move_uploaded_file($tempname, $folder);
                             $update = mysqli_query($con,"UPDATE users SET profile='$lis_img0',cover_photo = '$cover', usersFirstName='$first', username='$username', usersLastName='$last', age='$age' , Address='$address', CellNumber='$contact' WHERE usersID =$id ");
-                            echo "<script>alert('Update Successfully');window.location.href='profile.php'</script>";
+                            echo $_SESSION['update_success'] = true;
+                            header("Location: profile.php?update_success=1");
                 }
         // Profile.php ---------------------------------------------------------------------------------------------------
         // Check-Profile.php ---------------------------------------------------------------------------------------------------
@@ -190,7 +193,8 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
         if(isset($_GET['delete'])){
             $delete = $_GET['delete'];
             $brans = mysqli_query($con,"DELETE FROM branches WHERE branchID = $delete");
-            echo "<script>alert('Successfully Deleted');window.location.href='branches.php'</script>";
+            echo $_SESSION['delete_branc'] = true;
+            header("Location: branches.php?delete_branc=1");
            }
         if(isset($_GET['branch'])){
         $editbranch = $_GET['branch'];
@@ -230,18 +234,36 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
                 if(count($errors) === 0){
                     $insert = mysqli_query($con,"INSERT INTO branches (usersID, Branch_Name, Branch_Address, city, Branch_Contact_number, branch_email, DateCreated) VALUES($id,'$branch_name','$branch_address','$branch_city','$branch_number','$branch_email','$currentDate')");
                     if($insert){
-                        echo "<script>alert('Branch $branch_name Successfully Created');window.location.href='branches.php'</script>";
+                        echo $_SESSION['addbranch'] = true;
+                        header("Location: branches.php?addbranch=2");
                     }else {
-                        $errors['cant'] = "Cant Save to Database $branch_name";
+                        echo <<<EOL
+                            <script>
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Cant Save to Database $branch_name',
+                                    text: '{$errors['cant']}',
+                                });
+                            </script>
+                        EOL;
                     }
                 }
             }else{
                 if(count($errors) === 0){
                     $insert = mysqli_query($con,"UPDATE branches SET usersID='$id', Branch_Name = '$branch_name', Branch_Address = '$branch_address', city = '$branch_city', Branch_Contact_number = '$branch_number', branch_email  = '$branch_email' WHERE branchID = $editbranch");
                     if($insert){
-                        echo "<script>alert('Branch $branch_name Successfully Updated');window.location.href='branches.php'</script>";
+                        echo $_SESSION['updatedbranch'] = true;
+                        header("Location: branches.php?updatedbranch=1");
                     }else {
-                        $errors['cant'] = "Cant Save to Database $branch_name";
+                        echo <<<EOL
+                            <script>
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Cant Save to Database $branch_name',
+                                    text: '{$errors['cant']}',
+                                });
+                            </script>
+                        EOL;
                     }
                 }
             }
@@ -298,7 +320,8 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
                         $_SESSION['info'] = $info;
                         $_SESSION['email'] = $email;
                         $_SESSION['password'] = $password;
-                        header('location: noroles.php');
+                        echo $_SESSION['add_user'] = true;
+                        header("Location: noroles.php?add_user=2");
                         exit();
                     }else{
                         $errors['otp-error'] = "Failed while sending code!";
@@ -327,7 +350,8 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
             if(count($errors) === 0){
 
                 $insert = mysqli_query($con,"INSERT INTO  branch_staff(branchID,usersID,roles,assigndby) VALUES('$editbranch','$userids','$roles','$id')");
-            echo "<script>alert('Appoint Successfully');window.location.href = 'assign-branch.php?branch=$editbranch'</script>";
+                echo $_SESSION['appointuser'] = true;
+                header("Location: detail-branch.php?branch=" . urlencode($branch['branchID']) . "&appointuser=1");
             }
 
         }
@@ -339,7 +363,8 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
             $number = $_POST['number'];
             $update = mysqli_query($con, "UPDATE Settings SET System_Name='$name', System_Email='$email', System_number='$number' WHERE SettingsId = 1");
             if ($update) {
-               echo "<script>alert('System Update Successfully');window.location.href = 'settings.php'</script>";
+               echo $_SESSION['sys_info'] = true;
+               header("Location: settings.php?sys_info=1");
             } else {
                echo "<script>alert('Error Database');window.location.href = 'settings.php'</script>";
             }
@@ -352,12 +377,14 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
             $port = $_POST['port'];
             $System_link = $_POST['System_link'];
             $update = mysqli_query($con,"UPDATE Settings SET Smtp_email='$smtp',Smatp_password='$pass', Smtp_Provider='$prov',Smtp_port='$port', System_link = '$System_link' WHERE SettingsId = 1");
-            echo "<script>alert('Settings Updated');window.location.href = 'settings.php'</script>";
+            echo $_SESSION['sys_email'] = true;
+            header("Location: settings.php?sys_email=1");
         }
         if(isset($_POST['set3'])){
             $limit = $_POST['limit'];
             $update = mysqli_query($con,"UPDATE Settings SET product_control='$limit' WHERE SettingsId = 1");
-            echo "<script>alert('Settings Updated');window.location.href = 'settings.php'</script>";
+            echo $_SESSION['sys_ctrl'] = true;
+            header("Location: settings.php?sys_ctrl=1");
         }
 
         if(isset($_POST['set4'])){
@@ -365,6 +392,8 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
             $afternoon = $_POST['afternoon'];
             $update = mysqli_query($con,"UPDATE Settings SET latetimein_morning='$morning', latetimein_afternoon='$afternoon' WHERE SettingsId = 1");
             echo "<script>alert('Settings Updated');window.location.href = 'settings.php'</script>";
+            echo $_SESSION['sys_att'] = true;
+            header("Location: settings.php?sys_att=1");
         }
 
         if(isset($_GET['editinventory'])){
@@ -375,7 +404,8 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
         if(isset($_GET['delnventory'])){
             $delin = $_GET['delnventory'];
             $sh = mysqli_query($con,"DELETE FROM inventory WHERE inventoryId = $delin");
-            echo "<script>alert('Deleted Inventory Successfully');window.location.href = 'inventorylist.php'</script>";
+            echo $_SESSION['InventoryDel'] = true;
+            header("Location: inventorylist.php?InventoryDel=1");
         }
         if(isset($_POST['addinventory'])){
 
@@ -433,11 +463,13 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
             if(count($errors) === 0){
                 if($invenID == ""){
                     $insert = mysqli_query($con,"INSERT INTO inventory(usersID,branchID,inventoryName,inventoryDesc,inventoryQty, product_code,price) VALUES ('$id','$branchID','$inventoryname','$description','$quanty','$code','$prize')");
-                    echo "<script>alert('Done Save');window.location.href='add-inventory.php'</script>";
+                    echo $_SESSION['InventoryAdd'] = true;
+                    header("Location: inventorylist.php?InventoryAdd=1");
                 }else{
                     $insert = mysqli_query($con,"UPDATE inventory SET inventoryName = '$inventoryname', inventoryDesc = '$description', inventoryQty = '$quanty', product_code='$code', price = '$prize' WHERE inventoryId = $invenID");
                     if($insert){
-                        echo "<script>alert('Update Successfully');window.location.href='inventorylist.php'</script>";
+                        echo $_SESSION['InventoryUpdate'] = true;
+                        header("Location: inventorylist.php?InventoryUpdate=1");
                     }else{
                         echo "<script>alert('No Update');window.location.href='inventorylist.php'</script>";
                     }
@@ -447,12 +479,6 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
             }
         }
 
-        if(isset($_GET['disrole'])){
-            $disroleId = $_GET['disrole'];
-            $derole = mysqli_query($con,"DELETE FROM branch_staff WHERE staffID = $disroleId ;");
-            echo "<script>alert('The User Disrole Succesfully');window.location.href='noroles.php'</script>";
-        }
-
         if(isset($_GET['changerole'])){
             $rolechange = $_GET['changerole'];
             $chang = mysqli_query($con,"SELECT * FROM branch_staff WHERE staffID = $rolechange");
@@ -460,14 +486,29 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
             $brnjID = $change['branchID'];
             if($change['roles'] == 1){
                 $update = mysqli_query($con,"UPDATE branch_staff SET roles = 2  WHERE staffID = $rolechange");
-                echo "<script>alert('Role Set to Inventory Admin');window.location.href='detail-branch.php?branch=$brnjID'</script>";
+                echo $_SESSION['changuser'] = true;
+                header("Location: detail-branch.php?branch=" . urlencode($branch['branchID']) . "&changuser=1");
             }elseif($change['roles'] == 2){
                 $update = mysqli_query($con,"UPDATE branch_staff SET roles = 3  WHERE staffID = $rolechange");
-                echo "<script>alert('Role Set to Staff');window.location.href='detail-branch.php?branch=$brnjID'</script>";
+                echo $_SESSION['changuser'] = true;
+                header("Location: detail-branch.php?branch=" . urlencode($branch['branchID']) . "&changuser=2");
             }elseif($change['roles'] == 3){
                 $update = mysqli_query($con,"UPDATE branch_staff SET roles = 1  WHERE staffID = $rolechange");
-                echo "<script>alert('Role Set to Branch Maniger');window.location.href='detail-branch.php?branch=$brnjID'</script>";
+                echo $_SESSION['changuser'] = true;
+                header("Location: detail-branch.php?branch=" . urlencode($branch['branchID']) . "&changuser=3");
             }
+
+        }
+
+        if (isset($_GET['disrole'])) {
+            $disroleId = $_GET['disrole'];
+            // Perform the deletion here using the $disroleId
+            $derole = mysqli_query($con,"DELETE FROM branch_staff WHERE staffID = $disroleId ;");
+
+            // Assume deletion was successful for the sake of this example
+            // Replace this with actual success check based on your database operation
+            $deletionSuccessful = true;
+
 
         }
 
@@ -510,92 +551,44 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
         }
 
 
-        if(isset($_POST['shoyear'])){
-            $transayear = $_POST['yearc'];
-            $sql = "SELECT month, SUM(amount_payment) AS Total FROM checkout WHERE year = '$transayear' GROUP BY month";
-        }else{
-            $sql = "SELECT month, SUM(amount_payment) AS Total FROM checkout WHERE year = '$transayear' GROUP BY month";
-        }
 
 
         //-------Line Graph for admin
-            $sqlCombined = "SELECT
-            CONCAT(YEAR(added), '-', MONTH(added)) AS date_group,
-            SUM(finished_count) AS finished_assemblies,
-            SUM(yearly_income) AS yearly_income,
-            SUM(absences_count) AS absences
-            FROM
-                (SELECT added, COUNT(*) AS finished_count, 0 AS yearly_income, 0 AS absences_count
-                FROM assembly
-                WHERE assemblyStatus = 'Finished'
-                GROUP BY YEAR(added), MONTH(added)
-                UNION ALL
-                SELECT STR_TO_DATE(date, '%M %e, %Y') AS added, 0 AS finished_count, SUM(amount_payment) AS yearly_income, 0 AS absences_count
-                FROM checkout
-                GROUP BY YEAR(STR_TO_DATE(date, '%M %e, %Y')), MONTH(STR_TO_DATE(date, '%M %e, %Y'))
-                UNION ALL
-                SELECT STR_TO_DATE(dtrdate, '%M %e, %Y') AS added, 0 AS finished_count, 0 AS yearly_income, COUNT(*) AS absences_count
-                FROM attendance
-                WHERE absent = 1
-                GROUP BY YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y')), MONTH(STR_TO_DATE(dtrdate, '%M %e, %Y'))) AS combined_data
-                        GROUP BY date_group
-                        ORDER BY added";
+        $sqlCombined = "SELECT
+        date_group,
+        SUM(finished_count) AS finished_assemblies,
+        SUM(yearly_income) AS yearly_income,
+        SUM(absences_count) AS absences
+    FROM
+        (SELECT YEAR(added) AS date_group, COUNT(*) AS finished_count, 0 AS yearly_income, 0 AS absences_count
+        FROM assembly
+        WHERE assemblyStatus = 'Finished'
+        GROUP BY YEAR(added)
+        UNION ALL
+        SELECT YEAR(STR_TO_DATE(date, '%M %e, %Y')) AS date_group, 0 AS finished_count, SUM(amount_payment) AS yearly_income, 0 AS absences_count
+        FROM checkout
+        GROUP BY YEAR(STR_TO_DATE(date, '%M %e, %Y'))
+        UNION ALL
+        SELECT YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y')) AS date_group, 0 AS finished_count, 0 AS yearly_income, COUNT(*) AS absences_count
+        FROM attendance
+        WHERE absent = 1
+        GROUP BY YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y'))) AS combined_data
+    GROUP BY date_group
+    ORDER BY date_group";
 
             // Execute the combined query
             $resultCombined = mysqli_query($con, $sqlCombined);
 
-        while ($rowMonthly = mysqli_fetch_assoc($assemqMonthly)) {
-            $dataFinishedAssembliesMonthly[] = array('date_group' => $rowMonthly['date_group'], 'finished_assemblies' => $rowMonthly['finished_count']);
-        }
-        $invcYearly = mysqli_query($con, "SELECT YEAR(date) AS date_group, SUM(amount_payment) AS yearly_income FROM checkout GROUP BY YEAR(date) ORDER BY YEAR(date)");
-
-        $dataYearlyIncome = array();
-
-        while ($rowYearly = mysqli_fetch_assoc($invcYearly)) {
-            $dataYearlyIncome[] = array('date_group' => $rowYearly['date_group'], 'yearly_income' => $rowYearly['yearly_income']);
-        }
-        $absenqYearly = mysqli_query($con, "SELECT YEAR(dtrdate) AS date_group, COUNT(*) AS absences_count FROM attendance WHERE absent = 1 GROUP BY YEAR(dtrdate) ORDER BY YEAR(dtrdate)");
-
-        $dataAbsencesYearly = array();
-
-        while ($rowAbsences = mysqli_fetch_assoc($absenqYearly)) {
-            $dataAbsencesYearly[] = array('date_group' => $rowAbsences['date_group'], 'absences' => $rowAbsences['absences_count']);
-        }
-
+        // Fetch the data
         $dataCombined = array();
-        foreach ($dataFinishedAssembliesMonthly as $item) {
-            $dateGroup = $item['date_group'];
-
-            // Find the matching data for Yearly Income
-            $yearlyIncome = 0;
-            foreach ($dataYearlyIncome as $incm) {
-                if ($incm['date_group'] === $dateGroup) {
-                    $yearlyIncome = $incm['yearly_income'];
-                    break;
-                }
-            }
-
-            // Find the matching data for Number of Absences
-            $absences = 0;
-            foreach ($dataAbsencesYearly as $absence) {
-                if ($absence['date_group'] === $dateGroup) {
-                    $absences = $absence['absences'];
-                    break;
-                }
-            }
-
-            // Add the combined data to the array
+        while ($rowCombined = mysqli_fetch_assoc($resultCombined)) {
             $dataCombined[] = array(
-                'date_group' => $dateGroup,
-                'finished_assemblies' => $item['finished_assemblies'],
-                'yearly_income' => $yearlyIncome,
-                'absences' => $absences,
+            'date_group' => $rowCombined['date_group'],
+            'finished_assemblies' => $rowCombined['finished_assemblies'],
+            'yearly_income' => $rowCombined['yearly_income'],
+            'absences' => $rowCombined['absences'],
             );
-
-            // Debug output
-            echo "Date Group: " . $dateGroup . ", Finished Assemblies: " . $item['finished_assemblies'] . ", Yearly Income: " . $yearlyIncome . ", Absences: " . $absences . "<br>";
         }
-
 
         // Encode the combined data into JSON format
         $jsonDataCombined = json_encode($dataCombined);
@@ -624,17 +617,10 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
 
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.5.1/chosen.min.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.5.1/chosen.jquery.min.js"></script>
 
-
-
-    <script src="../js/plugins-init/sweetalert2.min.js"></script>
-    <script scr="../js/plugins-init/sweetalert.init.js"></script>
-
-
-
-
-    <script src="../js/plugins-init/sweetalert2.min.js"></script>
-    <script scr="../js/plugins-init/sweetalert.init.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.19/sweetalert2.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
@@ -643,9 +629,9 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
 
 </head>
 <div id="preloader">
-        <div class="sk-three-bounce">
-            <div class="sk-child sk-bounce1"></div>
-            <div class="sk-child sk-bounce2"></div>
-            <div class="sk-child sk-bounce3"></div>
-        </div>
+    <div class="sk-three-bounce">
+        <div class="sk-child sk-bounce1"></div>
+        <div class="sk-child sk-bounce2"></div>
+        <div class="sk-child sk-bounce3"></div>
     </div>
+</div>
