@@ -30,7 +30,7 @@
                                     <i class="fi fi-rr-badge-check"></i>
                                         <span class="ml-2">Attendance</span>
                                     </a>
-                                    <a href="../logout-user.php" class="dropdown-item">
+                                    <a href="#" class="dropdown-item" onclick="showLogoutConfirmation()">
                                         <i class="fi fi-rr-power"></i>
                                         <span class="ml-2">Logout </span>
                                     </a>
@@ -44,3 +44,29 @@
 
 
 
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.20/dist/sweetalert2.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.20/sweetalert2.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.20/dist/sweetalert2.all.min.js"></script>
+
+        <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css"> -->
+
+
+        <script>
+            function showLogoutConfirmation() {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this. Are you sure you want to logout?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, logout',
+                    cancelButtonText: 'No, cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If the user confirms, redirect to the logout page
+                        window.location.href = '../logout-user.php'; // Replace with the actual URL of your logout page
+                    }
+                });
+            }
+        </script>

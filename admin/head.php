@@ -391,7 +391,6 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
             $morning = $_POST['morning'];
             $afternoon = $_POST['afternoon'];
             $update = mysqli_query($con,"UPDATE Settings SET latetimein_morning='$morning', latetimein_afternoon='$afternoon' WHERE SettingsId = 1");
-            echo "<script>alert('Settings Updated');window.location.href = 'settings.php'</script>";
             echo $_SESSION['sys_att'] = true;
             header("Location: settings.php?sys_att=1");
         }

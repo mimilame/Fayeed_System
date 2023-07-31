@@ -380,7 +380,7 @@ $inlist = mysqli_query($con,"SELECT inventory.product_code,inventory.inventoryNa
                 echo "<script>alert('Role Set to Staff');window.location.href='detail-branch.php?branch=$brnjID'</script>";
             }elseif($change['roles'] == 3){
                 $update = mysqli_query($con,"UPDATE branch_staff SET roles = 1  WHERE staffID = $rolechange");
-                echo "<script>alert('Role Set to Branch Maniger');window.location.href='detail-branch.php?branch=$brnjID'</script>";
+                echo "<script>alert('Role Set to Branch Manager');window.location.href='detail-branch.php?branch=$brnjID'</script>";
             }
 
         }
@@ -457,11 +457,11 @@ $inlist = mysqli_query($con,"SELECT inventory.product_code,inventory.inventoryNa
                         $numbch = mysqli_fetch_assoc($invbt);
                         if($qtylist > $numbch['inventoryQty']){
                             $minusstok = $qtylist - $numbch['inventoryQty'];
-                            $logdetail ="The Inventory <b>\"".$numbch['inventoryName']."\"</b> is at short state of $qtylist / ".$numbch['inventoryQty']." . <br> please notify the inventory admin about na stock is short about <b> $minusstok </b> - Branch Staff";
+                            $logdetail ="The Inventory <b>\"".$numbch['inventoryName']."\"</b> is at short state of $qtylist / ".$numbch['inventoryQty']." . <br> please notify the inventory admin that the stock is short about <b> $minusstok </b> - Branch Staff";
                             $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
-                            $errors[$frr++] = "The Inventory <b>\"".$numbch['inventoryName']."\"</b> is at short state of $qtylist / ".$numbch['inventoryQty']." . <br> please notify the inventory admin about na stock is short about <b> $minusstok </b>";
+                            $errors[$frr++] = "The Inventory <b>\"".$numbch['inventoryName']."\"</b> is at short state of $qtylist / ".$numbch['inventoryQty']." . <br> please notify the inventory admin that the stock is short about <b> $minusstok </b>";
                         }elseif ($numbch['inventoryQty'] == 0) {
-                            $errors[$frr++] = "The Inventory <b>\"".$checkInventory['inventoryName']."\"</b> is out of Stock. <br> please notify the inventory admin about na stock quantity is empty.";
+                            $errors[$frr++] = "The Inventory <b>\"".$checkInventory['inventoryName']."\"</b> is out of Stock. <br> please notify the inventory admin about the stock quantity is empty.";
 
                         }
                     }
@@ -479,6 +479,7 @@ $inlist = mysqli_query($con,"SELECT inventory.product_code,inventory.inventoryNa
                         $updateprd = mysqli_query($con,"UPDATE inventory SET inventoryQty = inventoryQty + $asslop WHERE inventoryId = $inbentorID");
                         $update = mysqli_query($con,"UPDATE assembly SET assemblyStatus = 'Finished', editor = 0 Where assemblyID = $assid");
                         echo "<script>alert('Congratulations, $checkname set to Finished');window.location.href='assemblylist.php'</script>";
+
                     }
            }elseif ($checkstat == 'Finished') {
             $seleckz = mysqli_query($con,"SELECT * From assembly_inventory WHERE assemblyID = $assid");
@@ -490,19 +491,20 @@ $inlist = mysqli_query($con,"SELECT inventory.product_code,inventory.inventoryNa
                 $numbch = mysqli_fetch_assoc($invbt);
                 if($qtylist > $numbch['inventoryQty']){
                     $minusstok = $qtylist - $numbch['inventoryQty'];
-                    $logdetail ="<p class='bg-danger'>ALERT<p> \t The Inventory <b>\"".$numbch['inventoryName']."\"</b> is at short state of $qtylist / ".$numbch['inventoryQty']." . <br> please notify the inventory admin about na stock is short about <b> $minusstok </b>";
+                    $logdetail ="<p class='bg-danger'>ALERT<p> \t The Inventory <b>\"".$numbch['inventoryName']."\"</b> is at short state of $qtylist / ".$numbch['inventoryQty']." . <br> please notify the inventory admin that the stock is short about <b> $minusstok </b>";
                     $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
-                    $errors[$frr++] = "The Inventory <b>\"".$numbch['inventoryName']."\"</b> is at short state of $qtylist / ".$numbch['inventoryQty']." . <br> please notify the inventory admin about na stock is short about <b> $minusstok </b>";
+                    $errors[$frr++] = "The Inventory <b>\"".$numbch['inventoryName']."\"</b> is at short state of $qtylist / ".$numbch['inventoryQty']." . <br> please notify the inventory admin that the stock is short about <b> $minusstok </b>";
 
                 }elseif ($numbch['inventoryQty'] == 0) {
-                    $errors[$frr++] = "The Inventory <b>\"".$checkInventory['inventoryName']."\"</b> is out of Stock. <br> please notify the inventory admin about na stock quantity is empty.";
+                    $errors[$frr++] = "The Inventory <b>\"".$checkInventory['inventoryName']."\"</b> is out of Stock. <br> please notify the inventory admin that the stock quantity is empty.";
 
                 }
             }
-                if(count($errors)===0){
-                    $logdetail ="Inventory \"$checkname\" is Set to Asembly and Performing Procedures  - Branch Staff";
-                    $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
-                    $update = mysqli_query($con,"UPDATE assembly SET assemblyStatus = 'Assemble' Where assemblyID = $assid");
+
+                 if (count($errors) === 0) {
+                    $logdetail = "Inventory \"$checkname\" is Set to Assemble and Performing Procedures - Branch Staff";
+                    $insertlog = mysqli_query($con, "INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
+                    $update = mysqli_query($con, "UPDATE assembly SET assemblyStatus = 'Assemble' WHERE assemblyID = $assid");
                     echo "<script>alert('$checkname Has Set to Assemble, Please Modify the Number or Just leave it');window.location.href='assembyqtyedit.php?qty=$assid'</script>";
                 }
 
@@ -727,15 +729,19 @@ $inlist = mysqli_query($con,"SELECT inventory.product_code,inventory.inventoryNa
     <link href="../vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="../vendor/datatables/css/responsive.dataTables.min.css" rel="stylesheet">
+
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.5.1/chosen.min.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.5.1/chosen.jquery.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.19/sweetalert2.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 
 
 </head>
