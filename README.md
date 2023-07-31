@@ -75,6 +75,19 @@ header("Location: detail-branch.php?branch=" . urlencode($branch['branchID']) . 
 echo $_SESSION['changuser'] = true;
 header("Location: detail-branch.php?branch=" . urlencode($branch['branchID']) . "&changuser=1");
 ----
+disrole user
+-----
+if (isset($_GET['disrole'])) {
+    $disroleId = $_GET['disrole'];
+    // Perform the deletion here using the $disroleId
+    $derole = mysqli_query($con,"DELETE FROM branch_staff WHERE staffID = $disroleId ;");
+
+    // Assume deletion was successful for the sake of this example
+    // Replace this with actual success check based on your database operation
+    $deletionSuccessful = true;
+
+
+}
 
 
 
@@ -85,6 +98,25 @@ header("Location: detail-branch.php?branch=" . urlencode($branch['branchID']) . 
 ----------------------------------------------------------------
 TEMPLATE
 ---------
+logout button,header.php:
+function showLogoutConfirmation() {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this. Are you sure you want to logout?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, logout',
+        cancelButtonText: 'No, cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // If the user confirms, redirect to the logout page
+            window.location.href = '../logout-user.php'; // Replace with the actual URL of your logout page
+        }
+    });
+}
+toast success add user, noroles.php :
 if (isset($_GET['add_user']) && $_GET['add_user'] == '2' && isset($_SESSION['add_user'])) {
     echo <<<EOL
         <script>
@@ -103,58 +135,59 @@ if (isset($_GET['add_user']) && $_GET['add_user'] == '2' && isset($_SESSION['add
     EOL;
     unset($_SESSION['add_user']);
 }
+toast success,disrole a user, noroles.php
+if ($deletionSuccessful) {
+    $_SESSION['disrole'] = true;
 
-if (isset($_GET['InventoryDel']) && $_GET['InventoryDel'] == '1' && isset($_SESSION['InventoryDel'])) {
     echo <<<EOL
-            <script>
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Are you sure?',
-                    text: 'You are about to delete the inventory. This action cannot be undone.',
-                    showCancelButton: true,
-                    confirmButtonText: 'Delete',
-                    cancelButtonText: 'Cancel',
-                    reverseButtons: false,
-                    focusCancel: true,
-                    showCloseButton: true,
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Perform the delete action here
-                        window.location.href = 'inventorylist.php'; // Replace with your actual delete script URL
-                    } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        // Handle the cancel action here
-                        window.location.href = 'inventorylist.php'; // Redirect back to the inventory list page
-                    }
-                });
-            </script>
+        <script>
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'User successfully Disroled!',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                position: 'top-end',
+                timer: 5000
+            }).then(() => {
+                // Redirect back to the appropriate page based on the 'page' parameter
+                const urlParams = new URLSearchParams(window.location.search);
+                const page = urlParams.get('page');
+                window.location.href = page;
+            });
+        </script>
     EOL;
-    unset($_SESSION['InventoryDel']);
+    unset($_SESSION['disrole']);
 }
 
-    if ($deletionSuccessful) {
-        $_SESSION['disrole'] = true;
-
-        echo <<<EOL
-            <script>
-                Swal.fire({
-                    toast: true,
-                    icon: 'success',
-                    title: 'User successfully Disroled!',
-                    showConfirmButton: false,
-                    timerProgressBar: true,
-                    position: 'top-end',
-                    timer: 5000
-                }).then(() => {
-                    // Redirect back to the appropriate page based on the 'page' parameter
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const page = urlParams.get('page');
-                    window.location.href = page;
-                });
-            </script>
-        EOL;
-        unset($_SESSION['disrole']);
-    }
 
 
 Adds comma separator for prices
 echo "₱ " . number_format($income['Total'], 2, '.', ',');
+
+
+
+delete confirmation, stay toast delete success just add this inside body
+----
+<a href="#" onclick="showInventoryDeleteConfirmation(<?php echo $inventorylist['inventoryId']; ?>)">
+    <i class="fi fi-rr-trash btn btn-danger"></i>
+</a>
+<script>
+    function showInventoryDeleteConfirmation(inventoryId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this. Are you sure you want to delete this inventory?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete',
+            cancelButtonText: 'No, cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If the user confirms, redirect to the delete page
+                window.location.href = `inventorylist.php?delnventory=${inventoryId}`;
+            }
+        });
+    }
+</script>

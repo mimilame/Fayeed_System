@@ -125,7 +125,9 @@
                                                 <td><?php if($administratorss['Address']==""){ echo ".........";}else{echo $administratorss['Address'];}?></td>
                                                 <td><?php if($administratorss['email']==""){ echo ".........";}else{echo $administratorss['email'];}?></td>
                                                 <td><?php if($administratorss['CellNumber']==""){ echo ".........";}else{echo $administratorss['CellNumber'];}?></td>
-                                                <td><a href="check-profile.php?profile=<?php echo $administratorss['usersID']?>"><i class="fi fi-rr-user btn btn-primary"></i></a> <a href="noroles.php?deletexx=<?php echo $administratorss['usersID']?>"><i class="fi fi-rr-trash-xmark btn btn-danger"></i></a></td>
+                                                <td><a href="check-profile.php?profile=<?php echo $administratorss['usersID']?>"><i class="fi fi-rr-user btn btn-primary"></i></a> <a href="#" onclick="showDeleteConfirmation(<?php echo $administratorss['usersID']; ?>)">
+                                                    <i class="fi fi-rr-trash-xmark btn btn-danger"></i>
+                                                </a></td>
                                             </tr>
                                                 <?php }
                                             }
@@ -163,5 +165,26 @@
     <script src="../vendor/datatables/js/dataTables.responsive.min.js"></script>
     <script src="../js/plugins-init/datatables-api-init.js"></script>
     <script src="../js/plugins-init/datatables.init.js"></script>
+
+
+    <script>
+    function showDeleteConfirmation(userId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this. Are you sure you want to delete this user?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete',
+            cancelButtonText: 'No, cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If the user confirms, redirect to the delete page
+                window.location.href = `noroles.php?deletexx=${userId}`;
+            }
+        });
+    }
+    </script>
 </body>
 </html>

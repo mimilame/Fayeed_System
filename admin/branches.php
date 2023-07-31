@@ -117,8 +117,8 @@
                                                 <a class="btn btn-primary" href="assign-branch.php?branch=<?php echo $branch['branchID']?>"><i class="fi fi-rr-users-alt"></i></a>
                                                 <a class="btn btn-primary" href="detail-branch.php?branch=<?php echo $branch['branchID']?>"><i class="fi fi-rr-info"></i></a>
                                                 <a class="btn btn-success" href="add-branches.php?branch=<?php echo $branch['branchID']?>"><i class="fi fi-rr-pen-square"></i></a>
-                                                <a class="btn btn-danger" href="check-profile.php?delete=<?php echo $branch['branchID']?>"><i class="fi fi-rr-trash-list"></i></a></td>
-                                            </tr>
+                                                <a class="btn btn-danger" href="#" onclick="showBranchDeleteConfirmation(<?php echo $branch['branchID']; ?>)"><i class="fi fi-rr-trash-list"></i></a></td>
+                                                </tr>
                                             <?php }?>
 
 
@@ -148,6 +148,25 @@
         // Additional AJAX parameters go here; see the end of this chapter for the full code of this example
     }
     });
+    </script>
+    <script>
+        function showBranchDeleteConfirmation(branchId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this. Are you sure you want to delete this branch?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete',
+                cancelButtonText: 'No, cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // If the user confirms, redirect to the delete page
+                    window.location.href = `check-profile.php?delete=${branchId}`;
+                }
+            });
+        }
     </script>
     <script src="../vendor/global/global.min.js"></script>
     <script src="../js/quixnav-init.js"></script>

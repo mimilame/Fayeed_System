@@ -33,9 +33,9 @@
                                         <span class="ml-2">Profile </span>
                                     </a>
 
-                                    <a href="../logout-user.php" class="dropdown-item">
+                                    <a href="#" id="logout-btn" class="dropdown-item" onclick="showLogoutConfirmation()">
                                         <i class="fi fi-rr-power"></i>
-                                        <span class="ml-2">Logout </span>
+                                        <span class="ml-2">Logout</span>
                                     </a>
                                 </div>
                             </li>
@@ -51,7 +51,24 @@
         <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css"> -->
 
 
-
-
+        <script>
+            function showLogoutConfirmation() {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this. Are you sure you want to logout?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, logout',
+                    cancelButtonText: 'No, cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If the user confirms, redirect to the logout page
+                        window.location.href = '../logout-user.php'; // Replace with the actual URL of your logout page
+                    }
+                });
+            }
+        </script>
 
 
