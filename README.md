@@ -7,6 +7,7 @@ header.php
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.20/dist/sweetalert2.all.min.js"></script>
 home.php
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.19/sweetalert2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
 head.php
 <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
 <link href="../vendor/datatables/css/responsive.dataTables.min.css" rel="stylesheet">
@@ -15,8 +16,17 @@ head.php
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.5.1/chosen.jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.19/sweetalert2.min.js"></script>
 
+------------
+profile.php
+----
+echo "<script>alert('Please update your account credentials');window.location.href='profile.php'</script>";
+echo $_SESSION['loggedin_success'] = true;
+header("Location: profile.php?log_success=1");
 
-
+echo "<script>alert('Update Successfully');window.location.href='profile.php'</script>";
+echo $_SESSION['update_success'] = true;
+header("Location: profile.php?update_success=1");
+-----
 Add
 -----
 echo $_SESSION['loggedin_success'] = true;
@@ -98,6 +108,36 @@ if (isset($_GET['disrole'])) {
 ----------------------------------------------------------------
 TEMPLATE
 ---------
+profile.php
+if (isset($_GET['log_success']) && $_GET['log_success'] == '1' && isset($_SESSION['loggedin_success'])) {
+    echo <<<EOL
+        <script>
+            Swal.fire({
+                icon: 'info',
+                title: 'Please update your account credentials',
+                showConfirmButton: true,
+                timer: 5000
+            }).then(() => {
+                window.location.href = 'profile.php';
+            });
+        </script>
+    EOL;
+    unset($_SESSION['loggedin_success']);
+} elseif (isset($_GET['update_success']) && $_GET['update_success'] == '1' && isset($_SESSION['update_success'])) {
+    echo <<<EOL
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Updated Successfully!',
+                showConfirmButton: false,
+                timer: 5000
+            }).then(() => {
+                window.location.href = 'profile.php';
+            });
+        </script>
+    EOL;
+    unset($_SESSION['update_success']);
+}
 logout button,header.php:
 function showLogoutConfirmation() {
     Swal.fire({

@@ -38,7 +38,7 @@ $clisttrans = mysqli_num_rows($tranv);
                 </div>
 
                 <div class="row">
-                    <div class="col-lg-6 col-sm-12">
+                    <div class="col-lg-7 col-sm-12">
                         <div class="card">
                             <div class="stat-widget-one card-body">
                                 <div class="d-inline-flex flex-wrap">
@@ -52,9 +52,9 @@ $clisttrans = mysqli_num_rows($tranv);
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-sm-12 d-inline-flex flex-wrap">
+                    <div class="col-lg-5 col-sm-12 d-inline-flex flex-wrap">
                         <div class="col-lg-6 col-sm-6">
-                            <div class="card" onclick="redirectToStatistic(); return false;" title="Monthly Statistics" data-toggle="tooltip" data-placement="left">
+                            <div class="card" onclick="redirectToStatistic(); return false;" title="click to know more!" data-toggle="tooltip" data-placement="left">
                                 <div class="stat-widget-one card-body"> <!-- change color light orange-->
                                     <i class="fi fi-rr-coins display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
@@ -263,7 +263,7 @@ $clisttrans = mysqli_num_rows($tranv);
     <script>
     function redirectToStatistic() {
         Swal.fire({
-        title: 'Opening..\nOptimized Statistics',
+        title: 'Opening..\nOptimized Analytics',
         timer: 2000, // Time in milliseconds (2 seconds in this case)
         timerProgressBar: true,
         didOpen: () =>  {

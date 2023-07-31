@@ -1,5 +1,36 @@
 <?php $do = 1; include 'head.php'?>
 <body>
+<?php
+    if (isset($_GET['log_success']) && $_GET['log_success'] == '1' && isset($_SESSION['loggedin_success'])) {
+        echo <<<EOL
+            <script>
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Please update your account credentials',
+                    showConfirmButton: true,
+                    timer: 5000
+                }).then(() => {
+                    window.location.href = 'profile.php';
+                });
+            </script>
+        EOL;
+        unset($_SESSION['loggedin_success']);
+    } elseif (isset($_GET['update_success']) && $_GET['update_success'] == '1' && isset($_SESSION['update_success'])) {
+        echo <<<EOL
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Updated Successfully!',
+                    showConfirmButton: false,
+                    timer: 5000
+                }).then(() => {
+                    window.location.href = 'profile.php';
+                });
+            </script>
+        EOL;
+        unset($_SESSION['update_success']);
+    }
+?>
     <div id="main-wrapper">
         <div class="nav-header">
             <a href="index.html" class="brand-logo">
@@ -15,7 +46,7 @@
             </div>
         </div>
         <?php include 'header.php'; include 'sidebar.php'?>
-        
+
      <!--**********************************
             Content body start
         ***********************************-->
@@ -47,7 +78,7 @@
                                     <div class="cover-photo"></div>
                                     <div class="profile-photo">
                                         <img id="defaultImage" src="../images/users/<?php echo $profile['profile']?>" class="img-fluid rounded-circle" alt="">
-                                        <img id="imagePreview"  width="200px" hieght="200px" > 
+                                        <img id="imagePreview"  width="200px" hieght="200px" >
                                     </div>
                                 </div>
                                 <div class="profile-info">
@@ -144,15 +175,15 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
 
-        
+
         <!--**********************************
             Content body end
         ***********************************-->
-        
+
     </div>
     <script>
 const defaultImage = document.getElementById('defaultImage');

@@ -48,7 +48,8 @@ $pr = mysqli_query($con,"SELECT * FROM users WHERE usersID = $id");
 $profile = mysqli_fetch_assoc($pr);
 if($do != 1){
     if(empty($profile['usersFirstName']) || empty($profile['usersLastName']) || empty($profile['age']) || empty($profile['Address']) || empty($profile['username']) || empty($profile['CellNumber'])){
-        echo "<script>alert('Please update your account credentials');window.location.href='profile.php'</script>";
+        echo $_SESSION['loggedin_success'] = true;
+        header("Location: profile.php?log_success=1");
         }
 }
 date_default_timezone_set('Asia/Manila');
@@ -127,7 +128,8 @@ $inlist = mysqli_query($con,"SELECT inventory.product_code,inventory.inventoryNa
                         $contact = $_POST['controlnumber'];
                             move_uploaded_file($tempname, $folder);
                             $update = mysqli_query($con,"UPDATE users SET profile='$lis_img0',cover_photo = '$cover', usersFirstName='$first', username='$username', usersLastName='$last', age='$age' , Address='$address', CellNumber='$contact' WHERE usersID =$id ");
-                            echo "<script>alert('Update Successfully');window.location.href='profile.php'</script>";
+                            echo $_SESSION['update_success'] = true;
+                            header("Location: profile.php?update_success=1");
                 }
         // Profile.php ---------------------------------------------------------------------------------------------------
         // Check-Profile.php ---------------------------------------------------------------------------------------------------

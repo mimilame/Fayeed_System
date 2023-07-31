@@ -52,7 +52,7 @@
                     </div>
                     <div class="col-lg-4 col-sm-12 d-inline-flex flex-wrap">
                         <div class="col-lg-12 col-sm-6">
-                            <div class="card" onclick="window.location.href='assemblylist.php'; return false;">
+                            <div class="card" onclick="window.location.href='assemblylist.php'; return false;" title="Total No. of Standby" data-toggle="tooltip" data-placement="right">
                                 <div class="stat-widget-one card-body"><!-- change color light orange-->
                                     <i class="fi fi-rr-list display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
@@ -63,7 +63,7 @@
                             </div>
                         </div>
                         <div class="col-lg-12 col-sm-6">
-                            <div class="card">
+                            <div class="card" title="Total Branch Inventory" data-toggle="tooltip" data-placement="right">
                                 <div class="stat-widget-one card-body">
                                     <i class="fi fi-rr-layers display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
@@ -74,7 +74,7 @@
                             </div>
                         </div>
                         <div class="col-lg-12 col-sm-6">
-                            <div class="card" onclick="window.location.href='alertproduct.php'; return false;">
+                            <div class="card" onclick="window.location.href='alertproduct.php'; return false;" title="Number of Active Alerts" data-toggle="tooltip" data-placement="right">
                                 <div class="stat-widget-one card-body">
                                 <i class="fi fi-rr-engine-warning display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
@@ -163,6 +163,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
 
     <script>
         var customCSS = document.createElement('style');
