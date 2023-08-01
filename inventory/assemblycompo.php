@@ -1,5 +1,6 @@
 <?php include 'head.php'?>
 <body>
+
     <div id="main-wrapper">
         <div class="nav-header">
             <a href="index.html" class="brand-logo">

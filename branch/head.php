@@ -47,7 +47,9 @@ $pr = mysqli_query($con,"SELECT * FROM users WHERE usersID = $id");
 $profile = mysqli_fetch_assoc($pr);
 if($do != 1){
     if(empty($profile['usersFirstName']) || empty($profile['usersLastName']) || empty($profile['age']) || empty($profile['Address']) || empty($profile['username']) || empty($profile['CellNumber'])){
-        echo "<script>alert('Please update your account credentials');window.location.href='profile.php'</script>";
+
+        echo $_SESSION['loggedin_success'] = true;
+        header("Location: profile.php?log_success=1");
         }
 }
 date_default_timezone_set('Asia/Manila');
@@ -176,7 +178,8 @@ if(isset($_POST['signin'])){
                         $contact = $_POST['controlnumber'];
                             move_uploaded_file($tempname, $folder);
                             $update = mysqli_query($con,"UPDATE users SET profile='$lis_img0',cover_photo = '$cover', usersFirstName='$first', username='$username', usersLastName='$last', age='$age' , Address='$address', CellNumber='$contact' WHERE usersID =$id ");
-                            echo "<script>alert('Update Successfully');window.location.href='profile.php'</script>";
+                            echo $_SESSION['update_success'] = true;
+                            header("Location: profile.php?update_success=1");
                 }
         // Profile.php ---------------------------------------------------------------------------------------------------
         // Check-Profile.php ---------------------------------------------------------------------------------------------------
@@ -269,10 +272,11 @@ if(isset($_POST['signin'])){
             }
             if(count($errors) === 0){
 
-            $logdetail ="Add New Branch Staff with specific role of code $roles - Branch Maniger";
+            $logdetail ="Add New Branch Staff with specific role of code $roles - Branch Manager";
             $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
                 $insert = mysqli_query($con,"INSERT INTO  branch_staff(branchID,usersID,roles,assigndby) VALUES('$editbranch','$userids','$roles','$id')");
-            echo "<script>alert('Appoint Successfully');window.location.href = 'assign-branch.php?branch=$editbranch'</script>";
+                echo $_SESSION['appointuser'] = true;
+                header("Location: detail-branch.php?branch=" . urlencode($desigbranch) . "&appointuser=1");
             }
 
         }
@@ -302,10 +306,11 @@ if(isset($_POST['signin'])){
         if(isset($_GET['delnventory'])){
             $delin = $_GET['delnventory'];
 
-            $logdetail ="The One Item Has been Deleted  - Branch Maniger";
+            $logdetail ="The One Item Has been Deleted  - Branch Manager";
             $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
             $sh = mysqli_query($con,"DELETE FROM inventory WHERE inventoryId = $delin");
-            echo "<script>alert('Deleted Inventory Successfully');window.location.href = 'inventorylist.php'</script>";
+            echo $_SESSION['InventoryDel'] = true;
+            header("Location: inventorylist.php?InventoryDel=1");
         }
         if(isset($_POST['addinventory'])){
 
@@ -351,16 +356,18 @@ if(isset($_POST['signin'])){
             if(count($errors) === 0){
                 if($invenID == ""){
 
-                    $logdetail ="Created New inventory Name :<b>$inventoryname</b> with Product code of <b>$code</b> and Price tag of <b>₱ $price</b>  - Branch Maniger";
+                    $logdetail ="Created New inventory Name :<b>$inventoryname</b> with Product code of <b>$code</b> and Price tag of <b>₱ $price</b>  - Branch Manager";
                     $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
                     $insert = mysqli_query($con,"INSERT INTO inventory(usersID,branchID,inventoryName,inventoryDesc,inventoryQty,product_code,price) VALUES ('$id','$desigbranch','$inventoryname','$description','$quanty','$code','$price')");
-                    echo "<script>alert('Done Save');window.location.href='add-inventory.php'</script>";
+                    echo $_SESSION['InventoryAdd'] = true;
+                    header("Location: inventorylist.php?InventoryAdd=1");
                 }else{
-                    $logdetail ="Updated Details of  inventory Name :<b>$inventoryname</b> with Product code :<b>$code</b>  - Branch Maniger";
+                    $logdetail ="Updated Details of  inventory Name :<b>$inventoryname</b> with Product code :<b>$code</b>  - Branch Manager";
                     $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
                     $insert = mysqli_query($con,"UPDATE inventory SET inventoryName = '$inventoryname', inventoryDesc = '$description', inventoryQty = '$quanty', product_code = '$code' , price = '$price'  WHERE inventoryId = $invenID");
                     if($insert){
-                        echo "<script>alert('Update Successfully');window.location.href='inventorylist.php'</script>";
+                        echo $_SESSION['InventoryUpdate'] = true;
+                        header("Location: inventorylist.php?InventoryUpdate=1");
                     }else{
                         echo "<script>alert('No Update');window.location.href='inventorylist.php'</script>";
                     }
@@ -382,15 +389,17 @@ if(isset($_POST['signin'])){
             $change = mysqli_fetch_assoc($chang);
             $brnjID = $change['branchID'];
            if($change['roles'] == 2){
-                $logdetail ="Modify New Branch Staff with specific role of code 2 - Branch Maniger";
+                $logdetail ="Modify New Branch Staff with specific role of code 2 - Branch Manager";
                 $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
                 $update = mysqli_query($con,"UPDATE branch_staff SET roles = 3  WHERE staffID = $rolechange");
-                echo "<script>alert('Role Set to Branch Staff');window.location.href='detail-branch.php?branch=$brnjID'</script>";
+                echo $_SESSION['changuser'] = true;
+                header("Location: detail-branch.php?branch=" . urlencode($desigbranch) . "&changuser=2");
             }elseif($change['roles'] == 3){
-                $logdetail ="Modify New Branch Staff with specific role of code 3 - Branch Maniger";
+                $logdetail ="Modify New Branch Staff with specific role of code 3 - Branch Manager";
                 $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
                 $update = mysqli_query($con,"UPDATE branch_staff SET roles = 2  WHERE staffID = $rolechange");
-                echo "<script>alert('Role Set to Inventory Maniger');window.location.href='detail-branch.php?branch=$brnjID'</script>";
+                echo $_SESSION['changuser'] = true;
+                header("Location: detail-branch.php?branch=" . urlencode($desigbranch) . "&changuser=3");
             }
 
         }
@@ -450,14 +459,15 @@ if(isset($_POST['signin'])){
                 $payment = $prixe * $quanty;
                 $minus = mysqli_query($con,"UPDATE inventory SET inventoryQty = inventoryQty - $quanty WHERE inventoryId = $invenID");
                 if($minus){
-                    $logdetail ="Item Transaction Code <b><u>:$Transaction_code </u></b> Sold <b>$quanty</b> x in amount of <b>₱ $payment</b> by using <b>$mop</b> from customer : <b>$name</b>,  Contact # : <b>$contact</b> . <br> - Branch Maniger";
+                    $logdetail ="Item Transaction Code <b><u>:$Transaction_code </u></b> Sold <b>$quanty</b> x in amount of <b>₱ $payment</b> by using <b>$mop</b> from customer : <b>$name</b>,  Contact # : <b>$contact</b> . <br> - Branch Manager";
                     $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
                     $insert = mysqli_query($con,"INSERT INTO checkout(branchID,usersID,inventoryId,Transaction_code,quantity,cleint_name,cleint_number,amount_payment,mop,date,time,month,day,year) VALUES ('$desigbranch','$id','$invenID','$Transaction_code','$quanty','$name','$contact','$payment','$mop','$date','$time','$transamont','$transaday','$transayear')");
-                        if($insert){
-                            echo "<script>alert(' Successfully Checkout Items for $name !!!');window.location.href='checktransaction.php'</script>";
-                        }else{
-                            $errors['errr'] = " Error Checking Out ";
-                        }
+                    if ($insert) {
+                        $_SESSION['checkout_items'] = true;
+                        header("Location: checktransaction.php?checkout_items=1");
+                    } else {
+                        $errors['errr'] = " Error Checking Out ";
+                    }
                 }else{
                     $errors['err'] = " Error Inventory Connection";
                 }
@@ -517,7 +527,8 @@ if(isset($_POST['signin'])){
                 $folder = "../images/attendance/".$lis_img0;
                 move_uploaded_file($tempname, $folder);
                 $update = mysqli_query($con,"UPDATE attendance SET enrtypic = '$lis_img0' WHERE attendanceID = $attendanceID");
-                echo "<script>alert('Photo Save');window.location.href='attendance.php'</script>";
+                echo $_SESSION['photo_save'] = true;
+                header("Location: attendance.php?photo_save=1");
         }
 
         if(isset($_POST['morningsignin'])){
@@ -640,8 +651,20 @@ if(isset($_POST['signin'])){
     <link href="../vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
+
+    <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="../vendor/datatables/css/responsive.dataTables.min.css" rel="stylesheet">
+
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.5.1/chosen.min.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.5.1/chosen.jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.19/sweetalert2.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 </head>
 <div id="preloader">
         <div class="sk-three-bounce">

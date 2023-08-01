@@ -595,7 +595,8 @@ $inlist = mysqli_query($con,"SELECT inventory.product_code,inventory.inventoryNa
                 $folder = "../images/attendance/".$lis_img0;
                 move_uploaded_file($tempname, $folder);
                 $update = mysqli_query($con,"UPDATE attendance SET enrtypic = '$lis_img0' WHERE attendanceID = $attendanceID");
-                echo "<script>alert('Photo Save');window.location.href='attendance.php'</script>";
+                echo $_SESSION['photo_save'] = true;
+                header("Location: attendance.php?photo_save=1");
         }
 
         if(isset($_POST['morningsignin'])){

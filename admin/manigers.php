@@ -58,7 +58,7 @@
                                                 <td><?php if($administratorss['CellNumber']==""){ echo ".........";}else{echo $administratorss['CellNumber'];}?></td>
                                                 <td><?php if($administratorss['Branch_Name']==""){ echo ".........";}else{ ?> <a href="detail-branch.php?branch=<?php echo $administratorss['branchID']?>"><?php echo $administratorss['Branch_Name']?></a><?php }?></td>
                                                 <td><a  href="check-profile.php?profile=<?php echo $administratorss['usersID']?>"><i class="fi fi-rr-user btn btn-primary"></i></a>
-                                                <a href="noroles.php?page=managers.php&disrole=<?php echo $administratorss['staffID']; ?>"><i class="fi fi-rr-replace btn btn-secondary"></i></a></td>
+                                                <a href="noroles.php?page=manigers.php&disrole=<?php echo $administratorss['staffID']; ?>"><i class="fi fi-rr-replace btn btn-secondary"></i></a></td>
                                             </tr>
                                             <?php }?>
 

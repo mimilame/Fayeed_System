@@ -222,13 +222,29 @@ $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, user
   --pbd: .15s;
   --pex: -24px;
 }
-
-
-
-
 </style>
 
 <body>
+<?php
+if (isset($_GET['photo_save']) && $_GET['photo_save'] == '1' && isset($_SESSION['photo_save'])) {
+    echo <<<EOL
+        <script>
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'Photo Save Successfully!',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                position: 'top-end',
+                timer: 5000
+            }).then(() => {
+                window.location.href = 'attendance.php';
+            });
+        </script>
+    EOL;
+    unset($_SESSION['photo_save']);
+}
+?>
     <div id="main-wrapper">
         <div class="nav-header">
             <a href="index.html" class="brand-logo">

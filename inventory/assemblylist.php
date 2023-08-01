@@ -1,5 +1,63 @@
 <?php include 'head.php'?>
 <body>
+<?php
+if (isset($_GET['add_assembly_sucess']) && $_GET['add_assembly_sucess'] == '1' && isset($_SESSION['add_assembly_sucess'])) {
+    echo <<<EOL
+        <script>
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'Added Successfully!',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                position: 'top-end',
+                timer: 5000
+            }).then(() => {
+                window.location.href = 'assemblylist.php';
+            });
+        </script>
+    EOL;
+    unset($_SESSION['add_assembly_sucess']);
+}
+
+if (isset($_GET['update_assembly_sucess']) && $_GET['update_assembly_sucess'] == '1' && isset($_SESSION['update_assembly_sucess'])) {
+    echo <<<EOL
+        <script>
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'Updated Successfully!',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                position: 'top-end',
+                timer: 5000
+            }).then(() => {
+                window.location.href = 'assemblylist.php';
+            });
+        </script>
+    EOL;
+    unset($_SESSION['update_assembly_sucess']);
+}
+
+if (isset($_GET['delete_assembly_sucess']) && $_GET['delete_assembly_sucess'] == '1' && isset($_SESSION['delete_assembly_sucess'])) {
+    echo <<<EOL
+        <script>
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'Deleted Successfully!',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                position: 'top-end',
+                timer: 5000
+            }).then(() => {
+                window.location.href = 'assemblylist.php';
+            });
+        </script>
+    EOL;
+    unset($_SESSION['delete_assembly_sucess']);
+}
+?>
     <div id="main-wrapper">
         <div class="nav-header">
             <a href="index.html" class="brand-logo">

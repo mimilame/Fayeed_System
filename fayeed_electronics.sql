@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 27, 2023 at 09:27 PM
+-- Generation Time: Aug 01, 2023 at 04:27 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -38,7 +38,7 @@ CREATE TABLE `assembly` (
   `editor` int(11) DEFAULT 0,
   `added` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `assembly`
@@ -48,7 +48,8 @@ INSERT INTO `assembly` (`assemblyID`, `inventoryId`, `branchID`, `usersID`, `ass
 (15, 38, 10, 43, 'Create Automatic tubig Machine', 'Finished', 100, 0, '2022-06-09 16:00:00', '2023-07-22 14:07:17'),
 (16, 38, 10, 43, 'Create Automatic tubig Machine', 'Finished', 520, 0, '2023-07-19 17:51:55', '2023-07-22 14:02:39'),
 (17, 38, 10, 43, 'Create Automatic tubig Machine', 'Finished', 100, 0, '2022-07-19 17:51:55', '2023-07-22 14:02:45'),
-(18, 40, 10, 45, 'Create Automatic Tubig Machine', 'Assemble', 3, 43, '2023-07-27 18:38:03', '2023-07-27 18:48:11');
+(18, 40, 10, 45, 'Create Automatic Tubig Machine', 'Standby', 3, 0, '2023-07-27 18:38:03', '2023-07-31 09:07:11'),
+(19, 42, 10, 43, 'seatgw', 'Standby', 4, 0, '2023-07-31 09:00:40', '2023-07-31 09:00:40');
 
 --
 -- Triggers `assembly`
@@ -88,7 +89,11 @@ INSERT INTO `assembly_inventory` (`assembly_inventoryID`, `assemblyID`, `invento
 (8, 16, 42, 1),
 (9, 17, 42, 1),
 (10, 18, 43, 1),
-(11, 18, 39, 1);
+(12, 18, 42, 3),
+(13, 18, 38, 1),
+(39, 18, 40, 1),
+(40, 19, 38, 1),
+(41, 19, 40, 1);
 
 -- --------------------------------------------------------
 
@@ -108,7 +113,7 @@ CREATE TABLE `attendance` (
   `absent` varchar(50) NOT NULL,
   `dtrdate` varchar(50) NOT NULL,
   `confirm` int(1) DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `attendance`
@@ -146,7 +151,15 @@ INSERT INTO `attendance` (`attendanceID`, `branchID`, `usersID`, `enrtypic`, `mo
 (73, 10, 45, 'face.gif', 'Absent', 'Absent', '0', '0', '', 'July 27, 2023', 0),
 (74, 10, 43, 'face.gif', 'Absent', 'Absent', '0', '0', '', 'July 27, 2023', 0),
 (75, 10, 43, '7c51108bbddfdb55965d1e4755854d6a.jpg', '0', '0', '0', '0', '', 'July 28, 2023', 0),
-(76, 10, 45, '7c51108bbddfdb55965d1e4755854d6a.jpg', '0', '0', '0', '0', '', 'July 28, 2023', 0);
+(76, 10, 45, '7c51108bbddfdb55965d1e4755854d6a.jpg', '0', '0', '0', '0', '', 'July 28, 2023', 0),
+(77, 10, 45, 'face.gif', '0', '0', '0', '0', '', 'July 30, 2023', 0),
+(78, 10, 43, 'face.gif', '0', '0', '0', '0', '', 'July 30, 2023', 0),
+(79, 10, 43, 'face.gif', 'Absent', 'Absent', '0', '0', '', 'July 31, 2023', 0),
+(80, 10, 45, 'face.gif', 'Absent', 'Absent', '0', '0', '', 'July 31, 2023', 0),
+(81, 10, 46, 'face.gif', 'Absent', 'Absent', '0', '0', '', 'July 31, 2023', 0),
+(82, 10, 46, 'c6804422a6aaf92b3911cc329b67304f.jpg', '6:14 am', '0', '0', '0', '', 'August 1, 2023', 1),
+(83, 10, 45, '96e325723df9868622e35559ace32635.gif', '8:00 am', '0', '0', '0', '', 'August 1, 2023', 1),
+(84, 10, 43, '869f0930730b73e87623bfce19c424ec.jpg', '8:01 am', '8:17 am', '0', '0', '', 'August 1, 2023', 0);
 
 -- --------------------------------------------------------
 
@@ -164,7 +177,7 @@ CREATE TABLE `branches` (
   `DateCreated` varchar(50) NOT NULL,
   `branch_email` varchar(50) NOT NULL,
   `status` int(1) DEFAULT 2
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `branches`
@@ -172,7 +185,7 @@ CREATE TABLE `branches` (
 
 INSERT INTO `branches` (`branchID`, `usersID`, `Branch_Name`, `Branch_Address`, `city`, `Branch_Contact_number`, `DateCreated`, `branch_email`, `status`) VALUES
 (10, 3, 'Fayeed Electronics Main Branch', 'tumaga tupperware bldg', 'Zamboanga City', '908087686', '2023-07-15', 'fernandoaragon117@yahoo.com', 2),
-(11, 3, 'Fayeed Electronics Basilan', 'Basilan', 'Basilan', '08909678232', '2023-07-15', 'argonfernando453@gmail.com', 2);
+(11, 3, 'Fayeed Electronics Basilan', 'Basilan', 'Basilan', '090967823223', '2023-07-15', 'argonfernando453@gmail.com', 2);
 
 -- --------------------------------------------------------
 
@@ -186,19 +199,19 @@ CREATE TABLE `branch_staff` (
   `usersID` int(11) NOT NULL,
   `assigndby` int(11) DEFAULT NULL,
   `roles` int(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `branch_staff`
 --
 
 INSERT INTO `branch_staff` (`staffID`, `branchID`, `usersID`, `assigndby`, `roles`) VALUES
-(104, 11, 13, 3, 1),
+(104, 11, 13, 3, 3),
 (105, 11, 16, 3, 2),
-(106, 11, 30, 3, 3),
 (108, 11, 44, 3, 1),
-(109, 10, 43, 3, 3),
-(110, 10, 45, 3, 2);
+(110, 10, 45, 3, 2),
+(111, 10, 46, 3, 1),
+(119, 10, 43, 3, 2);
 
 -- --------------------------------------------------------
 
@@ -222,7 +235,7 @@ CREATE TABLE `checkout` (
   `month` varchar(30) NOT NULL,
   `day` varchar(30) NOT NULL,
   `year` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `checkout`
@@ -232,14 +245,13 @@ INSERT INTO `checkout` (`checkoutID`, `branchID`, `usersID`, `inventoryId`, `Tra
 (4, 10, 44, 45, 'July605-164-984', 1, 'dsadsss', 935824568, '5000.00', 'BankTransfer', 'July 16, 2021', '1:50 pm', 'July', '16', '2021'),
 (5, 11, 44, 46, 'July605-164-984', 1, 'dsadsss', 935824568, '25000.00', 'BankTransfer', 'July 16, 2021', '1:50 pm', 'July', '16', '2021'),
 (6, 10, 44, 38, 'July477-593-441', 2, 'Atty Lawrence Escudero', 2147483647, '10000.00', 'Gcash', 'June 15, 2023', '1:47 pm', 'June', '15', '2023'),
-(7, 11, 44, 44, 'July361-212-457', 0, 'Fern Aragon', 2147483647, '333.00', 'Cash', 'July 16, 2023', '12:45 pm', 'July', '16', '2023'),
-(8, 11, 44, 44, 'July733-567-314', 1, 'Fern Aragon', 2147483647, '10000.00', 'Remittance', 'July 16, 2023', '12:51 pm', 'July', '16', '2023'),
-(9, 11, 44, 44, 'July588-580-642', 3, 'Fern Aragon', 2147483647, '30000.00', 'Cash', 'July 17, 2023', '12:52 pm', 'July', '17', '2023'),
-(10, 11, 44, 44, 'July464-136-281', 2, 'Fern Aragon', 2147483647, '20000.00', 'Cash', 'July 16, 2023', '1:36 pm', 'July', '16', '2023'),
-(11, 11, 44, 44, 'August669-559-804', 3, 'Fern Aragon', 2147483647, '30000.00', 'Remittance', 'August 16, 2023', '1:39 pm', 'August', '16', '2023'),
 (12, 11, 44, 46, 'July605-164-983', 4, 'dsadsss', 935824568, '80000.00', 'BankTransfer', 'July 16, 2022', '1:50 pm', 'July', '16', '2022'),
 (13, 10, 43, 42, 'July502-186-638', 85, 'sample', 2147483647, '100000.00', 'Cash', 'July 23, 2023', '4:53 pm', 'July', '23', '2023'),
-(14, 10, 43, 38, 'July838-564-435', 1, 'Steffi Wong', 2147483647, '10000.00', 'Cash', 'July 27, 2023', '11:19 pm', 'July', '27', '2023');
+(14, 10, 43, 38, 'July838-564-435', 1, 'Steffi Wong', 2147483647, '10000.00', 'Cash', 'July 27, 2023', '11:19 pm', 'July', '27', '2023'),
+(15, 10, 46, 38, 'July308-822-490', 1, 'Steffi Wong', 2147483647, '10000.00', 'Cash', 'July 31, 2023', '8:45 pm', 'July', '31', '2023'),
+(16, 10, 46, 40, 'July165-278-233', 1, 'Steffi Wong', 2147483647, '300.00', 'Cash', 'July 31, 2023', '9:23 pm', 'July', '31', '2023'),
+(17, 10, 46, 40, 'August470-246-660', 1, '4y7w4', 34645, '300.00', 'Gcash', 'August 1, 2023', '6:14 am', 'August', '1', '2023'),
+(18, 10, 46, 40, 'August233-442-234', 1, 'dwsqa', 12312, '300.00', 'Gcash', 'August 1, 2023', '7:58 am', 'August', '1', '2023');
 
 -- --------------------------------------------------------
 
@@ -266,13 +278,11 @@ CREATE TABLE `inventory` (
 --
 
 INSERT INTO `inventory` (`inventoryId`, `usersID`, `branchID`, `inventory_picture`, `inventoryName`, `inventoryDesc`, `inventoryQty`, `product_code`, `price`, `added_date`, `updated`) VALUES
-(38, 44, 10, NULL, 'Automatic Tubig Machine', 'tuibg tuibg tuibg tuibg tuibg tuibg tuibg tuibg ', 45, 'HFBHSDBVH42333', 10000, '2023-07-28 09:12:00', '2023-07-28 11:00:00'),
-(39, 44, 10, NULL, 'Tubig Machine case', 'sdasdasdasd', 14, 'SDSSDJ2B32', 0, '2023-07-28 05:00:25', '2023-07-28 09:00:36'),
-(40, 44, 10, NULL, 'Water Bottle', 'sdsdsdfsdfsfdf', 14, 'ASGDVHASDG', 300, '2023-07-28 07:00:00', '2023-07-28 01:12:00'),
-(41, 44, 10, NULL, 'fan', 'dfsdfsdfsdf', 20, 'DVASJDHJASD', 0, '2023-07-28 07:31:00', '2023-07-28 03:07:00'),
-(42, 44, 10, NULL, 'Coin Slot', 'dfsdfsdfsdf', 77, 'HSADJHASBD', 0, '2023-07-28 07:42:30', '2023-07-28 00:00:00'),
-(43, 44, 10, NULL, 'Male plug', 'dfgdfgsfg', 14, 'DFSDF', 20, '2023-07-28 12:21:47', '2023-07-28 00:00:00'),
-(44, 44, 11, NULL, 'Piso WIfi Bendo', 'sdfsdfsdf', 20, 'SSSA324FDSF', 10000, '2023-07-28 23:22:22', '2023-07-28 22:16:40'),
+(38, 44, 10, NULL, 'Automatic Tubig Machine', 'tuibg tuibg tuibg tuibg tuibg tuibg tuibg tuibg ', 29, 'HFBHSDBVH42333', 10000, '2023-07-28 09:12:00', '2023-07-28 11:00:00'),
+(40, 44, 10, NULL, 'Water Bottle', 'sdsdsdfsdfsfdf', 26, 'ASGDVHASDG', 300, '2023-07-28 07:00:00', '2023-07-28 01:12:00'),
+(41, 44, 10, NULL, 'fan', 'dfsdfsdfsdf', 20, 'DVASJDHJASD', 86, '2023-07-28 07:31:00', '2023-07-28 03:07:00'),
+(42, 44, 10, NULL, 'Coin Slot', 'dfsdfsdfsdf', 33, 'HSADJHASBD', 80, '2023-07-28 07:42:30', '2023-07-28 00:00:00'),
+(43, 44, 10, NULL, 'Male plug', 'dfgdfgsfg', 3, 'DFSDF', 20, '2023-07-28 12:21:47', '2023-07-28 00:00:00'),
 (45, 44, 11, NULL, 'Gcash Vendo Machine', 'ajhasbdjhabsd', 20, 'ASHDBJHBHJ32JHBJHASD', 20000, '2023-07-28 14:16:06', '2023-07-28 00:00:00'),
 (46, 44, 11, NULL, 'Insert coin vendo machine', 'djkfnsdkjfnjksdfnkjsdnf', 26, 'ASKJDBJ334XC', 20000, '2023-07-28 10:25:28', '2023-07-28 23:35:00');
 
@@ -289,7 +299,7 @@ CREATE TABLE `logs` (
   `Activity` varchar(300) NOT NULL,
   `date` varchar(20) NOT NULL,
   `time` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `logs`
@@ -325,7 +335,56 @@ INSERT INTO `logs` (`LogsID`, `usersID`, `branchID`, `Activity`, `date`, `time`)
 (88, 43, 10, 'Item Transaction Code <b><u>:July838-564-435 </u></b> Sold <b>1</b> x in amount of <b>₱ 10000</b> by using <b>Cash</b> from customer : <b>Steffi Wong</b>,  Contact # : <b>09550636794</b> . <br> - Branch Maniger', 'July 27, 2023', '11:20 pm'),
 (89, 45, 10, 'Edited Inventory Details of Inventory Name : <b>Automatic Tubig Machine</b> with product code : <b>HFBHSDBVH42333</b> - Inventory Maniger', 'July 28, 2023', '2:37 am'),
 (90, 45, 10, 'Added new Assemble Inventory Named :<b>Create Automatic Tubig Machine</b> for this Branch - Inventory Maniger', 'July 28, 2023', '2:38 am'),
-(91, 43, 10, 'Inventory \"Create Automatic Tubig Machine\" is Set to Asembly and Performing Procedures  - Branch Staff', 'July 28, 2023', '2:47 am');
+(91, 43, 10, 'Inventory \"Create Automatic Tubig Machine\" is Set to Asembly and Performing Procedures  - Branch Staff', 'July 28, 2023', '2:47 am'),
+(92, 43, 10, 'Inventory \"Create Automatic Tubig Machine\" is Set to Asembly and Performing Procedures  - Branch Staff', 'July 31, 2023', '3:09 pm'),
+(93, 43, 10, ' Inventory \"Create Automatic Tubig Machine\" Finished Succesfully and Produced 3 x - Branch Staff', 'July 31, 2023', '3:09 pm'),
+(94, 43, 10, 'Inventory \"Create Automatic Tubig Machine\" is Set to Asembly and Performing Procedures  - Branch Staff', 'July 31, 2023', '3:09 pm'),
+(95, 43, 10, ' Inventory \"Create Automatic Tubig Machine\" Finished Succesfully and Produced 3 x - Branch Staff', 'July 31, 2023', '3:09 pm'),
+(96, 43, 10, ' Inventory \"Create Automatic Tubig Machine\" Finished Succesfully and Produced 3 x - Branch Staff', 'July 31, 2023', '3:38 pm'),
+(97, 43, 10, 'Inventory \"Create Automatic Tubig Machine\" is Set to Asembly and Performing Procedures  - Branch Staff', 'July 31, 2023', '3:39 pm'),
+(98, 43, 10, 'Inventory \"Create Automatic Tubig Machine\" is Set to Asembly and Performing Procedures  - Branch Staff', 'July 31, 2023', '4:53 pm'),
+(99, 43, 10, 'Inventory \"Create Automatic Tubig Machine\" is Set to Asembly and Performing Procedures  - Branch Staff', 'July 31, 2023', '5:00 pm'),
+(100, 43, 10, 'Inventory is Set to Standby and Ready to perform procedures  - Branch Staff', 'July 31, 2023', '5:00 pm'),
+(101, 43, 10, 'Inventory is Set to Standby and Ready to perform procedures  - Branch Staff', 'July 31, 2023', '5:00 pm'),
+(102, 43, 10, 'Inventory \"Create Automatic Tubig Machine\" is Set to Asembly and Performing Procedures  - Branch Staff', 'July 31, 2023', '5:00 pm'),
+(103, 43, 10, ' Inventory \"Create Automatic Tubig Machine\" Finished Succesfully and Produced 3 x - Branch Staff', 'July 31, 2023', '5:01 pm'),
+(104, 43, 10, 'Inventory \"Create Automatic Tubig Machine\" is Set to Assemble and Performing Procedures - Branch Staff', 'July 31, 2023', '5:01 pm'),
+(105, 43, 10, ' Inventory \"Create Automatic Tubig Machine\" Finished Succesfully and Produced 3 x - Branch Staff', 'July 31, 2023', '5:01 pm'),
+(106, 43, 10, 'Inventory \"Create Automatic Tubig Machine\" is Set to Assemble and Performing Procedures - Branch Staff', 'July 31, 2023', '5:07 pm'),
+(107, 43, 10, 'Inventory is Set to Standby and Ready to perform procedures  - Branch Staff', 'July 31, 2023', '5:07 pm'),
+(108, 46, 10, 'Item Transaction Code <b><u>:July308-822-490 </u></b> Sold <b>1</b> x in amount of <b>₱ 10000</b> by using <b>Cash</b> from customer : <b>Steffi Wong</b>,  Contact # : <b>09263359096</b> . <br> - Branch Maniger', 'July 31, 2023', '8:45 pm'),
+(109, 45, 10, 'Created 1 x of Inventory Name : <b>setge</b> with product code of <b>2484</b> and price tag <b>₱ 1296</b> - Inventory Maniger', 'July 31, 2023', '8:47 pm'),
+(110, 45, 10, 'One Unessesary inventory has been Deleted - Inventory Maniger', 'July 31, 2023', '8:47 pm'),
+(111, 45, 10, 'Added new Assemble Inventory Named :<b>Cre</b> for this Branch - Inventory Maniger', 'July 31, 2023', '8:48 pm'),
+(112, 45, 10, 'Added new Assemble Inventory Named :<b>Create Au</b> for this Branch - Inventory Maniger', 'July 31, 2023', '8:58 pm'),
+(113, 45, 10, 'You Deleted 1 Assembly - Inventory Maniger', 'July 31, 2023', '9:00 pm'),
+(114, 45, 10, 'You Deleted 1 Assembly - Inventory Maniger', 'July 31, 2023', '9:01 pm'),
+(115, 46, 10, 'Item Transaction Code <b><u>:July165-278-233 </u></b> Sold <b>1</b> x in amount of <b>₱ 300</b> by using <b>Cash</b> from customer : <b>Steffi Wong</b>,  Contact # : <b>09263359096</b> . <br> - Branch Manager', 'July 31, 2023', '9:25 pm'),
+(116, 46, 10, 'Item Transaction Code <b><u>:August470-246-660 </u></b> Sold <b>1</b> x in amount of <b>₱ 300</b> by using <b>Gcash</b> from customer : <b>4y7w4</b>,  Contact # : <b>034645</b> . <br> - Branch Manager', 'August 1, 2023', '6:16 am'),
+(117, 46, 10, 'Modify New Branch Staff with specific role of code 3 - Branch Manager', 'August 1, 2023', '6:25 am'),
+(118, 46, 10, 'Modify New Branch Staff with specific role of code 2 - Branch Manager', 'August 1, 2023', '6:26 am'),
+(119, 46, 10, 'Modify New Branch Staff with specific role of code 3 - Branch Manager', 'August 1, 2023', '6:26 am'),
+(120, 46, 10, 'Modify New Branch Staff with specific role of code 2 - Branch Manager', 'August 1, 2023', '6:26 am'),
+(121, 46, 10, 'Modify New Branch Staff with specific role of code 3 - Branch Manager', 'August 1, 2023', '6:27 am'),
+(122, 46, 10, 'Modify New Branch Staff with specific role of code 2 - Branch Manager', 'August 1, 2023', '6:35 am'),
+(123, 46, 10, 'Created New inventory Name :<b>M</b> with Product code of <b>7489</b> and Price tag of <b>₱ 468</b>  - Branch Manager', 'August 1, 2023', '6:40 am'),
+(124, 46, 10, 'Updated Details of  inventory Name :<b>M</b> with Product code :<b>7489</b>  - Branch Manager', 'August 1, 2023', '6:40 am'),
+(125, 46, 10, 'The One Item Has been Deleted  - Branch Manager', 'August 1, 2023', '6:40 am'),
+(126, 46, 10, 'Created New inventory Name :<b>rwywr</b> with Product code of <b>84985</b> and Price tag of <b>₱ 456</b>  - Branch Manager', 'August 1, 2023', '6:41 am'),
+(127, 46, 10, 'The One Item Has been Deleted  - Branch Manager', 'August 1, 2023', '6:41 am'),
+(128, 46, 10, 'Add New Branch Staff with specific role of code 3 - Branch Manager', 'August 1, 2023', '7:03 am'),
+(129, 46, 10, 'Item Transaction Code <b><u>:August233-442-234 </u></b> Sold <b>1</b> x in amount of <b>₱ 300</b> by using <b>Gcash</b> from customer : <b>dwsqa</b>,  Contact # : <b>12312</b> . <br> - Branch Manager', 'August 1, 2023', '7:58 am'),
+(130, 45, 10, 'Edited Inventory Details of Inventory Name : <b>Coin Slot</b> with product code : <b>HSADJHASBD</b> - Inventory Maniger', 'August 1, 2023', '8:19 am'),
+(131, 45, 10, 'Added new Assemble Inventory Named :<b>rew</b> for this Branch - Inventory Maniger', 'August 1, 2023', '8:25 am'),
+(132, 45, 10, 'Update Assemble Details of Inventory Named :<b>rew</b> for this Branch - Inventory Maniger', 'August 1, 2023', '8:25 am'),
+(133, 45, 10, 'You Deleted 1 Assembly - Inventory Maniger', 'August 1, 2023', '8:25 am'),
+(134, 45, 10, 'Created 456 x of Inventory Name : <b>set</b> with product code of <b>2484</b> and price tag <b>₱ 456456</b> - Inventory Maniger', 'August 1, 2023', '9:34 am'),
+(135, 45, 10, 'One Unessesary inventory has been Deleted - Inventory Maniger', 'August 1, 2023', '9:34 am'),
+(136, 45, 10, 'Added new Assemble Inventory Named :<b>rew</b> for this Branch - Inventory Maniger', 'August 1, 2023', '9:35 am'),
+(137, 45, 10, 'You Deleted 1 Assembly - Inventory Maniger', 'August 1, 2023', '9:35 am'),
+(138, 46, 10, 'Modify New Branch Staff with specific role of code 3 - Branch Manager', 'August 1, 2023', '10:19 am'),
+(139, 46, 10, 'Modify New Branch Staff with specific role of code 2 - Branch Manager', 'August 1, 2023', '10:19 am'),
+(140, 46, 10, 'Modify New Branch Staff with specific role of code 3 - Branch Manager', 'August 1, 2023', '10:22 am');
 
 -- --------------------------------------------------------
 
@@ -346,7 +405,7 @@ CREATE TABLE `settings` (
   `product_control` int(11) NOT NULL,
   `latetimein_morning` varchar(30) NOT NULL,
   `latetimein_afternoon` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `settings`
@@ -376,20 +435,20 @@ CREATE TABLE `users` (
   `code` int(11) NOT NULL,
   `status` text NOT NULL,
   `roles` int(1) DEFAULT 2
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`usersID`, `username`, `profile`, `cover_photo`, `usersFirstName`, `usersLastName`, `age`, `Address`, `CellNumber`, `email`, `password`, `code`, `status`, `roles`) VALUES
-(3, 'Aragon123_', '', '', 'Fernando', 'Aragon', 21, 'j,a gamboa drive putik zamboanga city', '09358250452', 'argonfernando453@gmail.com', '$2y$10$h4RJUkT46z2z/gCHTJOPzObzv.UDa2Zt2uhOhI1DLNWyxnQ90yjhq', 0, 'verified', 1),
+(3, 'Aragon123', 'fayeed_logo-removebg-preview (1).png', 'fayeedcover.png', 'Fern', 'Aragon', 21, 'j,a gamboa drive putik zamboanga city', '09358250452', 'argonfernando453@gmail.com', '$2y$10$h4RJUkT46z2z/gCHTJOPzObzv.UDa2Zt2uhOhI1DLNWyxnQ90yjhq', 0, 'verified', 1),
 (13, 'Aragon123_s', 'Index 1.png', 'https://c4.wallpaperflare.com/wallpaper/767/612/930/nature-landscape-trees-digital-art-wallpaper-preview.jpg', 'Arag', 'Gonnnnnn', 212, 'Basque', '09358250452', 'argon4458@gmail.com', '$2y$10$M6ieaMj5D6ORrpYQ/Xc9eO38uspDqsnWrip9SyU4ql2YXXSI3Tkzq', 0, 'verified', 2),
 (16, 'Keneth123', 'user.png', 'fayeedcover.png', 'Kenneth ', 'Tan', 21, 'ABS CBN', '09358250454', 'tannkenneth1220@gmail.com', '$2y$10$t7fDkHpDQGWEfnSRiYgFiOTmPOpXIuKv7JCHUREPpcmT364k9NBKC', 0, 'verified', 2),
-(30, 'Leo123', 'user.png', 'fayeedcover.png', '', '', NULL, '', NULL, 'olsenfrancisco39@gmail.com', '$2y$10$bVY4nCrZqTZDoSxDXVrg1e6hKLsqVPlpktpwM2L5pOiUsravFdPqK', 933850, 'notverified', 2),
 (43, 'Stefi123', 'fayeed_logo-removebg-preview (1).png', 'https://c4.wallpaperflare.com/wallpaper/365/244/884/uchiha-itachi-naruto-shippuuden-anbu-silhouette-wallpaper-preview.jpg', 'steffi', 'wong', 19, 'tetuan', '09550636794', 'teff.wong@gmail.com', '$2y$10$zwd0QfRKH2j8MkzsXWbPbOnqGQMbM5/c7HDbUZNg4LSHguJGcQ43K', 0, 'verified', 2),
 (44, 'Aragon145', 'sssssss-removebg.png', 'https://c4.wallpaperflare.com/wallpaper/533/163/784/digital-digital-art-artwork-illustration-minimalism-hd-wallpaper-preview.jpg', 'Fern', 'wmsu', 23, 'j,a gamboa drive putik zamboanga city', '935824568', 'gt201900484@wmsu.edu.ph', '$2y$10$rG.87GZGBd/RNO6WPOCBSOTkUhSHfGNje24WiAwBL44PYE3WW.C0i', 0, 'verified', 2),
-(45, 'sampletest.5275', 'doc.jpg', 'fayeedcover.png', 'Sample', 'Staff', 25, 'Falcatan St. Tetuan Zamboanga City', '09550636794', 'sampletest.5275@gmail.com', '$2y$10$auX9k3vpK5492DXLxeAFdukidWBu5JdXAxpCa1sEV6KFNaM4xIPsS', 0, 'verified', 2);
+(45, 'sampletest.5275', 'doc.jpg', 'fayeedcover.png', 'Sample', 'Staff', 25, 'Falcatan St. Tetuan Zamboanga City', '09550636794', 'sampletest.5275@gmail.com', '$2y$10$auX9k3vpK5492DXLxeAFdukidWBu5JdXAxpCa1sEV6KFNaM4xIPsS', 0, 'verified', 2),
+(46, 'Steffi', 'user.png', 'fayeedcover.png', 'steffi', 'wong', 19, 'tetuan zamboanga city', '09123456789', 'wongsteffi@gmail.com', '$2y$10$.1rRLqSWuh1Mxy4AQ5QG6e0ZUCYwHEWd9fxnPH/3VmSAP1hXKYiay', 0, 'verified', 2);
 
 --
 -- Indexes for dumped tables
@@ -481,61 +540,61 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `assembly`
 --
 ALTER TABLE `assembly`
-  MODIFY `assemblyID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `assemblyID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `assembly_inventory`
 --
 ALTER TABLE `assembly_inventory`
-  MODIFY `assembly_inventoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `assembly_inventoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `attendanceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+  MODIFY `attendanceID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
 
 --
 -- AUTO_INCREMENT for table `branches`
 --
 ALTER TABLE `branches`
-  MODIFY `branchID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `branchID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `branch_staff`
 --
 ALTER TABLE `branch_staff`
-  MODIFY `staffID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=111;
+  MODIFY `staffID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=131;
 
 --
 -- AUTO_INCREMENT for table `checkout`
 --
 ALTER TABLE `checkout`
-  MODIFY `checkoutID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `checkoutID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `inventoryId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `inventoryId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `logs`
 --
 ALTER TABLE `logs`
-  MODIFY `LogsID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
+  MODIFY `LogsID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
 
 --
 -- AUTO_INCREMENT for table `settings`
 --
 ALTER TABLE `settings`
-  MODIFY `SettingsId` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `SettingsId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `usersID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `usersID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- Constraints for dumped tables

@@ -231,3 +231,30 @@ delete confirmation, stay toast delete success just add this inside body
         });
     }
 </script>
+
+
+--------------
+Photo save
+-----
+echo $_SESSION['photo_save'] = true;
+header("Location: attendance.php?photo_save=1");
+<?php
+if (isset($_GET['photo_save']) && $_GET['photo_save'] == '1' && isset($_SESSION['photo_save'])) {
+    echo <<<EOL
+        <script>
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'Photo Save Successfully!',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                position: 'top-end',
+                timer: 5000
+            }).then(() => {
+                window.location.href = 'inventorylist.php';
+            });
+        </script>
+    EOL;
+    unset($_SESSION['photo_save']);
+}
+?>

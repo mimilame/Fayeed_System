@@ -48,7 +48,7 @@ $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, user
   font-size: 14px;
   font-weight: 500;
   line-height: 19px;
-  
+
   padding: 17px 29px 17px 17px;
   transition: background 0.3s;
   color: var(--color);
@@ -223,11 +223,28 @@ $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, user
   --pex: -24px;
 }
 
-
-
-
 </style>
 <body>
+<?php
+if (isset($_GET['photo_save']) && $_GET['photo_save'] == '1' && isset($_SESSION['photo_save'])) {
+    echo <<<EOL
+        <script>
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'Photo Save Successfully!',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                position: 'top-end',
+                timer: 5000
+            }).then(() => {
+                window.location.href = 'attendance.php';
+            });
+        </script>
+    EOL;
+    unset($_SESSION['photo_save']);
+}
+?>
     <div id="main-wrapper">
         <div class="nav-header">
             <a href="index.html" class="brand-logo">
@@ -236,7 +253,7 @@ $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, user
                 <h4 class="brand-title"><?php echo $branchde['city']?></h4>
                 <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
             </a>
- 
+
 
             <div class="nav-control">
                 <div class="hamburger">
@@ -245,15 +262,15 @@ $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, user
             </div>
         </div>
         <?php include 'header.php'; include 'sidebar.php'?>
-        
+
         <div class="content-body">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-xl-12 col-xxl-12">
-                        
+
                         <div class="card">
                             <div class="card-header">
-                                <h2 class="card-title">Attendance Pannel > Date : <?php echo $currentDatetransaction?> > Time : <?php echo $currentDateTimetrasaction?></h2> 
+                                <h2 class="card-title">Attendance Pannel > Date : <?php echo $currentDatetransaction?> > Time : <?php echo $currentDateTimetrasaction?></h2>
                             </div>
                             <div class="card-body"><?php
                     if(count($errors) == 1){
@@ -280,18 +297,18 @@ $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, user
                         <?php
                     }
                     ?>
-                                <div class="basic-form"> 
+                                <div class="basic-form">
                                 <form action="" method="post" enctype="multipart/form-data">
 
                                         <div class="form-row">
-                                        
+
                                             <div class="form-group col-md-3">
-                                                
+
                                                 <h5>Attendance Photo</h5><br>
                                                 <img src="../images/attendance/<?php echo $selec3['enrtypic']?>" alt="" width="250px" height="250px">
                                                 <?php if($selec3['enrtypic'] == 'face.gif'){ ?><input type="file"  class="form-control" name="lis_img0"><br>
                                                      <button type="submit" name="morningpic" class="continue-applications"><i class="fi fi-rr-aperture" style="font-size:20px" ></i> Attendance Shot </button> <?php }elseif($selec3['enrtypic'] == 'hourglass.gif'){ echo "<br><br> <h4 class='ml-1' style='color:red;'>Absent Date : ".$currentDatetransaction."</h4>"; } else{ echo " <br><br> <h4 class='ml-1' style='color:red;'>Have a Good Work!! </h4>";}?>
-                                                     
+
                                             </div>
                                             <div class="form-group col-md-9">
                                                     <div class="table-responsive">
@@ -304,7 +321,7 @@ $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, user
                                                                         <th>Morning Time-out</th>
                                                                         <th>Afternoon Time-in </th>
                                                                         <th>Afternoon Time-out</th>
-                                                                        
+
                                                                     </tr>
                                                                 </thead>
 
@@ -318,24 +335,25 @@ $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, user
                                                                             <td><?php echo $attendance['afternoon_out']; ?></td>
                                                                         </tr>
                                                                     <?php }?>
-                                                                    
-                                                                    
+
+
                                                                 </tbody>
-                                                                
+
                                                             </table>
                                                         </div>
-                                               
-                                                
-                                                
+
+
+
                                             </div>
                                         </div>
                                         <hr>
                                         <h3>Time inputs</h3>
                                         <div class="form-row">
-                                        
+
                                             <div class="form-group col-md-3">
-                                                
+
                                                 <button name="morningsignin" class="continue-application" <?php if($selec3['morning_in'] != 0 ){ echo "disabled";}else{  echo $disabled;}?>>
+
                                                     <div>
                                                         <div class="pencil"></div>
                                                         <div class="folder">
@@ -401,20 +419,20 @@ $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, user
                                             </div>
                                             <div class="form-group col-md-3">
                                             <?php if($selec3['morning_in'] == 0){ ?> <button type="submit" name="absent" class="form-control btn btn-danger"><i class="fi fi-rr-user-slash"></i> Set to Absent</button> <?php }?>
-                                            
+
                                             </div>
                                         </div>
-                                        
+
                                 </div><hr>
-                                
+
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
         </div>
-        
+
     </div>
     <script type="text/javascript">
       $(".chosen").chosen();

@@ -533,7 +533,8 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
             $attenID = $_GET['validate_attendance'];
             $attval = mysqli_query($con,"UPDATE attendance SET confirm = 1 WHERE attendanceID = $attenID");
             if($attval){
-                echo "<script>alert('Validate Attendance');window.location.href='target-attendance.php?check_attendance=$attenID'</script>";
+                echo $_SESSION['val_photo'] = true;
+                header("Location: target-attendance.php?check_attendance=" . urlencode($attenID) . "&val_photo=1");
             }else{
                 $errors['att'] = "Can't Validate that Attendance, Please Try Again Later";
             }
@@ -609,7 +610,8 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
     <link href="../vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/sweetalert2.min.css">
+    <!-- standardlight sweetalert2 -->
+    <!-- <link rel="stylesheet" href="../css/sweetalert2.min.css"> -->
 
     <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="../vendor/datatables/css/responsive.dataTables.min.css" rel="stylesheet">

@@ -49,7 +49,8 @@ $pr = mysqli_query($con,"SELECT * FROM users WHERE usersID = $id");
 $profile = mysqli_fetch_assoc($pr);
 if($do != 1){
     if(empty($profile['usersFirstName']) || empty($profile['usersLastName']) || empty($profile['age']) || empty($profile['Address']) || empty($profile['username']) || empty($profile['CellNumber'])){
-        echo "<script>alert('Please update your account credentials');window.location.href='profile.php'</script>";
+        echo $_SESSION['loggedin_success'] = true;
+        header("Location: profile.php?log_success=1");
         }
 }
 date_default_timezone_set('Asia/Manila');
@@ -130,7 +131,8 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                             move_uploaded_file($tempname, $folder);
                             $update = mysqli_query($con,"UPDATE users SET profile='$lis_img0',cover_photo = '$cover', usersFirstName='$first', username='$username', usersLastName='$last', age='$age' , Address='$address', CellNumber='$contact' WHERE usersID =$id ");
                             $update = mysqli_query($con,"UPDATE users SET profile='$lis_img0',cover_photo = '$cover', usersFirstName='$first', username='$username', usersLastName='$last', age='$age' , Address='$address', CellNumber='$contact' WHERE usersID =$id ");
-                            echo "<script>alert('Update Successfully');window.location.href='profile.php'</script>";
+                            echo $_SESSION['update_success'] = true;
+                            header("Location: profile.php?update_success=1");
                 }
         // Profile.php ---------------------------------------------------------------------------------------------------
         // Check-Profile.php ---------------------------------------------------------------------------------------------------
@@ -322,7 +324,8 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
             $logdetail ="One Unessesary inventory has been Deleted - Inventory Maniger";
             $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
             $sh = mysqli_query($con,"DELETE FROM inventory WHERE inventoryId = $delin");
-            echo "<script>alert('Deleted Inventory Successfully');window.location.href = 'inventorylist.php'</script>";
+            echo $_SESSION['delete_inventory_sucess'] = true;
+            header("Location: inventorylist.php?delete_inventory_sucess=1");
         }
         if(isset($_POST['addinventory'])){
 
@@ -370,13 +373,15 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                     $logdetail ="Created $quanty x of Inventory Name : <b>$inventoryname</b> with product code of <b>$code</b> and price tag <b>₱ $price</b> - Inventory Maniger";
                     $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
                     $insert = mysqli_query($con,"INSERT INTO inventory(usersID,branchID,inventoryName,inventoryDesc,inventoryQty,product_code,price) VALUES ('$id','$desigbranch','$inventoryname','$description','$quanty','$code','$price')");
-                    echo "<script>alert('Done Save');window.location.href='add-inventory.php'</script>";
+                    echo $_SESSION['add_inventory_sucess'] = true;
+                    header("Location: inventorylist.php?add_inventory_sucess=1");
                 }else{
                     $logdetail ="Edited Inventory Details of Inventory Name : <b>$inventoryname</b> with product code : <b>$code</b> - Inventory Maniger";
                     $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
                     $insert = mysqli_query($con,"UPDATE inventory SET inventoryName = '$inventoryname', inventoryDesc = '$description', inventoryQty = '$quanty', product_code = '$code', price = '$price' WHERE inventoryId = $invenID");
                     if($insert){
-                        echo "<script>alert('Update Successfully');window.location.href='inventorylist.php'</script>";
+                        echo $_SESSION['update_inventory_sucess'] = true;
+                        header("Location: inventorylist.php?update_inventory_sucess=1");
                     }else{
                         echo "<script>alert('No Update');window.location.href='inventorylist.php'</script>";
                     }
@@ -444,7 +449,8 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                         $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
                         $insert = mysqli_query($con,"INSERT INTO assembly(inventoryId,branchID,usersID,assemblyName,assemblyQuatty) VALUES ('$invenID','$desigbranch','$desigID','$Assemblyname','$quanty')");
                         if($insert){
-                            echo "<script>alert('Assembly $Assemblyname Successfully Created');window.location.href='assemblycompo.php'</script>";
+                            echo $_SESSION['add_assembly_sucess'] = true;
+                            header("Location: assemblylist.php?add_assembly_sucess=1");
                         }else{
                             echo "<script>alert('Assembly $Assemblyname Error');window.location.href='add-assembly.php'</script>";
                         }
@@ -454,7 +460,8 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                     $logdetail ="Update Assemble Details of Inventory Named :<b>$Assemblyname</b> for this Branch - Inventory Maniger";
                         $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
                     $update = mysqli_query($con,"UPDATE assembly set inventoryId ='$invenID', assemblyName = '$Assemblyname', assemblyQuatty = '$quanty' WHERE assemblyID = $editassembly;");
-                    echo "<script>alert('Assembly $Assemblyname Successfully Updated');window.location.href='assemblylist.php'</script>";
+                    echo $_SESSION['update_assembly_sucess'] = true;
+                    header("Location: assemblylist.php?update_assembly_sucess=1");
                 }
             }
         }
@@ -464,7 +471,8 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
             $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
             $del = mysqli_query($con,"DELETE from assembly WHERE assemblyID = $deid");
             if($del){
-                echo "<script>alert('Successfully Deleted');window.location.href='assemblylist.php'</script>";
+                echo $_SESSION['delete_assembly_sucess'] = true;
+                header("Location: assemblylist.php?delete_assembly_sucess=1");
             }else{
                 echo "<script>alert('Error Action ');window.location.href='assemblylist.php'</script>";
             }
@@ -508,7 +516,9 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                 if($editcompon ==""){
                         $insert = mysqli_query($con,"INSERT INTO assembly_inventory (assemblyID,inventory_list,inventory_qty) VALUES ('$assembleID','$inventory','$quanty')");
                         if($insert){
-                            echo "<script>alert('Add Component Success');window.location.href='assemblycompo.php'</script>";
+
+                            echo $_SESSION['add_assemblycompo'] = true;
+                            header("Location: add-assemblycompo.php?components=".urlencode($asmbleId)."&add_assemblycompo=1");
                         }else{
                             $errors['quanty'] = "Please Insert Quantity of Item";
                         }
@@ -521,7 +531,10 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
             $usdasd = $_GET['delets'];
             $selecst = mysqli_query($con,"DELETE FROM assembly_inventory WHERE assembly_inventoryID = $usdasd ");
             if($selecst){
-                echo "<script>alert('Deleted Component ');window.location.href='assemblycompo.php'</script>";
+                echo "<script>alert('Deleted Component ');window.location.href='add-assemblycompo.php?components=".urlencode($asmbleId)."'</script>";
+                echo $_SESSION['delete_assemblycompo'] = true;
+                header("Location: add-assemblycompo.php?components=".urlencode($asmbleId)."&delete_assemblycompo=1");
+
             }else{
                 $errors['quanty'] = "Cant Delete The Component";
             }
@@ -578,7 +591,8 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                 $folder = "../images/attendance/".$lis_img0;
                 move_uploaded_file($tempname, $folder);
                 $update = mysqli_query($con,"UPDATE attendance SET enrtypic = '$lis_img0' WHERE attendanceID = $attendanceID");
-                echo "<script>alert('Photo Save');window.location.href='attendance.php'</script>";
+                echo $_SESSION['photo_save'] = true;
+                header("Location: attendance.php?photo_save=1");
         }
 
         if(isset($_POST['morningsignin'])){
@@ -762,6 +776,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.19/sweetalert2.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
