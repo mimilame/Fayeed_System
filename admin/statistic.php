@@ -33,6 +33,7 @@
                 $totals[] = $row["Total"];
             }
 
+
             // Yearly data query
             $sql2 = "SELECT year, SUM(amount_payment) AS Total FROM checkout GROUP BY year";
             $result2 = $con->query($sql2);
@@ -91,6 +92,25 @@
                                 <script>
                                     var months = <?php echo json_encode($months); ?>;
                                     var totals = <?php echo json_encode($totals); ?>;
+
+// Create an array of month numbers (1 to 12) corresponding to the months array
+var monthNumbers = months.map(month => {
+  // Assuming your $months array contains month names or abbreviations like "January", "February", etc.
+  // You can modify this part accordingly based on your actual data.
+  var date = new Date(month + " 1, <?php echo $transayear; ?>");
+  return date.getMonth() + 1; // Get the month number (1 to 12)
+});
+
+// Sort the months and totals arrays based on the monthNumbers array
+var sortedData = monthNumbers.map((monthNumber, index) => ({
+  month: months[index],
+  total: totals[index],
+  monthNumber: monthNumber
+})).sort((a, b) => a.monthNumber - b.monthNumber);
+
+// Extract the sorted months and totals back into separate arrays
+months = sortedData.map(entry => entry.month);
+totals = sortedData.map(entry => entry.total);
                                     var ctx = document.getElementById('areaChart').getContext('2d');
                                     var areaChart = new Chart(ctx, {
                                         type: 'line', // Use "line" type for Area chart

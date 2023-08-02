@@ -679,24 +679,26 @@ $inlist = mysqli_query($con,"SELECT inventory.product_code,inventory.inventoryNa
         //-------Line Graph for branch staff --------------------------------
         $count = mysqli_num_rows($lllllls);
 
-        $sql = "SELECT CONCAT(YEAR(added), '-', MONTH(added)) AS date_group, SUM(finished_count) AS finished_assemblies, SUM(absences_count) AS absences
-                FROM (
-                    SELECT added, SUM(assemblyQuatty) AS finished_count, 0 AS absences_count
-                    FROM assembly
-                    INNER JOIN branch_staff ON assembly.usersID = branch_staff.usersID
-                    WHERE assembly.assemblyStatus = 'Finished' AND branch_staff.usersID = $id
-                    GROUP BY YEAR(added), MONTH(added)
+        $sql = "SELECT CONCAT(YEAR(added), '-', MONTH(added)) AS date_group,
+        COUNT(*) AS finished_assemblies,
+        SUM(absences_count) AS absences
+        FROM (
+            SELECT added, COUNT(*) AS finished_count, 0 AS absences_count
+            FROM assembly
+            INNER JOIN branch_staff ON assembly.usersID = branch_staff.usersID
+            WHERE assembly.assemblyStatus = 'Finished' AND branch_staff.usersID = $id
+            GROUP BY YEAR(added), MONTH(added)
 
-                    UNION ALL
+            UNION ALL
 
-                    SELECT STR_TO_DATE(dtrdate, '%M %e, %Y') AS added, 0 AS finished_count, COUNT(*) AS absences_count
-                    FROM attendance
-                    INNER JOIN branch_staff ON attendance.usersID = branch_staff.usersID
-                    WHERE attendance.absent = 1 AND branch_staff.usersID = $id
-                    GROUP BY YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y')), MONTH(STR_TO_DATE(dtrdate, '%M %e, %Y'))
-                ) AS combined_data
-                GROUP BY date_group
-                ORDER BY added";
+            SELECT STR_TO_DATE(dtrdate, '%M %e, %Y') AS added, 0 AS finished_count, COUNT(*) AS absences_count
+            FROM attendance
+            INNER JOIN branch_staff ON attendance.usersID = branch_staff.usersID
+            WHERE attendance.absent = 1 AND branch_staff.usersID = $id
+            GROUP BY YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y')), MONTH(STR_TO_DATE(dtrdate, '%M %e, %Y'))
+        ) AS combined_data
+        GROUP BY date_group
+        ORDER BY added";
 
         // Execute the combined query
         $result = mysqli_query($con, $sql);

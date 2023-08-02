@@ -193,6 +193,8 @@
             pointFillColors:['#ffffff'],
             pointStrokeColors: ['#242423'],
             xLabelAngle: 45,
+            smooth: true, // Add this line for curved area chart
+            area: true, // Add this line for curved area chart
         });
     </script>
 </body>

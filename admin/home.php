@@ -43,7 +43,7 @@ $clisttrans = mysqli_num_rows($tranv);
                             <div class="stat-widget-one card-body">
                                 <div class="d-inline-flex flex-wrap">
                                     <i class="bx bxs-bar-chart-square display-5" style="color:#ff6a00;"></i>
-                                    <div class="stat-text pt-3 pl-2">Gross Sales</div>
+                                    <div class="stat-text pt-3 pl-2">Yearly Gross Sales</div>
                                 </div>
                                 <div class="stat-content">
                                     <!-- Add a placeholder for the Morris.js chart -->
@@ -256,6 +256,8 @@ $clisttrans = mysqli_num_rows($tranv);
             pointFillColors:['#ffffff'],
             pointStrokeColors: ['#242423'],
             xLabelAngle: 45,
+            smooth: true, // Add this line for curved area chart
+            area: true, // Add this line for curved area chart
         });
 
 

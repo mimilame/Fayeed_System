@@ -607,9 +607,9 @@ if(isset($_POST['signin'])){
 
                 SELECT
                     STR_TO_DATE(dtrdate, '%M %e, %Y') AS added,
-                    COUNT(*) AS finished_count, -- Use 0 if you want the zero values to be included
+                    0 AS finished_count,
                     0 AS monthly_income,
-                    0 AS absences_count
+                    COUNT(*) AS absences_count
                 FROM attendance
                 WHERE absent = 1 AND branchID = $desigbranch
                 GROUP BY YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y')), MONTH(STR_TO_DATE(dtrdate, '%M %e, %Y'))

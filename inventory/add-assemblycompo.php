@@ -2,7 +2,6 @@
 <body>
 <?php
 if (isset($_GET['add_assemblycompo']) && $_GET['add_assemblycompo'] == '1' && isset($_SESSION['add_assemblycompo'])) {
-
     echo <<<EOL
         <script>
             Swal.fire({
@@ -13,15 +12,15 @@ if (isset($_GET['add_assemblycompo']) && $_GET['add_assemblycompo'] == '1' && is
                 timerProgressBar: true,
                 position: 'top-end',
                 timer: 5000
-            }).then(() => {
+            });
+            setTimeout(function() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const inventoryID = urlParams.get('components');
-                window.location.href = 'add_assemblycompo.php?components=' + encodeURIComponent(inventoryID);
-            });
+                window.location.href = 'add-assemblycompo.php?components=' + encodeURIComponent(inventoryID);
+            }, 5000);
         </script>
     EOL;
     unset($_SESSION['add_assemblycompo']); // Unset the session variable
-
 }
 
 if (isset($_GET['delete_assemblycompo']) && $_GET['delete_assemblycompo'] == '1' && isset($_SESSION['delete_assemblycompo'])) {
@@ -35,12 +34,12 @@ if (isset($_GET['delete_assemblycompo']) && $_GET['delete_assemblycompo'] == '1'
                 timerProgressBar: true,
                 position: 'top-end',
                 timer: 5000
-            }).then(() => {
+            });
+            setTimeout(function() {
                 const urlParams = new URLSearchParams(window.location.search);
                 const inventoryID = urlParams.get('components');
-                // Redirect to add_assemblycompo.php with the inventoryID
-                window.location.href = 'add_assemblycompo.php?components=' + encodeURIComponent(inventoryID);
-            });
+                window.location.href = 'add-assemblycompo.php?components=' + encodeURIComponent(inventoryID);
+            }, 5000);
         </script>
     EOL;
     unset($_SESSION['delete_assemblycompo']);
@@ -197,24 +196,24 @@ if (isset($_GET['delete_assemblycompo']) && $_GET['delete_assemblycompo'] == '1'
       $(".chosen").chosen();
 </script>
 <script>
-        function showInventoryDeleteConfirmation(assembly_inventoryID) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this. Are you sure you want to delete this inventory?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete',
-                cancelButtonText: 'No, cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // If the user confirms, redirect to the delete page
-                    window.location.href = `add-assemblycompo.php?delets==${assembly_inventoryID}`;
-                }
-            });
-        }
-    </script>
+    function showInventoryDeleteConfirmation(assembly_inventoryID) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this. Are you sure you want to delete this inventory?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete',
+            cancelButtonText: 'No, cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If the user confirms, redirect to the delete page
+                window.location.href = `add-assemblycompo.php?delets=${assembly_inventoryID}`;
+            }
+        });
+    }
+</script>
 <script src="../vendor/global/global.min.js"></script>
     <script src="../js/quixnav-init.js"></script>
     <script src="../js/custom.min.js"></script>

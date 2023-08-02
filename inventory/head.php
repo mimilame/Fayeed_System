@@ -493,12 +493,15 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
         }
 
 
-        if(isset($_GET['components'])){
-            $asmbleId  = $_GET['components'];
-            $select = mysqli_query($con,"SELECT * from assembly WHERE assemblyID = $asmbleId;");
+        if (isset($_GET['components'])) {
+            $asmbleId = $_GET['components'];
+            // Retrieve the 'components' parameter value from the URL and store it in a session variable
+            $_SESSION['currentComponent'] = $asmbleId;
+
+            $select = mysqli_query($con, "SELECT * from assembly WHERE assemblyID = $asmbleId;");
             $aseble = mysqli_fetch_assoc($select);
-            $assembleID  = $aseble['assemblyID'];
-            $asscompo = mysqli_query($con,"SELECT inventory.inventoryName, assembly_inventory.inventory_qty, assembly_inventory.assemblyID, assembly_inventory.assembly_inventoryID from assembly_inventory  join inventory on inventory.inventoryId = assembly_inventory.inventory_list WHERE assembly_inventory.assemblyID = $assembleID");
+            $assembleID = $aseble['assemblyID'];
+            $asscompo = mysqli_query($con, "SELECT inventory.inventoryName, assembly_inventory.inventory_qty, assembly_inventory.assemblyID, assembly_inventory.assembly_inventoryID from assembly_inventory  join inventory on inventory.inventoryId = assembly_inventory.inventory_list WHERE assembly_inventory.assemblyID = $assembleID");
         }
         if(isset($_POST['compoassembly'])){
             if($_POST['inventory'] == "#"){
@@ -527,15 +530,16 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                 }
             }
         }
-        if(isset($_GET['delets'])){
+        if (isset($_GET['delets'])) {
             $usdasd = $_GET['delets'];
-            $selecst = mysqli_query($con,"DELETE FROM assembly_inventory WHERE assembly_inventoryID = $usdasd ");
-            if($selecst){
-                echo "<script>alert('Deleted Component ');window.location.href='add-assemblycompo.php?components=".urlencode($asmbleId)."'</script>";
-                echo $_SESSION['delete_assemblycompo'] = true;
-                header("Location: add-assemblycompo.php?components=".urlencode($asmbleId)."&delete_assemblycompo=1");
-
-            }else{
+            $selecst = mysqli_query($con, "DELETE FROM assembly_inventory WHERE assembly_inventoryID = $usdasd ");
+            if ($selecst) {
+                // Retrieve the 'components' parameter value from the session variable
+                $asmbleId = $_SESSION['currentComponent'];
+                $_SESSION['delete_assemblycompo'] = true;
+                header("Location: add-assemblycompo.php?components=" . urlencode($asmbleId) . "&delete_assemblycompo=1");
+                exit; // Add an exit to terminate the script after the header redirection
+            } else {
                 $errors['quanty'] = "Cant Delete The Component";
             }
         }
@@ -685,15 +689,14 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
         $sql = "SELECT
         CONCAT(YEAR(added), '-', MONTH(added)) AS date_group,
         SUM(finished_count) AS finished_count,
-        SUM(absences_count) AS absences_count,
-        SUM(monthly_alerts_count) AS monthly_alerts_count
-    FROM
-        (
+        SUM(monthly_alerts_count) AS monthly_alerts_count,
+        SUM(absences_count) AS absences_count
+        FROM (
             SELECT
                 added,
                 COUNT(*) AS finished_count,
-                0 AS absences_count,
-                0 AS monthly_alerts_count
+                0 AS monthly_alerts_count,
+                0 AS absences_count
             FROM assembly
             WHERE assemblyStatus = 'Finished' AND branchID = $desigbranch
             GROUP BY YEAR(added), MONTH(added)
@@ -701,10 +704,10 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
             UNION ALL
 
             SELECT
-                CONCAT(YEAR(added_date), '-', MONTH(added_date)) AS date_group,
+                added_date AS added,
                 0 AS finished_count,
-                0 AS absences_count,
-                SUM(inventoryQty < $cprocontrol) AS monthly_alerts_count
+                SUM(inventoryQty < $cprocontrol) AS monthly_alerts_count,
+                0 AS absences_count
             FROM inventory
             WHERE branchID = $desigbranch
             GROUP BY YEAR(added_date), MONTH(added_date)
@@ -712,33 +715,33 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
             UNION ALL
 
             SELECT
-                CONCAT(YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y')), '-', MONTH(STR_TO_DATE(dtrdate, '%M %e, %Y'))) AS date_group,
+                STR_TO_DATE(dtrdate, '%M %e, %Y') AS added,
                 0 AS finished_count,
-                COUNT(*) AS absences_count,
-                0 AS monthly_alerts_count
+                0 AS monthly_alerts_count,
+                COUNT(*) AS absences_count
             FROM attendance
             INNER JOIN branch_staff ON attendance.usersID = branch_staff.usersID
             WHERE attendance.absent = 1 AND branch_staff.usersID = $id
             GROUP BY YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y')), MONTH(STR_TO_DATE(dtrdate, '%M %e, %Y'))
+
         ) AS combined_data
-    GROUP BY date_group
-    ORDER BY date_group";
+        GROUP BY date_group
+        ORDER BY added";
 
         // Execute the combined query
         $result = mysqli_query($con, $sql);
 
+
         $dataCombined = array();
         while ($row = mysqli_fetch_assoc($result)) {
-            // Check if date_group is not null before adding to the array
-            if ($row['date_group'] !== null) {
-                $dataCombined[] = array(
-                    'date_group' => $row['date_group'],
-                    'finished_assemblies' => $row['finished_count'],
-                    'monthly_alerts' => $row['monthlyAlerts_count'],
-                    'absences' => $row['absences_count'],
-                );
-            }
+            $dataCombined[] = array(
+                'date_group' => $row['date_group'],
+                'finished_assemblies' => $row['finished_count'],
+                'monthly_alerts' => $row['monthly_alerts_count'],
+                'absences' => $row['absences_count'],
+            );
         }
+
 
 
         // Encode the combined data into JSON format
