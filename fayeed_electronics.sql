@@ -1,5 +1,5 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
@@ -28,10 +28,13 @@ USE `fayeed_electronics`;
 --
 -- Table structure for table `assembly`
 --
+-- Creation: Jul 29, 2023 at 09:31 PM
+-- Last update: Aug 01, 2023 at 11:27 PM
+--
 
 DROP TABLE IF EXISTS `assembly`;
 CREATE TABLE IF NOT EXISTS `assembly` (
-  `assemblyID` int(11) NOT NULL AUTO_INCREMENT,
+  `assemblyID` int(11) NOT NULL,
   `inventoryId` int(11) NOT NULL,
   `branchID` int(11) NOT NULL,
   `usersID` int(11) NOT NULL,
@@ -63,10 +66,13 @@ DELIMITER ;
 --
 -- Table structure for table `assembly_inventory`
 --
+-- Creation: Jul 29, 2023 at 09:31 PM
+-- Last update: Aug 01, 2023 at 11:25 PM
+--
 
 DROP TABLE IF EXISTS `assembly_inventory`;
 CREATE TABLE IF NOT EXISTS `assembly_inventory` (
-  `assembly_inventoryID` int(11) NOT NULL AUTO_INCREMENT,
+  `assembly_inventoryID` int(11) NOT NULL,
   `assemblyID` int(11) NOT NULL,
   `inventory_list` int(11) NOT NULL,
   `inventory_qty` int(11) NOT NULL,
@@ -80,10 +86,13 @@ CREATE TABLE IF NOT EXISTS `assembly_inventory` (
 --
 -- Table structure for table `attendance`
 --
+-- Creation: Jul 29, 2023 at 09:31 PM
+-- Last update: Aug 01, 2023 at 11:31 PM
+--
 
 DROP TABLE IF EXISTS `attendance`;
 CREATE TABLE IF NOT EXISTS `attendance` (
-  `attendanceID` int(11) NOT NULL AUTO_INCREMENT,
+  `attendanceID` int(11) NOT NULL,
   `branchID` int(11) NOT NULL,
   `usersID` int(11) NOT NULL,
   `enrtypic` varchar(100) DEFAULT 'face.gif',
@@ -104,10 +113,12 @@ CREATE TABLE IF NOT EXISTS `attendance` (
 --
 -- Table structure for table `branches`
 --
+-- Creation: Jul 29, 2023 at 09:31 PM
+--
 
 DROP TABLE IF EXISTS `branches`;
 CREATE TABLE IF NOT EXISTS `branches` (
-  `branchID` int(11) NOT NULL AUTO_INCREMENT,
+  `branchID` int(11) NOT NULL,
   `usersID` int(11) NOT NULL,
   `Branch_Name` varchar(100) NOT NULL,
   `Branch_Address` varchar(100) NOT NULL,
@@ -125,10 +136,13 @@ CREATE TABLE IF NOT EXISTS `branches` (
 --
 -- Table structure for table `branch_staff`
 --
+-- Creation: Jul 29, 2023 at 09:31 PM
+-- Last update: Aug 01, 2023 at 11:26 PM
+--
 
 DROP TABLE IF EXISTS `branch_staff`;
 CREATE TABLE IF NOT EXISTS `branch_staff` (
-  `staffID` int(11) NOT NULL AUTO_INCREMENT,
+  `staffID` int(11) NOT NULL,
   `branchID` int(11) NOT NULL,
   `usersID` int(11) NOT NULL,
   `assigndby` int(11) DEFAULT NULL,
@@ -144,10 +158,12 @@ CREATE TABLE IF NOT EXISTS `branch_staff` (
 --
 -- Table structure for table `checkout`
 --
+-- Creation: Jul 29, 2023 at 09:31 PM
+--
 
 DROP TABLE IF EXISTS `checkout`;
 CREATE TABLE IF NOT EXISTS `checkout` (
-  `checkoutID` int(11) NOT NULL AUTO_INCREMENT,
+  `checkoutID` int(11) NOT NULL,
   `branchID` int(11) NOT NULL,
   `usersID` int(11) NOT NULL,
   `inventoryId` int(11) NOT NULL,
@@ -173,6 +189,9 @@ CREATE TABLE IF NOT EXISTS `checkout` (
 --
 -- Table structure for table `inventory`
 --
+-- Creation: Jul 29, 2023 at 09:31 PM
+-- Last update: Aug 01, 2023 at 11:29 PM
+--
 
 DROP TABLE IF EXISTS `inventory`;
 CREATE TABLE IF NOT EXISTS `inventory` (
@@ -197,10 +216,13 @@ CREATE TABLE IF NOT EXISTS `inventory` (
 --
 -- Table structure for table `logs`
 --
+-- Creation: Jul 29, 2023 at 09:31 PM
+-- Last update: Aug 01, 2023 at 11:29 PM
+--
 
 DROP TABLE IF EXISTS `logs`;
 CREATE TABLE IF NOT EXISTS `logs` (
-  `LogsID` int(11) NOT NULL AUTO_INCREMENT,
+  `LogsID` int(11) NOT NULL,
   `usersID` int(11) NOT NULL,
   `branchID` int(11) NOT NULL,
   `Activity` varchar(300) NOT NULL,
@@ -216,10 +238,12 @@ CREATE TABLE IF NOT EXISTS `logs` (
 --
 -- Table structure for table `settings`
 --
+-- Creation: Jul 29, 2023 at 09:31 PM
+--
 
 DROP TABLE IF EXISTS `settings`;
 CREATE TABLE IF NOT EXISTS `settings` (
-  `SettingsId` int(11) NOT NULL AUTO_INCREMENT,
+  `SettingsId` int(11) NOT NULL,
   `System_Name` varchar(255) NOT NULL,
   `System_Email` varchar(255) NOT NULL,
   `System_number` varchar(255) NOT NULL,
@@ -246,10 +270,12 @@ INSERT INTO `settings` (`SettingsId`, `System_Name`, `System_Email`, `System_num
 --
 -- Table structure for table `users`
 --
+-- Creation: Jul 29, 2023 at 09:31 PM
+--
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
-  `usersID` int(11) NOT NULL AUTO_INCREMENT,
+  `usersID` int(11) NOT NULL,
   `username` varchar(100) DEFAULT NULL,
   `profile` varchar(255) DEFAULT 'user.png',
   `cover_photo` varchar(255) DEFAULT 'fayeedcover.png',
