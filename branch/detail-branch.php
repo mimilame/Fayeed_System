@@ -1,6 +1,68 @@
 <?php include 'head.php';
 $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, users.email ,users.profile,users.usersID,  branch_staff.roles, branch_staff.staffID, branches.Branch_Name from branch_staff join users on  branch_staff.usersID = users.usersID join branches on branches.branchID = branch_staff.branchID where branches.branchID = $desigbranch")?>
 <body>
+<?php
+    if (isset($_GET['appointuser']) && $_GET['appointuser'] == '1' && isset($_SESSION['appointuser'])) {
+        echo <<<EOL
+            <script>
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: 'Appoint Successfully',
+                    showConfirmButton: false,
+                    position: 'top-end',
+                    timerProgressBar: true,
+                    timer: 5000
+                }).then(() => {
+                    // Get the branchID from the URL using URLSearchParams
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const branchID = urlParams.get('branch');
+                    // Redirect to detail-branch.php with the branchID
+                    window.location.href = 'detail-branch.php?branch=' + encodeURIComponent(branchID);
+                });
+            </script>
+        EOL;
+        unset($_SESSION['appointuser']);
+    } if (isset($_GET['changuser']) && $_GET['changuser'] == '2' && isset($_SESSION['changuser'])) {
+        echo <<<EOL
+            <script>
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'Role Set to Staff',
+                showConfirmButton: false,
+                position: 'top-end',
+                timerProgressBar: true,
+                timer: 5000
+            }).then(() => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const branchID = urlParams.get('branch');
+                window.location.href = 'detail-branch.php?branch=' + encodeURIComponent(branchID);
+            });
+            </script>
+        EOL;
+        unset($_SESSION['changuser']);
+    } if (isset($_GET['changuser']) && $_GET['changuser'] == '3' && isset($_SESSION['changuser'])) {
+        echo <<<EOL
+            <script>
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'Role Set to Inventory Admin',
+                showConfirmButton: false,
+                position: 'top-end',
+                timerProgressBar: true,
+                timer: 5000
+            }).then(() => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const branchID = urlParams.get('branch');
+                window.location.href = 'detail-branch.php?branch=' + encodeURIComponent(branchID);
+            });
+            </script>
+        EOL;
+        unset($_SESSION['changuser']);
+    }
+?>
     <div id="main-wrapper">
         <div class="nav-header">
             <a href="index.html" class="brand-logo">
@@ -31,7 +93,7 @@ $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, user
 
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">Branch Details</h4> <a href="branches.php" class="btn btn-primary">Back</a>
+                                <h4 class="card-title">Branch Details</h4>
                             </div>
                             <div class="card-body"><?php
                     if(count($errors) == 1){
@@ -112,7 +174,7 @@ $emp = mysqli_query($con,"SELECT users.usersFirstName, users.usersLastName, user
                                                 <td><?php if($administratorss['email']==""){ echo ".........";}else{echo $administratorss['email'];}?></td>
                                                 <td><?php if($administratorss['CellNumber']==""){ echo ".........";}else{echo $administratorss['CellNumber'];}?></td>
                                                 <td><?php if($administratorss['roles']==1){ echo " Branch Manager ";}elseif($administratorss['roles']==2) { echo " Inventory Admin ";}else{ echo "Branch Staff";}?></td>
-                                                <td><a href="check-profile.php?profile=<?php echo $administratorss['usersID']?>"><i class="fi fi-rr-user btn btn-primary"></i></a> <?php if($administratorss['usersID'] != $id){ ?> <a href="detail-branch.php?changerole=<?php echo $administratorss['staffID'] ?>"><i class="fi fi-rr-shuffle btn btn-secondary"></i></a> <?php }?> </td>
+                                                <td><a href="check-profile.php?profile=<?php echo $administratorss['usersID']?>"><i class="fi fi-rr-user btn btn-primary"></i></a> <?php if($administratorss['usersID'] != $id){ ?> <a href="detail-branch.php?branch=<?php echo $desigbranch; ?>&changerole=<?php echo $administratorss['staffID']; ?>"><i class="fi fi-rr-shuffle btn btn-secondary"></i></a> <?php }?> </td>
                                             </tr>
                                             <?php }?>
 

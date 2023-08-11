@@ -26,7 +26,7 @@
                 target: 0
             }
         ],
-        order: [1, 'asc'],
+        order: [1, 'desc'],
 
     });
 
@@ -56,7 +56,7 @@
                 target: 0
             }
         ],
-        order: [1, 'asc'],
+        order: [1, 'desc'],
 
     });
 
@@ -90,7 +90,7 @@
         lengthChange: false,   // Disable the "Show X entries" dropdown
         searching: false,      // Disable the search bar
 
-        order: [1, 'asc'],
+        order: [1, 'desc'],
 
     });
 

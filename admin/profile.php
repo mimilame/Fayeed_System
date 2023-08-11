@@ -1,5 +1,37 @@
 <?php $do = 1; include 'head.php'?>
+
 <body>
+<?php
+    if (isset($_GET['log_success']) && $_GET['log_success'] == '1' && isset($_SESSION['loggedin_success'])) {
+        echo <<<EOL
+            <script>
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Please update your account credentials\\nand don't forget to update your settings!',
+                    showConfirmButton: true,
+                    timer: 5000
+                }).then(() => {
+                    window.location.href = 'profile.php';
+                });
+            </script>
+        EOL;
+        unset($_SESSION['loggedin_success']);
+    } elseif (isset($_GET['update_success']) && $_GET['update_success'] == '1' && isset($_SESSION['update_success'])) {
+        echo <<<EOL
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Updated Successfully!',
+                    showConfirmButton: false,
+                    timer: 5000
+                }).then(() => {
+                    window.location.href = 'profile.php';
+                });
+            </script>
+        EOL;
+        unset($_SESSION['update_success']);
+    }
+?>
     <div id="main-wrapper">
         <div class="nav-header">
             <a href="index.html" class="brand-logo">
@@ -15,7 +47,7 @@
             </div>
         </div>
         <?php include 'header.php'; include 'sidebar.php'?>
-        
+
      <!--**********************************
             Content body start
         ***********************************-->
@@ -27,12 +59,6 @@
                             <h4><?php echo $formattedDate; ?></h4>
                             <p class="mb-0">Your Account Profile </p>
                         </div>
-                    </div>
-                    <div class="col-sm-6 p-md-0 justify-content-sm-end mt-2 mt-sm-0 d-flex">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="javascript:void(0)">App</a></li>
-                            <li class="breadcrumb-item active"><a href="javascript:void(0)">Profile</a></li>
-                        </ol>
                     </div>
                 </div>
                 <!-- row -->
@@ -47,7 +73,7 @@
                                     <div class="cover-photo"></div>
                                     <div class="profile-photo">
                                         <img id="defaultImage" src="../images/users/<?php echo $profile['profile']?>" class="img-fluid rounded-circle" alt="">
-                                        <img id="imagePreview"  width="200px" hieght="200px" > 
+                                        <img id="imagePreview"  width="200px" hieght="200px" >
                                     </div>
                                 </div>
                                 <div class="profile-info">
@@ -144,38 +170,39 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
 
-        
+
         <!--**********************************
             Content body end
         ***********************************-->
-        
+
     </div>
     <script>
-    const defaultImage = document.getElementById('defaultImage');
-    const imageInput = document.getElementById('imageInput');
-    const imagePreview = document.getElementById('imagePreview');
+        const defaultImage = document.getElementById('defaultImage');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
 
-    imageInput.addEventListener('change', function() {
-    const file = this.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-        imagePreview.src = e.target.result;
-        defaultImage.style.display = 'none'; // Hide the default image
-        };
-        reader.readAsDataURL(file);
-    } else {
-        imagePreview.src = '#';
-        defaultImage.style.display = 'inline-block'; // Show the default image
-    }
-    });
+        imageInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+            imagePreview.src = e.target.result;
+            defaultImage.style.display = 'none'; // Hide the default image
+            };
+            reader.readAsDataURL(file);
+        } else {
+            imagePreview.src = '#';
+            defaultImage.style.display = 'inline-block'; // Show the default image
+        }
+        });
 
 
-</script>
+    </script>
+
 
 
 
@@ -189,6 +216,6 @@
     <script src="../vendor/jqvmap/js/jquery.vmap.usa.js"></script>
     <script src="../js/dashboard/dashboard-1.js"></script>
 
-    
+
 </body>
 </html>

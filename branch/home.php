@@ -41,7 +41,7 @@
                             <div class="stat-widget-one card-body">
                                 <div class="d-inline-flex flex-wrap">
                                     <i class="bx bxs-bar-chart-square display-5" style="color:#ff6a00;"></i>
-                                    <div class="stat-text pt-3 pl-2">Stats</div>
+                                    <div class="stat-text pt-3 pl-2">Branch Stats</div>
                                 </div>
                                 <div class="stat-content">
                                     <!-- Add a placeholder for the Morris.js chart -->
@@ -52,7 +52,7 @@
                     </div>
                     <div class="col-lg-4 col-sm-12 d-inline-flex flex-wrap">
                         <div class="col-lg-12 col-sm-6">
-                            <div class="card">
+                            <div class="card" title="Income rendered" data-toggle="tooltip" data-placement="right">
                                 <div class="stat-widget-one card-body">
                                     <i class="fi fi-rr-coins display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
@@ -63,7 +63,7 @@
                             </div>
                         </div>
                         <div class="col-lg-12 col-sm-6">
-                            <div class="card" onclick="window.location.href='assemblylist.php'; return false;">
+                            <div class="card" onclick="window.location.href='assemblylist.php'; return false;"title="Number of Standby Assembly" data-toggle="tooltip" data-placement="right">
                                 <div class="stat-widget-one card-body">
                                     <i class="fi fi-rr-list display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
@@ -74,7 +74,7 @@
                             </div>
                         </div>
                         <div class="col-lg-12 col-sm-6">
-                            <div class="card">
+                            <div class="card" title="Total No. of Inventory" data-toggle="tooltip" data-placement="right">
                                 <div class="stat-widget-one card-body">
                                     <i class="fi fi-rr-layers display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
@@ -85,7 +85,7 @@
                             </div>
                         </div>
                         <div class="col-lg-12 col-sm-6">
-                            <div class="card" onclick="window.location.href='alertproduct.php'; return false;">
+                            <div class="card" onclick="window.location.href='alertproduct.php'; return false;" title="Number of Active Alerts" data-toggle="tooltip" data-placement="right">
                                 <div class="stat-widget-one card-body">
                                 <i class="fi fi-rr-engine-warning display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
@@ -96,7 +96,6 @@
                             </div>
                         </div>
                     </div>
-
 
                 </div>
 
@@ -178,6 +177,12 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
 
     <script>
         var customCSS = document.createElement('style');
@@ -205,6 +210,8 @@
             pointFillColors:['#ffffff'],
             pointStrokeColors: ['#242423'],
             xLabelAngle: 45,
+            smooth: true, // Add this line for curved area chart
+            area: true, // Add this line for curved area chart
         });
     </script>
 

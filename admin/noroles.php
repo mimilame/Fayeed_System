@@ -1,9 +1,90 @@
 <?php include 'head.php';
-if(isset($_GET['deletexx'])){
-    $del = $_GET['deletexx'];
-    $dell = mysqli_query($con,"DELETE from users WHERE usersID = $del");
-    echo "<script>alert('Deleted Successfully');window.location.href='noroles.php'</script>";
-}?>
+    if (isset($_GET['loggedinlobby']) && $_GET['loggedinlobby'] == '1' && isset($_SESSION['loggedinlobby'])) {
+        echo <<<EOL
+            <script>
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: 'Registered Successfully!',
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    position: 'top-end',
+                    timer: 3500
+                }).then(() => {
+                    window.location.href = 'noroles.php';
+                });
+            </script>
+        EOL;
+        unset($_SESSION['loggedinlobby']);
+    }
+    if(isset($_GET['deletexx'])){
+        $del = $_GET['deletexx'];
+        $dell = mysqli_query($con,"DELETE from users WHERE usersID = $del");
+        echo $_SESSION['delete_user'] = true;
+        header("Location: noroles.php?delete_user=1");
+    }
+    if (isset($_GET['delete_user']) && $_GET['delete_user'] == '1' && isset($_SESSION['delete_user'])) {
+        echo <<<EOL
+            <script>
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: 'Deleted Successfully!',
+                    showConfirmButton: false,
+                    position: 'top-end',
+                    timerProgressBar: true,
+                    timer: 5000
+                }).then(() => {
+                    window.location.href = 'noroles.php';
+                });
+            </script>
+        EOL;
+        unset($_SESSION['delete_user']);
+    } if (isset($_GET['add_user']) && $_GET['add_user'] == '2' && isset($_SESSION['add_user'])) {
+        echo <<<EOL
+            <script>
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: 'Deleted Successfully!',
+                    showConfirmButton: false,
+                    position: 'top-end',
+                    timerProgressBar: true,
+                    timer: 5000
+                }).then(() => {
+                    window.location.href = 'noroles.php';
+                });
+            </script>
+        EOL;
+        unset($_SESSION['add_user']);
+    }
+    if ($deletionSuccessful) {
+        $_SESSION['disrole'] = true;
+
+        echo <<<EOL
+            <script>
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: 'User successfully Disroled!',
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    position: 'top-end',
+                    timer: 5000
+                }).then(() => {
+                    // Redirect back to the appropriate page based on the 'page' parameter
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const page = urlParams.get('page');
+                    window.location.href = page;
+                });
+            </script>
+        EOL;
+        unset($_SESSION['disrole']);
+    }
+
+
+?>
+
 <body>
     <div id="main-wrapper">
         <div class="nav-header">
@@ -61,7 +142,9 @@ if(isset($_GET['deletexx'])){
                                                 <td><?php if($administratorss['Address']==""){ echo ".........";}else{echo $administratorss['Address'];}?></td>
                                                 <td><?php if($administratorss['email']==""){ echo ".........";}else{echo $administratorss['email'];}?></td>
                                                 <td><?php if($administratorss['CellNumber']==""){ echo ".........";}else{echo $administratorss['CellNumber'];}?></td>
-                                                <td><a href="check-profile.php?profile=<?php echo $administratorss['usersID']?>"><i class="fi fi-rr-user btn btn-primary"></i></a> <a href="noroles.php?deletexx=<?php echo $administratorss['usersID']?>"><i class="fi fi-rr-trash-xmark btn btn-danger"></i></a></td>
+                                                <td><a href="check-profile.php?profile=<?php echo $administratorss['usersID']?>"><i class="fi fi-rr-user btn btn-primary"></i></a> <a href="#" onclick="showDeleteConfirmation(<?php echo $administratorss['usersID']; ?>)">
+                                                    <i class="fi fi-rr-trash-xmark btn btn-danger"></i>
+                                                </a></td>
                                             </tr>
                                                 <?php }
                                             }
@@ -99,5 +182,26 @@ if(isset($_GET['deletexx'])){
     <script src="../vendor/datatables/js/dataTables.responsive.min.js"></script>
     <script src="../js/plugins-init/datatables-api-init.js"></script>
     <script src="../js/plugins-init/datatables.init.js"></script>
+
+
+    <script>
+    function showDeleteConfirmation(userId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this. Are you sure you want to delete this user?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete',
+            cancelButtonText: 'No, cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If the user confirms, redirect to the delete page
+                window.location.href = `noroles.php?deletexx=${userId}`;
+            }
+        });
+    }
+    </script>
 </body>
 </html>

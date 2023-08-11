@@ -1,5 +1,6 @@
 <?php include 'head.php'?>
 <body>
+
     <div id="main-wrapper">
         <div class="nav-header">
             <a href="index.html" class="brand-logo">
@@ -17,58 +18,59 @@
             </div>
         </div>
         <?php include 'header.php'; include 'sidebar.php'?>
-        
+
         <div class="content-body">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-xl-12 col-xxl-12">
-                        
+
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title"><?php if(count($errors) == 0){ ?><?php if(isset($edit['assemblyName'])){ echo "Update Assembly <b>".$edit['assemblyName']."'s</b> Details";}else{echo "Add New Assembly";} ?> <?php  }?></h4> <a class="btn btn-danger" href="assembyqtyedit.php?cancelssembly=<?php echo $edit['assemblyID'] ?>">Cancel Procedure</a>
                             </div>
-                            <div class="card-body"><?php
-                    if(count($errors) == 1){
-                        ?>
-                        <div class="alert alert-danger text-center">
-                            <?php
-                            foreach($errors as $showerror){
-                                echo $showerror;
-                            }
-                            ?>
-                        </div>
-                        <?php
-                    }elseif(count($errors) > 1){
-                        ?>
-                        <div class="alert alert-danger">
-                            <?php
-                            foreach($errors as $showerror){
-                                ?>
-                                <li><?php echo $showerror; ?></li>
+                            <div class="card-body">
                                 <?php
-                            }
-                            ?>
-                        </div>
-                        <?php
-                    }
-                    if(isset($info)){ ?>
-                        <div class="alert alert-danger">
-                            <?php
-                            echo  $info;
-                            ?>
-                        </div>
-                    <?php }
-                    ?>
-                    
-                                <div class="basic-form"> <?php if(count($errors) == 0){ ?> 
-                                <form action="" method="post" enctype="multipart/form-data">
+                                if(count($errors) == 1){
+                                    ?>
+                                    <div class="alert alert-danger text-center">
+                                        <?php
+                                        foreach($errors as $showerror){
+                                            echo $showerror;
+                                        }
+                                        ?>
+                                    </div>
+                                    <?php
+                                }elseif(count($errors) > 1){
+                                    ?>
+                                    <div class="alert alert-danger">
+                                        <?php
+                                        foreach($errors as $showerror){
+                                            ?>
+                                            <li><?php echo $showerror; ?></li>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
+                                    <?php
+                                }
+                                if(isset($info)){ ?>
+                                    <div class="alert alert-danger">
+                                        <?php
+                                        echo  $info;
+                                        ?>
+                                    </div>
+                                <?php }
+                                ?>
+
+                                <div class="basic-form"> <?php if(count($errors) == 0){ ?>
+                                    <form action="" method="post" enctype="multipart/form-data">
 
                                         <div class="form-row">
                                             <div class="form-group col-md-3" style="display: <?php if($editassembly != ""){ echo "None";}?>;">
                                                 <label>Select Inventory</label>
                                                 <select class="chosen form-control" name="invenID">
                                                     <?php if(isset($edit['inventoryId'])) { ?> <option class="btn-danger" value="<?php echo $edit['inventoryId']?>"><?php echo $edit['inventoryName']?></option> <?php }else{ ?>    <option value="#">Choose Inventory</option><?php } ?>
-                                                  
+
                                                         <?php while($branch = mysqli_fetch_array($inventori)){ ?>
                                                             <option value="<?php echo $branch['inventoryId']?>" ><?php echo $branch['inventoryName']?></option>
                                                         <?php }?>
@@ -84,19 +86,19 @@
                                                 <br>
                                                 <button type="submit" name="assembly" class="btn btn-primary"><?php if(isset($edit['assemblyName'])){ echo "Update Assembly Details and Proceed";}else{echo "Create Assembly inventory";} ?></button>
                                             </div>
-                                            
-                                        
+
+
                                     </form>
                                     <?php  }?>
                                 </div>
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
         </div>
-        
+
     </div>
     <script type="text/javascript">
       $(".chosen").chosen();

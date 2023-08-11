@@ -49,7 +49,8 @@ $pr = mysqli_query($con,"SELECT * FROM users WHERE usersID = $id");
 $profile = mysqli_fetch_assoc($pr);
 if($do != 1){
     if(empty($profile['usersFirstName']) || empty($profile['usersLastName']) || empty($profile['age']) || empty($profile['Address']) || empty($profile['username']) || empty($profile['CellNumber'])){
-        echo "<script>alert('Please update your account credentials');window.location.href='profile.php'</script>";
+        echo $_SESSION['loggedin_success'] = true;
+        header("Location: profile.php?log_success=1");
         }
 }
 date_default_timezone_set('Asia/Manila');
@@ -175,7 +176,8 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
                         $contact = $_POST['controlnumber'];
                             move_uploaded_file($tempname, $folder);
                             $update = mysqli_query($con,"UPDATE users SET profile='$lis_img0',cover_photo = '$cover', usersFirstName='$first', username='$username', usersLastName='$last', age='$age' , Address='$address', CellNumber='$contact' WHERE usersID =$id ");
-                            echo "<script>alert('Update Successfully');window.location.href='profile.php'</script>";
+                            echo $_SESSION['update_success'] = true;
+                            header("Location: profile.php?update_success=1");
                 }
         // Profile.php ---------------------------------------------------------------------------------------------------
         // Check-Profile.php ---------------------------------------------------------------------------------------------------
@@ -191,7 +193,8 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
         if(isset($_GET['delete'])){
             $delete = $_GET['delete'];
             $brans = mysqli_query($con,"DELETE FROM branches WHERE branchID = $delete");
-            echo "<script>alert('Successfully Deleted');window.location.href='branches.php'</script>";
+            echo $_SESSION['delete_branc'] = true;
+            header("Location: branches.php?delete_branc=1");
            }
         if(isset($_GET['branch'])){
         $editbranch = $_GET['branch'];
@@ -231,18 +234,36 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
                 if(count($errors) === 0){
                     $insert = mysqli_query($con,"INSERT INTO branches (usersID, Branch_Name, Branch_Address, city, Branch_Contact_number, branch_email, DateCreated) VALUES($id,'$branch_name','$branch_address','$branch_city','$branch_number','$branch_email','$currentDate')");
                     if($insert){
-                        echo "<script>alert('Branch $branch_name Successfully Created');window.location.href='branches.php'</script>";
+                        echo $_SESSION['addbranch'] = true;
+                        header("Location: branches.php?addbranch=2");
                     }else {
-                        $errors['cant'] = "Cant Save to Database $branch_name";
+                        echo <<<EOL
+                            <script>
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Cant Save to Database $branch_name',
+                                    text: '{$errors['cant']}',
+                                });
+                            </script>
+                        EOL;
                     }
                 }
             }else{
                 if(count($errors) === 0){
                     $insert = mysqli_query($con,"UPDATE branches SET usersID='$id', Branch_Name = '$branch_name', Branch_Address = '$branch_address', city = '$branch_city', Branch_Contact_number = '$branch_number', branch_email  = '$branch_email' WHERE branchID = $editbranch");
                     if($insert){
-                        echo "<script>alert('Branch $branch_name Successfully Updated');window.location.href='branches.php'</script>";
+                        echo $_SESSION['updatedbranch'] = true;
+                        header("Location: branches.php?updatedbranch=1");
                     }else {
-                        $errors['cant'] = "Cant Save to Database $branch_name";
+                        echo <<<EOL
+                            <script>
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Cant Save to Database $branch_name',
+                                    text: '{$errors['cant']}',
+                                });
+                            </script>
+                        EOL;
                     }
                 }
             }
@@ -299,7 +320,8 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
                         $_SESSION['info'] = $info;
                         $_SESSION['email'] = $email;
                         $_SESSION['password'] = $password;
-                        header('location: noroles.php');
+                        echo $_SESSION['add_user'] = true;
+                        header("Location: noroles.php?add_user=2");
                         exit();
                     }else{
                         $errors['otp-error'] = "Failed while sending code!";
@@ -328,7 +350,8 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
             if(count($errors) === 0){
 
                 $insert = mysqli_query($con,"INSERT INTO  branch_staff(branchID,usersID,roles,assigndby) VALUES('$editbranch','$userids','$roles','$id')");
-            echo "<script>alert('Appoint Successfully');window.location.href = 'assign-branch.php?branch=$editbranch'</script>";
+                echo $_SESSION['appointuser'] = true;
+                header("Location: detail-branch.php?branch=" . urlencode($branch['branchID']) . "&appointuser=1");
             }
 
         }
@@ -340,7 +363,8 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
             $number = $_POST['number'];
             $update = mysqli_query($con, "UPDATE Settings SET System_Name='$name', System_Email='$email', System_number='$number' WHERE SettingsId = 1");
             if ($update) {
-               echo "<script>alert('System Update Successfully');window.location.href = 'settings.php'</script>";
+               echo $_SESSION['sys_info'] = true;
+               header("Location: settings.php?sys_info=1");
             } else {
                echo "<script>alert('Error Database');window.location.href = 'settings.php'</script>";
             }
@@ -353,19 +377,22 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
             $port = $_POST['port'];
             $System_link = $_POST['System_link'];
             $update = mysqli_query($con,"UPDATE Settings SET Smtp_email='$smtp',Smatp_password='$pass', Smtp_Provider='$prov',Smtp_port='$port', System_link = '$System_link' WHERE SettingsId = 1");
-            echo "<script>alert('Settings Updated');window.location.href = 'settings.php'</script>";
+            echo $_SESSION['sys_email'] = true;
+            header("Location: settings.php?sys_email=1");
         }
         if(isset($_POST['set3'])){
             $limit = $_POST['limit'];
             $update = mysqli_query($con,"UPDATE Settings SET product_control='$limit' WHERE SettingsId = 1");
-            echo "<script>alert('Settings Updated');window.location.href = 'settings.php'</script>";
+            echo $_SESSION['sys_ctrl'] = true;
+            header("Location: settings.php?sys_ctrl=1");
         }
 
         if(isset($_POST['set4'])){
             $morning = $_POST['morning'];
             $afternoon = $_POST['afternoon'];
             $update = mysqli_query($con,"UPDATE Settings SET latetimein_morning='$morning', latetimein_afternoon='$afternoon' WHERE SettingsId = 1");
-            echo "<script>alert('Settings Updated');window.location.href = 'settings.php'</script>";
+            echo $_SESSION['sys_att'] = true;
+            header("Location: settings.php?sys_att=1");
         }
 
         if(isset($_GET['editinventory'])){
@@ -376,7 +403,8 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
         if(isset($_GET['delnventory'])){
             $delin = $_GET['delnventory'];
             $sh = mysqli_query($con,"DELETE FROM inventory WHERE inventoryId = $delin");
-            echo "<script>alert('Deleted Inventory Successfully');window.location.href = 'inventorylist.php'</script>";
+            echo $_SESSION['InventoryDel'] = true;
+            header("Location: inventorylist.php?InventoryDel=1");
         }
         if(isset($_POST['addinventory'])){
 
@@ -434,11 +462,13 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
             if(count($errors) === 0){
                 if($invenID == ""){
                     $insert = mysqli_query($con,"INSERT INTO inventory(usersID,branchID,inventoryName,inventoryDesc,inventoryQty, product_code,price) VALUES ('$id','$branchID','$inventoryname','$description','$quanty','$code','$prize')");
-                    echo "<script>alert('Done Save');window.location.href='add-inventory.php'</script>";
+                    echo $_SESSION['InventoryAdd'] = true;
+                    header("Location: inventorylist.php?InventoryAdd=1");
                 }else{
                     $insert = mysqli_query($con,"UPDATE inventory SET inventoryName = '$inventoryname', inventoryDesc = '$description', inventoryQty = '$quanty', product_code='$code', price = '$prize' WHERE inventoryId = $invenID");
                     if($insert){
-                        echo "<script>alert('Update Successfully');window.location.href='inventorylist.php'</script>";
+                        echo $_SESSION['InventoryUpdate'] = true;
+                        header("Location: inventorylist.php?InventoryUpdate=1");
                     }else{
                         echo "<script>alert('No Update');window.location.href='inventorylist.php'</script>";
                     }
@@ -448,12 +478,6 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
             }
         }
 
-        if(isset($_GET['disrole'])){
-            $disroleId = $_GET['disrole'];
-            $derole = mysqli_query($con,"DELETE FROM branch_staff WHERE staffID = $disroleId ;");
-            echo "<script>alert('The User Disrole Succesfully');window.location.href='noroles.php'</script>";
-        }
-
         if(isset($_GET['changerole'])){
             $rolechange = $_GET['changerole'];
             $chang = mysqli_query($con,"SELECT * FROM branch_staff WHERE staffID = $rolechange");
@@ -461,14 +485,29 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
             $brnjID = $change['branchID'];
             if($change['roles'] == 1){
                 $update = mysqli_query($con,"UPDATE branch_staff SET roles = 2  WHERE staffID = $rolechange");
-                echo "<script>alert('Role Set to Inventory Admin');window.location.href='detail-branch.php?branch=$brnjID'</script>";
+                echo $_SESSION['changuser'] = true;
+                header("Location: detail-branch.php?branch=" . urlencode($branch['branchID']) . "&changuser=1");
             }elseif($change['roles'] == 2){
                 $update = mysqli_query($con,"UPDATE branch_staff SET roles = 3  WHERE staffID = $rolechange");
-                echo "<script>alert('Role Set to Staff');window.location.href='detail-branch.php?branch=$brnjID'</script>";
+                echo $_SESSION['changuser'] = true;
+                header("Location: detail-branch.php?branch=" . urlencode($branch['branchID']) . "&changuser=2");
             }elseif($change['roles'] == 3){
                 $update = mysqli_query($con,"UPDATE branch_staff SET roles = 1  WHERE staffID = $rolechange");
-                echo "<script>alert('Role Set to Branch Maniger');window.location.href='detail-branch.php?branch=$brnjID'</script>";
+                echo $_SESSION['changuser'] = true;
+                header("Location: detail-branch.php?branch=" . urlencode($branch['branchID']) . "&changuser=3");
             }
+
+        }
+
+        if (isset($_GET['disrole'])) {
+            $disroleId = $_GET['disrole'];
+            // Perform the deletion here using the $disroleId
+            $derole = mysqli_query($con,"DELETE FROM branch_staff WHERE staffID = $disroleId ;");
+
+            // Assume deletion was successful for the sake of this example
+            // Replace this with actual success check based on your database operation
+            $deletionSuccessful = true;
+
 
         }
 
@@ -494,7 +533,8 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
             $attenID = $_GET['validate_attendance'];
             $attval = mysqli_query($con,"UPDATE attendance SET confirm = 1 WHERE attendanceID = $attenID");
             if($attval){
-                echo "<script>alert('Validate Attendance');window.location.href='target-attendance.php?check_attendance=$attenID'</script>";
+                echo $_SESSION['val_photo'] = true;
+                header("Location: target-attendance.php?check_attendance=" . urlencode($attenID) . "&val_photo=1");
             }else{
                 $errors['att'] = "Can't Validate that Attendance, Please Try Again Later";
             }
@@ -511,16 +551,10 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
         }
 
 
-        if(isset($_POST['shoyear'])){
-            $transayear = $_POST['yearc'];
-            $sql = "SELECT month, SUM(amount_payment) AS Total FROM checkout WHERE year = '$transayear' GROUP BY month";
-        }else{
-            $sql = "SELECT month, SUM(amount_payment) AS Total FROM checkout WHERE year = '$transayear' GROUP BY month";
-        }
 
 
         //-------Line Graph for admin
-        $sqlCombined = "SELECT 
+        $sqlCombined = "SELECT
         date_group,
         SUM(finished_count) AS finished_assemblies,
         SUM(yearly_income) AS yearly_income,
@@ -576,24 +610,18 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
     <link href="../vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/sweetalert2.min.css">
+    <!-- standardlight sweetalert2 -->
+    <!-- <link rel="stylesheet" href="../css/sweetalert2.min.css"> -->
 
     <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="../vendor/datatables/css/responsive.dataTables.min.css" rel="stylesheet">
 
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.5.1/chosen.min.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.5.1/chosen.jquery.min.js"></script>
 
-
-
-    <script src="../js/plugins-init/sweetalert2.min.js"></script>
-    <script scr="../js/plugins-init/sweetalert.init.js"></script>
-
-
-
-
-    <script src="../js/plugins-init/sweetalert2.min.js"></script>
-    <script scr="../js/plugins-init/sweetalert.init.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.19/sweetalert2.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
@@ -602,9 +630,9 @@ $logss = mysqli_query($con,"SELECT users.usersFirstName,users.usersLastName, bra
 
 </head>
 <div id="preloader">
-        <div class="sk-three-bounce">
-            <div class="sk-child sk-bounce1"></div>
-            <div class="sk-child sk-bounce2"></div>
-            <div class="sk-child sk-bounce3"></div>
-        </div>
+    <div class="sk-three-bounce">
+        <div class="sk-child sk-bounce1"></div>
+        <div class="sk-child sk-bounce2"></div>
+        <div class="sk-child sk-bounce3"></div>
     </div>
+</div>

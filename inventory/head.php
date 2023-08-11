@@ -1,5 +1,4 @@
 <?php
-<?php
 require_once "../controllerUserData.php";
 $email = $_SESSION['email'];
 $password = $_SESSION['password'];
@@ -50,7 +49,8 @@ $pr = mysqli_query($con,"SELECT * FROM users WHERE usersID = $id");
 $profile = mysqli_fetch_assoc($pr);
 if($do != 1){
     if(empty($profile['usersFirstName']) || empty($profile['usersLastName']) || empty($profile['age']) || empty($profile['Address']) || empty($profile['username']) || empty($profile['CellNumber'])){
-        echo "<script>alert('Please update your account credentials');window.location.href='profile.php'</script>";
+        echo $_SESSION['loggedin_success'] = true;
+        header("Location: profile.php?log_success=1");
         }
 }
 date_default_timezone_set('Asia/Manila');
@@ -131,7 +131,8 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                             move_uploaded_file($tempname, $folder);
                             $update = mysqli_query($con,"UPDATE users SET profile='$lis_img0',cover_photo = '$cover', usersFirstName='$first', username='$username', usersLastName='$last', age='$age' , Address='$address', CellNumber='$contact' WHERE usersID =$id ");
                             $update = mysqli_query($con,"UPDATE users SET profile='$lis_img0',cover_photo = '$cover', usersFirstName='$first', username='$username', usersLastName='$last', age='$age' , Address='$address', CellNumber='$contact' WHERE usersID =$id ");
-                            echo "<script>alert('Update Successfully');window.location.href='profile.php'</script>";
+                            echo $_SESSION['update_success'] = true;
+                            header("Location: profile.php?update_success=1");
                 }
         // Profile.php ---------------------------------------------------------------------------------------------------
         // Check-Profile.php ---------------------------------------------------------------------------------------------------
@@ -323,7 +324,8 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
             $logdetail ="One Unessesary inventory has been Deleted - Inventory Maniger";
             $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
             $sh = mysqli_query($con,"DELETE FROM inventory WHERE inventoryId = $delin");
-            echo "<script>alert('Deleted Inventory Successfully');window.location.href = 'inventorylist.php'</script>";
+            echo $_SESSION['delete_inventory_sucess'] = true;
+            header("Location: inventorylist.php?delete_inventory_sucess=1");
         }
         if(isset($_POST['addinventory'])){
 
@@ -371,13 +373,15 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                     $logdetail ="Created $quanty x of Inventory Name : <b>$inventoryname</b> with product code of <b>$code</b> and price tag <b>₱ $price</b> - Inventory Maniger";
                     $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
                     $insert = mysqli_query($con,"INSERT INTO inventory(usersID,branchID,inventoryName,inventoryDesc,inventoryQty,product_code,price) VALUES ('$id','$desigbranch','$inventoryname','$description','$quanty','$code','$price')");
-                    echo "<script>alert('Done Save');window.location.href='add-inventory.php'</script>";
+                    echo $_SESSION['add_inventory_sucess'] = true;
+                    header("Location: inventorylist.php?add_inventory_sucess=1");
                 }else{
                     $logdetail ="Edited Inventory Details of Inventory Name : <b>$inventoryname</b> with product code : <b>$code</b> - Inventory Maniger";
                     $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
                     $insert = mysqli_query($con,"UPDATE inventory SET inventoryName = '$inventoryname', inventoryDesc = '$description', inventoryQty = '$quanty', product_code = '$code', price = '$price' WHERE inventoryId = $invenID");
                     if($insert){
-                        echo "<script>alert('Update Successfully');window.location.href='inventorylist.php'</script>";
+                        echo $_SESSION['update_inventory_sucess'] = true;
+                        header("Location: inventorylist.php?update_inventory_sucess=1");
                     }else{
                         echo "<script>alert('No Update');window.location.href='inventorylist.php'</script>";
                     }
@@ -445,7 +449,8 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                         $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
                         $insert = mysqli_query($con,"INSERT INTO assembly(inventoryId,branchID,usersID,assemblyName,assemblyQuatty) VALUES ('$invenID','$desigbranch','$desigID','$Assemblyname','$quanty')");
                         if($insert){
-                            echo "<script>alert('Assembly $Assemblyname Successfully Created');window.location.href='assemblycompo.php'</script>";
+                            echo $_SESSION['add_assembly_sucess'] = true;
+                            header("Location: assemblylist.php?add_assembly_sucess=1");
                         }else{
                             echo "<script>alert('Assembly $Assemblyname Error');window.location.href='add-assembly.php'</script>";
                         }
@@ -455,7 +460,8 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                     $logdetail ="Update Assemble Details of Inventory Named :<b>$Assemblyname</b> for this Branch - Inventory Maniger";
                         $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
                     $update = mysqli_query($con,"UPDATE assembly set inventoryId ='$invenID', assemblyName = '$Assemblyname', assemblyQuatty = '$quanty' WHERE assemblyID = $editassembly;");
-                    echo "<script>alert('Assembly $Assemblyname Successfully Updated');window.location.href='assemblylist.php'</script>";
+                    echo $_SESSION['update_assembly_sucess'] = true;
+                    header("Location: assemblylist.php?update_assembly_sucess=1");
                 }
             }
         }
@@ -465,7 +471,8 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
             $insertlog = mysqli_query($con,"INSERT INTO Logs(usersID,branchID,Activity,date,time) VALUES('$id','$desigbranch','$logdetail','$currentDatetransaction','$currentDateTimetrasaction')");
             $del = mysqli_query($con,"DELETE from assembly WHERE assemblyID = $deid");
             if($del){
-                echo "<script>alert('Successfully Deleted');window.location.href='assemblylist.php'</script>";
+                echo $_SESSION['delete_assembly_sucess'] = true;
+                header("Location: assemblylist.php?delete_assembly_sucess=1");
             }else{
                 echo "<script>alert('Error Action ');window.location.href='assemblylist.php'</script>";
             }
@@ -486,12 +493,15 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
         }
 
 
-        if(isset($_GET['components'])){
-            $asmbleId  = $_GET['components'];
-            $select = mysqli_query($con,"SELECT * from assembly WHERE assemblyID = $asmbleId;");
+        if (isset($_GET['components'])) {
+            $asmbleId = $_GET['components'];
+            // Retrieve the 'components' parameter value from the URL and store it in a session variable
+            $_SESSION['currentComponent'] = $asmbleId;
+
+            $select = mysqli_query($con, "SELECT * from assembly WHERE assemblyID = $asmbleId;");
             $aseble = mysqli_fetch_assoc($select);
-            $assembleID  = $aseble['assemblyID'];
-            $asscompo = mysqli_query($con,"SELECT inventory.inventoryName, assembly_inventory.inventory_qty, assembly_inventory.assemblyID, assembly_inventory.assembly_inventoryID from assembly_inventory  join inventory on inventory.inventoryId = assembly_inventory.inventory_list WHERE assembly_inventory.assemblyID = $assembleID");
+            $assembleID = $aseble['assemblyID'];
+            $asscompo = mysqli_query($con, "SELECT inventory.inventoryName, assembly_inventory.inventory_qty, assembly_inventory.assemblyID, assembly_inventory.assembly_inventoryID from assembly_inventory  join inventory on inventory.inventoryId = assembly_inventory.inventory_list WHERE assembly_inventory.assemblyID = $assembleID");
         }
         if(isset($_POST['compoassembly'])){
             if($_POST['inventory'] == "#"){
@@ -509,7 +519,9 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                 if($editcompon ==""){
                         $insert = mysqli_query($con,"INSERT INTO assembly_inventory (assemblyID,inventory_list,inventory_qty) VALUES ('$assembleID','$inventory','$quanty')");
                         if($insert){
-                            echo "<script>alert('Add Component Success');window.location.href='assemblycompo.php'</script>";
+
+                            echo $_SESSION['add_assemblycompo'] = true;
+                            header("Location: add-assemblycompo.php?components=".urlencode($asmbleId)."&add_assemblycompo=1");
                         }else{
                             $errors['quanty'] = "Please Insert Quantity of Item";
                         }
@@ -518,12 +530,16 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                 }
             }
         }
-        if(isset($_GET['delets'])){
+        if (isset($_GET['delets'])) {
             $usdasd = $_GET['delets'];
-            $selecst = mysqli_query($con,"DELETE FROM assembly_inventory WHERE assembly_inventoryID = $usdasd ");
-            if($selecst){
-                echo "<script>alert('Deleted Component ');window.location.href='assemblycompo.php'</script>";
-            }else{
+            $selecst = mysqli_query($con, "DELETE FROM assembly_inventory WHERE assembly_inventoryID = $usdasd ");
+            if ($selecst) {
+                // Retrieve the 'components' parameter value from the session variable
+                $asmbleId = $_SESSION['currentComponent'];
+                $_SESSION['delete_assemblycompo'] = true;
+                header("Location: add-assemblycompo.php?components=" . urlencode($asmbleId) . "&delete_assemblycompo=1");
+                exit; // Add an exit to terminate the script after the header redirection
+            } else {
                 $errors['quanty'] = "Cant Delete The Component";
             }
         }
@@ -579,7 +595,8 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
                 $folder = "../images/attendance/".$lis_img0;
                 move_uploaded_file($tempname, $folder);
                 $update = mysqli_query($con,"UPDATE attendance SET enrtypic = '$lis_img0' WHERE attendanceID = $attendanceID");
-                echo "<script>alert('Photo Save');window.location.href='attendance.php'</script>";
+                echo $_SESSION['photo_save'] = true;
+                header("Location: attendance.php?photo_save=1");
         }
 
         if(isset($_POST['morningsignin'])){
@@ -672,15 +689,14 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
         $sql = "SELECT
         CONCAT(YEAR(added), '-', MONTH(added)) AS date_group,
         SUM(finished_count) AS finished_count,
-        SUM(absences_count) AS absences_count,
-        SUM(monthly_alerts_count) AS monthly_alerts_count
-    FROM
-        (
+        SUM(monthly_alerts_count) AS monthly_alerts_count,
+        SUM(absences_count) AS absences_count
+        FROM (
             SELECT
                 added,
                 COUNT(*) AS finished_count,
-                0 AS absences_count,
-                0 AS monthly_alerts_count
+                0 AS monthly_alerts_count,
+                0 AS absences_count
             FROM assembly
             WHERE assemblyStatus = 'Finished' AND branchID = $desigbranch
             GROUP BY YEAR(added), MONTH(added)
@@ -688,10 +704,10 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
             UNION ALL
 
             SELECT
-                CONCAT(YEAR(added_date), '-', MONTH(added_date)) AS date_group,
+                added_date AS added,
                 0 AS finished_count,
-                0 AS absences_count,
-                SUM(inventoryQty < $cprocontrol) AS monthly_alerts_count
+                SUM(inventoryQty < $cprocontrol) AS monthly_alerts_count,
+                0 AS absences_count
             FROM inventory
             WHERE branchID = $desigbranch
             GROUP BY YEAR(added_date), MONTH(added_date)
@@ -699,33 +715,33 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
             UNION ALL
 
             SELECT
-                CONCAT(YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y')), '-', MONTH(STR_TO_DATE(dtrdate, '%M %e, %Y'))) AS date_group,
+                STR_TO_DATE(dtrdate, '%M %e, %Y') AS added,
                 0 AS finished_count,
-                COUNT(*) AS absences_count,
-                0 AS monthly_alerts_count
+                0 AS monthly_alerts_count,
+                COUNT(*) AS absences_count
             FROM attendance
             INNER JOIN branch_staff ON attendance.usersID = branch_staff.usersID
             WHERE attendance.absent = 1 AND branch_staff.usersID = $id
             GROUP BY YEAR(STR_TO_DATE(dtrdate, '%M %e, %Y')), MONTH(STR_TO_DATE(dtrdate, '%M %e, %Y'))
+
         ) AS combined_data
-    GROUP BY date_group
-    ORDER BY date_group";
+        GROUP BY date_group
+        ORDER BY added";
 
         // Execute the combined query
         $result = mysqli_query($con, $sql);
 
+
         $dataCombined = array();
         while ($row = mysqli_fetch_assoc($result)) {
-            // Check if date_group is not null before adding to the array
-            if ($row['date_group'] !== null) {
-                $dataCombined[] = array(
-                    'date_group' => $row['date_group'],
-                    'finished_assemblies' => $row['finished_count'],
-                    'monthly_alerts' => $row['monthlyAlerts_count'],
-                    'absences' => $row['absences_count'],
-                );
-            }
+            $dataCombined[] = array(
+                'date_group' => $row['date_group'],
+                'finished_assemblies' => $row['finished_count'],
+                'monthly_alerts' => $row['monthly_alerts_count'],
+                'absences' => $row['absences_count'],
+            );
         }
+
 
 
         // Encode the combined data into JSON format
@@ -763,6 +779,7 @@ $inlist = mysqli_query($con,"SELECT inventory.price, inventory.product_code,inve
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.19/sweetalert2.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>

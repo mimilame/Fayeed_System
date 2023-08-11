@@ -1,5 +1,63 @@
 <?php include 'head.php'?>
 <body>
+<?php
+if (isset($_GET['add_inventory_sucess']) && $_GET['add_inventory_sucess'] == '1' && isset($_SESSION['add_inventory_sucess'])) {
+    echo <<<EOL
+        <script>
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'Added Successfully!',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                position: 'top-end',
+                timer: 5000
+            }).then(() => {
+                window.location.href = 'inventorylist.php';
+            });
+        </script>
+    EOL;
+    unset($_SESSION['add_inventory_sucess']);
+}
+
+if (isset($_GET['update_inventory_sucess']) && $_GET['update_inventory_sucess'] == '1' && isset($_SESSION['update_inventory_sucess'])) {
+    echo <<<EOL
+        <script>
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'Updated Successfully!',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                position: 'top-end',
+                timer: 5000
+            }).then(() => {
+                window.location.href = 'inventorylist.php';
+            });
+        </script>
+    EOL;
+    unset($_SESSION['update_inventory_sucess']);
+}
+
+if (isset($_GET['delete_inventory_sucess']) && $_GET['delete_inventory_sucess'] == '1' && isset($_SESSION['delete_inventory_sucess'])) {
+    echo <<<EOL
+        <script>
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'Deleted Successfully!',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                position: 'top-end',
+                timer: 5000
+            }).then(() => {
+                window.location.href = 'inventorylist.php';
+            });
+        </script>
+    EOL;
+    unset($_SESSION['delete_inventory_sucess']);
+}
+?>
     <div id="main-wrapper">
         <div class="nav-header">
             <a href="index.html" class="brand-logo">
@@ -72,7 +130,9 @@
                                                 <td><?php echo $inventorylist['Branch_Name'] ?></td>
                                                 <td><?php echo $inventorylist['usersFirstName']." ".$inventorylist['usersLastName'] ?></td>
                                                 <td><a href="add-inventory.php?editinventory=<?php echo $inventorylist['inventoryId'] ?>"><i class="fi fi-rr-pencil btn btn-primary"></i></a>
-                                                <a href="add-inventory.php?delnventory=<?php echo $inventorylist['inventoryId'] ?>"><i class="fi fi-rr-trash btn btn-danger"></i></a>
+                                                <a href="#" onclick="showInventoryDeleteConfirmation(<?php echo $inventorylist['inventoryId']; ?>)">
+                                                    <i class="fi fi-rr-trash btn btn-danger"></i>
+                                                </a>
                                                 </td>
 
                                             </tr>
@@ -90,6 +150,25 @@
                 </div>
             </div>
         </div>
+        <script>
+            function showInventoryDeleteConfirmation(inventoryId) {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this. Are you sure you want to delete this inventory?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete',
+                    cancelButtonText: 'No, cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If the user confirms, redirect to the delete page
+                        window.location.href = `inventorylist.php?delnventory=${inventoryId}`;
+                    }
+                });
+            }
+        </script>
 
 
         <!--**********************************

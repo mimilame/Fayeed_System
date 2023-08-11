@@ -1,5 +1,76 @@
 <?php include 'head.php'?>
 <body>
+<?php
+if (isset($_GET['sys_info']) && $_GET['sys_info'] == '1' && isset($_SESSION['sys_info'])) {
+    echo <<<EOL
+        <script>
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'System Update Successfully!',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                position: 'top-end',
+                timer: 5000
+            }).then(() => {
+                window.location.href = 'settings.php';
+            });
+        </script>
+    EOL;
+    unset($_SESSION['sys_info']);
+}if (isset($_GET['sys_email']) && $_GET['sys_email'] == '1' && isset($_SESSION['sys_email'])) {
+    echo <<<EOL
+        <script>
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'Email Protocol Updated!',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                position: 'top-end',
+                timer: 5000
+            }).then(() => {
+                window.location.href = 'settings.php';
+            });
+        </script>
+    EOL;
+    unset($_SESSION['sys_email']);
+}if (isset($_GET['sys_ctrl']) && $_GET['sys_ctrl'] == '1' && isset($_SESSION['sys_ctrl'])) {
+    echo <<<EOL
+        <script>
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'Product Control Updated!',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                position: 'top-end',
+                timer: 5000
+            }).then(() => {
+                window.location.href = 'settings.php';
+            });
+        </script>
+    EOL;
+    unset($_SESSION['sys_ctrl']);
+}if (isset($_GET['sys_att']) && $_GET['sys_att'] == '1' && isset($_SESSION['sys_att'])) {
+    echo <<<EOL
+        <script>
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'Product Control Updated!',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                position: 'top-end',
+                timer: 5000
+            }).then(() => {
+                window.location.href = 'settings.php';
+            });
+        </script>
+    EOL;
+    unset($_SESSION['sys_att']);
+}
+?>
     <div id="main-wrapper">
         <div class="nav-header">
             <a href="index.html" class="brand-logo">
@@ -15,7 +86,7 @@
             </div>
         </div>
         <?php include 'header.php'; include 'sidebar.php'?>
-        
+
      <!--**********************************
             Content body start
         ***********************************-->
@@ -60,7 +131,7 @@
                                                         <div class="col-6">
                                                             <label for="1">System Contact Number</label>
                                                             <input type="number" name="number" id="" class="form-control"  value="<?php echo $settings['System_number']?>">
-                                                           
+
                                                         </div>
                                                         <div class="col-6">
                                                             <button type="submit" name="set1" class="btn btn-primary form-control mt-4">Save Details</button>
@@ -72,7 +143,7 @@
                                         <div class="tab-pane fade" id="profile">
                                             <div class="pt-4">
                                             <form action="" method="post">
-                                                    <div class="row"> 
+                                                    <div class="row">
                                                         <div class="col-6">
                                                             <label for="1">System Link</label>
                                                             <input type="text" name="System_link" id="" class="form-control"  value="<?php echo $settings['System_link']?>">
@@ -92,7 +163,7 @@
                                                         <div class="col-6">
                                                             <label for="1">Port</label>
                                                             <input type="number" name="port" id="" class="form-control"  value="<?php echo $settings['Smtp_port']?>">
-                                                           
+
                                                         </div>
                                                         <div class="col-6">
                                                             <button type="submit"  name="set2" class="btn btn-primary form-control mt-4">Save Details</button>
@@ -109,7 +180,7 @@
                                                             <label for="1">Product Quantity Limit</label>
                                                             <input type="number" name="limit" id="" class="form-control"  value="<?php echo $settings['product_control']?>">
                                                         </div>
-                                                        
+
                                                         <div class="col-6">
                                                             <button type="submit"  name="set3" class="btn btn-primary form-control mt-4">Save Details</button>
                                                         </div>
@@ -129,7 +200,7 @@
                                                             <label for="1">Time in Afternoon</label>
                                                             <input type="time" name="afternoon" id="" class="form-control"  value="<?php echo $settings['latetimein_afternoon']?>">
                                                         </div>
-                                                        
+
                                                         <div class="col-6">
                                                             <button type="submit"  name="set4" class="btn btn-primary form-control mt-4">Save Details</button>
                                                         </div>
@@ -145,11 +216,11 @@
                 </div>
             </div>
         </div>
-        
+
         <!--**********************************
             Content body end
         ***********************************-->
-        
+
     </div>
     <script src="
 https://cdn.jsdelivr.net/npm/sweetalert2@11.7.16/dist/sweetalert2.all.min.js

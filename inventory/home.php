@@ -3,6 +3,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
 <link href="../vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
 <link href="../vendor/datatables/css/responsive.dataTables.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.19/sweetalert2.min.js"></script>
 <body>
     <div id="main-wrapper">
         <div class="nav-header">
@@ -134,7 +135,6 @@
                     </div>
 
 
-
             </div>
         </div>
 
@@ -161,6 +161,12 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
     <script>
         var customCSS = document.createElement('style');
         customCSS.innerHTML = '.morris-hover.morris-default-style { position: absolute; z-index: 0!important; }';
@@ -187,6 +193,8 @@
             pointFillColors:['#ffffff'],
             pointStrokeColors: ['#242423'],
             xLabelAngle: 45,
+            smooth: true, // Add this line for curved area chart
+            area: true, // Add this line for curved area chart
         });
     </script>
 </body>

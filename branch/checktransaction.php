@@ -1,5 +1,25 @@
 <?php include 'head.php'?>
 <body>
+<?php
+if (isset($_GET['checkout_items']) && $_GET['checkout_items'] == '1' && isset($_SESSION['checkout_items'])) {
+    echo <<<EOL
+        <script>
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: 'Successfully Checked Out Items for $name !!!',
+                showConfirmButton: false,
+                timerProgressBar: true,
+                position: 'top-end',
+                timer: 5000
+            }).then(() => {
+                window.location.href = 'checktransaction.php';
+            });
+        </script>
+    EOL;
+    unset($_SESSION['checkout_items']);
+}
+?>
     <div id="main-wrapper">
         <div class="nav-header">
             <a href="index.html" class="brand-logo">

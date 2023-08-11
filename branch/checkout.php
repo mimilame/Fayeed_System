@@ -99,7 +99,7 @@
                                             </div>
                                             <div class="form-group col-md-4">
                                                 <label>Mode of Payment</label>
-                                                <select name="mop" class="form-control" id="">
+                                                <select name="mop" class="chosen1 form-control" id="">
                                                     <option value="#">Choose ...</option>
                                                     <option value="Gcash">Gcash</option>
                                                     <option value="Remittance">Remittance</option>
@@ -132,6 +132,7 @@
     </div>
     <script type="text/javascript">
       $(".chosen").chosen();
+      $(".chosen1").chosen();
 </script>
     <script src="../vendor/global/global.min.js"></script>
     <script src="../js/quixnav-init.js"></script>

@@ -1,5 +1,59 @@
 <?php include 'head.php'?>
 <body>
+<?php
+    if (isset($_GET['InventoryDel']) && $_GET['InventoryDel'] == '1' && isset($_SESSION['InventoryDel'])) {
+        echo <<<EOL
+            <script>
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: 'Deleted Inventory Successfully!',
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    position: 'top-end',
+                    timer: 5000
+                }).then(() => {
+                    window.location.href = 'inventorylist.php';
+                });
+            </script>
+        EOL;
+        unset($_SESSION['InventoryDel']);
+    }if (isset($_GET['InventoryAdd']) && $_GET['InventoryAdd'] == '1' && isset($_SESSION['InventoryAdd'])) {
+        echo <<<EOL
+            <script>
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: 'Added Inventory Successfully!',
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    position: 'top-end',
+                    timer: 5000
+                }).then(() => {
+                    window.location.href = 'inventorylist.php';
+                });
+            </script>
+        EOL;
+        unset($_SESSION['InventoryAdd']);
+    }if (isset($_GET['InventoryUpdate']) && $_GET['InventoryUpdate'] == '1' && isset($_SESSION['InventoryUpdate'])) {
+        echo <<<EOL
+            <script>
+                Swal.fire({
+                    toast: true,
+                    icon: 'success',
+                    title: 'Updated Inventory Successfully!',
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    position: 'top-end',
+                    timer: 5000
+                }).then(() => {
+                    window.location.href = 'inventorylist.php';
+                });
+            </script>
+        EOL;
+        unset($_SESSION['InventoryUpdate']);
+    }
+?>
     <div id="main-wrapper">
         <div class="nav-header">
             <a href="index.html" class="brand-logo">
@@ -72,11 +126,14 @@
                                                     <?php echo $inventorylist['inventoryQty']?>
                                                     </p>
                                                 </td>
-                                                <td>&#8369; <?php echo $inventorylist['price'] ?></td>
+                                                <td><?php echo "₱ " . number_format($inventorylist['price'], 2, '.', ',');?></td>
                                                 <td><?php echo $inventorylist['Branch_Name'] ?></td>
                                                 <td><?php echo $inventorylist['usersFirstName']." ".$inventorylist['usersLastName'] ?></td>
                                                 <td><a href="add-inventory.php?editinventory=<?php echo $inventorylist['inventoryId'] ?>"><i class="fi fi-rr-pencil btn btn-primary"></i></a>
-                                                <a href="add-inventory.php?delnventory=<?php echo $inventorylist['inventoryId'] ?>"><i class="fi fi-rr-trash btn btn-danger"></i></a>
+                                                <a href="#" onclick="showInventoryDeleteConfirmation(<?php echo $inventorylist['inventoryId']; ?>)">
+                                                    <i class="fi fi-rr-trash btn btn-danger"></i>
+                                                </a>
+
                                                 </td>
 
                                             </tr>
@@ -101,6 +158,26 @@
         ***********************************-->
 
     </div>
+    <script>
+        function showInventoryDeleteConfirmation(inventoryId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this. Are you sure you want to delete this inventory?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete',
+                cancelButtonText: 'No, cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // If the user confirms, redirect to the delete page
+                    window.location.href = `inventorylist.php?delnventory=${inventoryId}`;
+                }
+            });
+        }
+    </script>
+
     <script src="../vendor/global/global.min.js"></script>
     <script src="../js/quixnav-init.js"></script>
     <script src="../js/custom.min.js"></script>

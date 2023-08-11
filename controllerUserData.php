@@ -4,7 +4,7 @@ error_reporting(0);
 require "connection.php";
 $email = "";
 $name = "";
-$errors = array();
+$errors = array(); 
 
         //<Mail> ---------------------------------------------------------------------------------------------------
                             use PHPMailer\PHPMailer\PHPMailer;
@@ -14,98 +14,100 @@ $errors = array();
                             //Load Composer's autoloader
 
                             require 'vendor/autoload.php';
-                            /*
+                            
                             function email($email, $subject, $message){
-
-                                
+                                include 'connection.php';
+                                $set = mysqli_query($con,"SELECT * FROM settings WHERE SettingsId = 1;");
+                                $settings = mysqli_fetch_assoc($set);
+                                $host = 'smtp.gmail.com';
+                                $username = $settings['Smtp_email'];
+                                $password1 = $settings['Smatp_password'];
+                                $port = $settings['Smtp_port'];
                                 $mail = new PHPMailer(true);
-                                
+                                $mail->SMTPOptions = array(
+                                    'ssl' => array(
+                                        'verify_peer' => false,
+                                        'verify_peer_name' => false,
+                                        'allow_self_signed' => true
+                                    )
+                                );
                                 try {
                                     //Server settings
-                                $mail->SMTPDebug = 0;                    //Enable verbose debug output
+                                    $mail->SMTPDebug = 0;                   //Enable verbose debug output
                                     $mail->isSMTP();                                            //Send using SMTP
-                                    $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
+                                    $mail->Host       = $host;                     //Set the SMTP server to send through
                                     $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-                                    $mail->Username   = 'argonfernando453@gmail.com';                     //SMTP username
-                                    $mail->Password   = 'kremkgslusntjhpr';                               //SMTP password
-                                    $mail->SMTPSecure = 'tls';            //Enable implicit TLS encryption
-                                    $mail->Port       = 587;                                         //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
-                                
+                                    $mail->Username   = $username;                     //SMTP username
+                                    $mail->Password   = $password1;                                //SMTP password
+                                    $mail->SMTPSecure = 'ssl';            
+                                    $mail->Port       = $port;                                         
+                                    
                                     //Recipients
-                                    $mail->setFrom('argonfernando453@gmail.com', 'Verify your Account Registration');
+                                    $mail->setFrom($username , 'Verify your Account Registration');
                                     $mail->addAddress($email);     //Add a recipient
-                                    //$mail->addReplyTo('info@example.com', 'Information');
-                                    //$mail->addCC('cc@example.com');
-                                    //$mail->addBCC('bcc@example.com');
-                                
-                                    //Attachments
-                                    //$mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
-                                    //$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
                                 
                                     //Content
                                     $mail->isHTML(true);                                  //Set email format to HTML
-                                    //$mail->Subject = 'Here is the subject';
-                                    //$mail->Body    = 'This is the HTML message body <b>in bold!</b>';
-                                    //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
                                     $mail->Subject = $subject;
                                     $mail->Body    = "<fieldset> <b> ".$message."</b></fieldset>";
                                 
                                     if(!$mail->send()) { 
                                         echo 'Message could not be sent. Mailer Error: '.$mail->ErrorInfo; 
                                     } else { 
-                                        echo "<script>alert('Registered Successfully, Please Login');</script>
-                                                <script>window.location.href='login-user.php'</script>";
+                                        /* echo "<script>alert('Registered Successfully, Please Login');</script>
+                                                <script>window.location.href='login-user.php'</script>"; */
+                                        echo $_SESSION['registered'] = true;
+                                        header("Location: login-user.php?registered=true");
                                     } 
                                 } catch (Exception $e) {
                                     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
                                 }
-                            }*/
+                            }
                             function assignemail($email, $subject, $message){
+                                
                                 include 'connection.php';
                                 $set = mysqli_query($con,"SELECT * FROM settings WHERE SettingsId = 1;");
                                 $settings = mysqli_fetch_assoc($set);
                                 $host = $settings['Smtp_Provider'];
                                 $username = $settings['Smtp_email'];
-                                $password = $settings['Smatp_password'];
+                                $password1 = $settings['Smatp_password'];
                                 $port = $settings['Smtp_port'];
                                 
                                 $mail = new PHPMailer(true);
-                                
+                                $mail->SMTPOptions = array(
+                                    'ssl' => array(
+                                        'verify_peer' => false,
+                                        'verify_peer_name' => false,
+                                        'allow_self_signed' => true
+                                    )
+                                );
                                 try {
                                     //Server settings
-                                $mail->SMTPDebug = 0;                    //Enable verbose debug output
+                                    $mail->SMTPDebug = 0;                    //Enable verbose debug output
                                     $mail->isSMTP();                                            //Send using SMTP
                                     $mail->Host       = $host;                     //Set the SMTP server to send through
                                     $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
                                     $mail->Username   = $username;                     //SMTP username
-                                    $mail->Password   = $password;                               //SMTP password
-                                    $mail->SMTPSecure = 'tls';            //Enable implicit TLS encryption
-                                    $mail->Port       = $port;                                         //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+                                    $mail->Password   = $password1;                               //SMTP password
+                                    $mail->SMTPSecure = 'ssl';            
+                                    $mail->Port       = $port;                                       
                                 
                                     //Recipients
                                     $mail->setFrom($username, 'Verify your Account Registration');
                                     $mail->addAddress($email);     //Add a recipient
-                                    //$mail->addReplyTo('info@example.com', 'Information');
-                                    //$mail->addCC('cc@example.com');
-                                    //$mail->addBCC('bcc@example.com');
-                                
-                                    //Attachments
-                                    //$mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
-                                    //$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
-                                
+                                    
                                     //Content
                                     $mail->isHTML(true);                                  //Set email format to HTML
-                                    //$mail->Subject = 'Here is the subject';
-                                    //$mail->Body    = 'This is the HTML message body <b>in bold!</b>';
-                                    //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
                                     $mail->Subject = $subject;
                                     $mail->Body    = "<fieldset> <b> ".$message."</b></fieldset>";
                                 
                                     if(!$mail->send()) { 
                                         echo 'Message could not be sent. Mailer Error: '.$mail->ErrorInfo; 
                                     } else { 
-                                        echo "<script>alert('Registered Successfully');</script>
-                                                <script>window.location.href='noroles.php'</script>";
+                                        /* echo "<script>alert('Registered Successfully');</script>
+                                                <script>window.location.href='noroles.php'</script>"; */
+                                        echo $_SESSION['loggedinlobby'] = true;
+                                        header("Location: noroles.php?loggedinlobby=1");
                                     } 
                                 } catch (Exception $e) {
                                     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
@@ -118,47 +120,45 @@ $errors = array();
                                 $settings = mysqli_fetch_assoc($set);
                                 $host = $settings['Smtp_Provider'];
                                 $username = $settings['Smtp_email'];
-                                $password = $settings['Smatp_password'];
+                                $password1 = $settings['Smatp_password'];
                                 $port = $settings['Smtp_port'];
                                 
                                 
                                 $mail = new PHPMailer(true);
-                                
+                                $mail->SMTPOptions = array(
+                                    'ssl' => array(
+                                        'verify_peer' => false,
+                                        'verify_peer_name' => false,
+                                        'allow_self_signed' => true
+                                    )
+                                );
                                 try {
                                     //Server settings
-                                $mail->SMTPDebug = 0;                    //Enable verbose debug output
+                                    $mail->SMTPDebug = 0;                    //Enable verbose debug output
                                     $mail->isSMTP();                                            //Send using SMTP
                                     $mail->Host       = $host;                     //Set the SMTP server to send through
                                     $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
                                     $mail->Username   = $username;                     //SMTP username
-                                    $mail->Password   = $password;                               //SMTP password
-                                    $mail->SMTPSecure = 'tls';            //Enable implicit TLS encryption
-                                    $mail->Port       = $port;                                        //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+                                    $mail->Password   = $password1;                               //SMTP password
+                                    $mail->SMTPSecure = 'ssl';            
+                                    $mail->Port       = $port;                                     
                                 
                                     //Recipients
                                     $mail->setFrom($username, 'Code for Password Reset');
                                     $mail->addAddress($email);     //Add a recipient
-                                    //$mail->addReplyTo('info@example.com', 'Information');
-                                    //$mail->addCC('cc@example.com');
-                                    //$mail->addBCC('bcc@example.com');
-                                
-                                    //Attachments
-                                    //$mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
-                                    //$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
-                                
+                                    
                                     //Content
                                     $mail->isHTML(true);                                  //Set email format to HTML
-                                    //$mail->Subject = 'Here is the subject';
-                                    //$mail->Body    = 'This is the HTML message body <b>in bold!</b>';
-                                    //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
                                     $mail->Subject = $subject;
                                     $mail->Body    = "<fieldset><b> ".$message."</b></fieldset>";
                                 
                                     if(!$mail->send()) { 
                                         echo 'Message could not be sent. Mailer Error: '.$mail->ErrorInfo; 
                                     } else { 
-                                        echo "<script>alert('Email Reset code sent, please check your gmail ');</script>
-                            <script>window.location.href=' reset-code.php'</script>";
+                                        /* echo "<script>alert('Email Reset code sent, please check your gmail ');</script>
+                            <script>window.location.href=' reset-code.php'</script>"; */
+                                        echo $_SESSION['reset_code'] = true;
+                                        header("Location: reset-code.php?reset_code=true");
                                     } 
                                 } catch (Exception $e) {
                                     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
@@ -167,67 +167,6 @@ $errors = array();
         //</Mail> ---------------------------------------------------------------------------------------------------
         
         //< external control> ---------------------------------------------------------------------------------------
-            /*if(isset($_POST['signup'])){
-                $name = mysqli_real_escape_string($con, $_POST['username']);
-                $email = mysqli_real_escape_string($con, $_POST['email']);
-                $password = mysqli_real_escape_string($con, $_POST['password']);
-                $cpassword = mysqli_real_escape_string($con, $_POST['cpassword']);
-                if($password !== $cpassword){
-                    $errors['password'] = "Confirm password not matched!";
-                }
-                $email_check = "SELECT * FROM users WHERE email = '$email'";
-                $res = mysqli_query($con, $email_check);
-                if(mysqli_num_rows($res) > 0){
-                    $errors['email'] = "Email that you have entered is already exist!";
-                }
-                $usernameck = "SELECT * FROM users WHERE username = '$name'";
-                $ress= mysqli_query($con, $usernameck);
-                if(mysqli_num_rows($ress) > 0){
-                    $errors['username'] = "User Name that you have entered is not Available, please create another user name";
-                }
-                if(count($errors) === 0){
-                    $encpass = password_hash($password, PASSWORD_BCRYPT);
-                    $code = rand(999999, 111111);
-                    $status = "notverified";
-                    $insert_data = "INSERT INTO users (username, email, password, code, status) values('$name', '$email', '$encpass', '$code', '$status')";
-                    $data_check = mysqli_query($con, $insert_data);
-                    if($data_check){
-                        $subject = "Email Verification Code";
-                        $message = "Dear $email, <br>
-
-                        Thank you for choosing Fayeed Electronics! We are delighted to have you as a valued customer.<br>
-                        To ensure the security of your account, we have implemented an email verification process.
-                        Please find below your one-time password (OTP) code for verification:
-                        <br>
-                        OTP Code: <b style='color: orange;'>$code</b>
-                        <br>
-                        To complete the email verification process, kindly enter the above OTP code on our website.<br>
-                        If you did not request this verification or have any concerns.
-                        please contact our customer support team immediately.<br>
-                        At Fayeed Electronics, we prioritize the safety and privacy of our customers.<br>
-                        By verifying your email address, we can enhance the security of your account and provide you with a seamless surfingg experience.
-                        <br><br>
-                        Thank you for your cooperation.
-                        <br><br>
-                        Best regards,<br>
-                        -Admin<br>
-                        Fayeed Electronics Customer Support";
-                        if(email($email, $subject, $message)){
-                            $info = "We've sent a verification code to your email - $email";
-                            $_SESSION['info'] = $info;
-                            $_SESSION['email'] = $email;
-                            $_SESSION['password'] = $password;
-                            header('location: user-otp.php');
-                            exit();
-                        }else{
-                            $errors['otp-error'] = "Failed while sending code!";
-                        }
-                    }else{
-                        $errors['db-error'] = "Failed while inserting data into database!";
-                    }
-                }
-
-            }*/
                 if(isset($_POST['check'])){
                     $_SESSION['info'] = "";
                     $otp_code = mysqli_real_escape_string($con, $_POST['otp']);
@@ -258,6 +197,32 @@ $errors = array();
                         }
                     }else{
                         $errors['otp-error'] = "You've entered incorrect code!";
+                    }
+                }
+                if (!$adminExists) {
+                    if (isset($_POST['login-as-admin'])) {
+                        $email = mysqli_real_escape_string($con, $_POST['email']);
+                        $password = mysqli_real_escape_string($con, $_POST['password']);
+                        
+                        // Check if email and password are provided
+                        if (!empty($email) && !empty($password)) {
+                            // Insert the initial admin user into the database with role = 1 (admin)
+                            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                            $insertAdminQuery = "INSERT INTO users (email, password, roles, status) VALUES ('$email', '$hashedPassword', 1, 'verified')";
+                            $insertAdminResult = mysqli_query($con, $insertAdminQuery);
+                            
+                            if ($insertAdminResult) {
+                                // Admin registration successful, perform login actions
+                                $_SESSION['email'] = $email;
+                                $_SESSION['password'] = $password;
+                                header('location: ./admin/home.php');
+                                exit();
+                            } else {
+                                $errors['db-error'] = "Failed to register the admin!";
+                            }
+                        } else {
+                            $errors['email'] = "Email and password are required!";
+                        }
                     }
                 }
                 if(isset($_POST['login'])){
@@ -391,10 +356,6 @@ $errors = array();
     
         //</external control> ---------------------------------------------------------------------------------------
         //<Querriesss> ---------------------------------------------------------------------------------------------------
-
-
-
-
 
         //</Querriesss> ---------------------------------------------------------------------------------------------------
 

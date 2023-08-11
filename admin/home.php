@@ -1,9 +1,9 @@
 <?php include 'head.php';
 $tranv = mysqli_query($con,"SELECT checkout.Transaction_code , inventory.inventoryName ,checkout.quantity ,branches.Branch_Name ,checkout.amount_payment ,checkout.mop ,checkout.date ,checkout.time from checkout join inventory on inventory.inventoryId = checkout.inventoryId join branches on branches.branchID = checkout.branchID ORDER BY checkout.checkoutID DESC LIMIT 5");
 $clisttrans = mysqli_num_rows($tranv);
+
 ?>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
 
 <body>
@@ -21,7 +21,7 @@ $clisttrans = mysqli_num_rows($tranv);
                 </div>
             </div>
         </div>
-        <?php include 'header.php'; include 'sidebar.php'?>
+        <?php include 'header.php'; include 'sidebar.php';?>
 
      <!--**********************************
             Content body start
@@ -39,12 +39,12 @@ $clisttrans = mysqli_num_rows($tranv);
                 </div>
 
                 <div class="row">
-                    <div class="col-lg-5 col-sm-12">
+                    <div class="col-lg-7 col-sm-12">
                         <div class="card">
                             <div class="stat-widget-one card-body">
                                 <div class="d-inline-flex flex-wrap">
                                     <i class="bx bxs-bar-chart-square display-5" style="color:#ff6a00;"></i>
-                                    <div class="stat-text pt-3 pl-2">Gross Sales</div>
+                                    <div class="stat-text pt-3 pl-2">Yearly Gross Sales</div>
                                 </div>
                                 <div class="stat-content">
                                     <!-- Add a placeholder for the Morris.js chart -->
@@ -53,20 +53,20 @@ $clisttrans = mysqli_num_rows($tranv);
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-7 col-sm-12 d-inline-flex flex-wrap">
+                    <div class="col-lg-5 col-sm-12 d-inline-flex flex-wrap">
                         <div class="col-lg-6 col-sm-6">
-                            <div class="card" onclick="window.location.href='statistic.php'; return false;">
+                            <div class="card" onclick="redirectToStatistic(); return false;" title="click to know more!" data-toggle="tooltip" data-placement="left">
                                 <div class="stat-widget-one card-body"> <!-- change color light orange-->
                                     <i class="fi fi-rr-coins display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
                                         <div class="stat-text">Monthly Entry</div>
-                                        <div class="stat-digit"><?php if($income['Total'] == 0){ echo "₱ 0";}else{ echo "₱ ".$income['Total'];}?></div>
+                                        <div class="stat-digit"><?php if($income['Total'] == 0){ echo "₱ 0";}else{ echo "₱ " . number_format($income['Total'], 2, '.', ',');}?></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-6 col-sm-6">
-                            <div class="card" onclick="window.location.href='assemblylist.php'; return false;">
+                            <div class="card" onclick="window.location.href='assemblylist.php'; return false;" title="Total No. of Standby" data-toggle="tooltip" data-placement="right">
                                 <div class="stat-widget-one card-body">
                                     <i class="fi fi-rr-list display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
@@ -77,7 +77,7 @@ $clisttrans = mysqli_num_rows($tranv);
                             </div>
                         </div>
                         <div class="col-lg-6 col-sm-6">
-                            <div class="card" onclick="window.location.href='branches.php'; return false;">
+                            <div class="card" onclick="window.location.href='branches.php'; return false;" title="Number of Branches"data-toggle="tooltip" data-placement="left">
                                 <div class="stat-widget-one card-body">
                                 <i class="fi fi-rr-code-branch display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
@@ -88,18 +88,18 @@ $clisttrans = mysqli_num_rows($tranv);
                             </div>
                         </div>
                         <div class="col-lg-6 col-sm-6">
-                            <div class="card">
+                            <div class="card" title="Total No. of Personnel" data-toggle="tooltip" data-placement="right">
                                 <div class="stat-widget-one card-body">
                                 <i class="fi fi-rr-circle-user display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
-                                        <div class="stat-text">Personel</div>
+                                        <div class="stat-text">Personnel</div>
                                         <div class="stat-digit"><?php echo $sttafss['staffs']?></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-6 col-sm-6">
-                            <div class="card" onclick="window.location.href='absent.php'; return false;">
+                            <div class="card" onclick="window.location.href='absent.php'; return false;" title="Total No. of Absences" data-toggle="tooltip" data-placement="left">
                                 <div class="stat-widget-one card-body">
                                 <i class="fi fi-rr-delete-user display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
@@ -110,7 +110,7 @@ $clisttrans = mysqli_num_rows($tranv);
                             </div>
                         </div>
                         <div class="col-lg-6 col-sm-6">
-                            <div class="card">
+                            <div class="card" title="Total No. of Lates" data-toggle="tooltip" data-placement="right">
                                 <div class="stat-widget-one card-body">
                                 <i class="bx bx-alarm-exclamation display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
@@ -121,7 +121,7 @@ $clisttrans = mysqli_num_rows($tranv);
                             </div>
                         </div>
                         <div class="col-lg-6 col-sm-6">
-                            <div class="card">
+                            <div class="card" title="Number of Inventory" data-toggle="tooltip" data-placement="left">
                                 <div class="stat-widget-one card-body">
                                     <i class="fi fi-rr-layers display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
@@ -132,7 +132,7 @@ $clisttrans = mysqli_num_rows($tranv);
                             </div>
                         </div>
                         <div class="col-lg-6 col-sm-6">
-                            <div class="card" onclick="window.location.href='alertproduct.php'; return false;">
+                            <div class="card" onclick="window.location.href='alertproduct.php'; return false;" title="Number of Active Alerts" data-toggle="tooltip" data-placement="right">
                                 <div class="stat-widget-one card-body">
                                 <i class="fi fi-rr-engine-warning display-5" style="color:#ff6a00;"></i>
                                     <div class="stat-content d-inline-block">
@@ -180,7 +180,7 @@ $clisttrans = mysqli_num_rows($tranv);
                                                     <td><?php echo $transaction['inventoryName'] ?></td>
                                                     <td><?php echo $transaction['quantity'] ?></td>
                                                     <td><?php echo $transaction['Branch_Name'] ?></td>
-                                                    <td>&#8369; <?php echo $transaction['amount_payment'] ?></td>
+                                                    <td><?php echo "₱ " . number_format($transaction['amount_payment'], 2, '.', ',');?></td>
                                                     <td><?php echo $transaction['mop'] ?></td>
                                                     <td><?php echo $transaction['time']." - ".$transaction['date'] ?></td>
 
@@ -225,7 +225,12 @@ $clisttrans = mysqli_num_rows($tranv);
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
     <script>
         var customCSS = document.createElement('style');
         customCSS.innerHTML = '.morris-hover.morris-default-style { position: absolute; z-index: 0!important; }';
@@ -252,9 +257,28 @@ $clisttrans = mysqli_num_rows($tranv);
             pointFillColors:['#ffffff'],
             pointStrokeColors: ['#242423'],
             xLabelAngle: 45,
+            smooth: true, // Add this line for curved area chart
+            area: true, // Add this line for curved area chart
         });
 
 
+    </script>
+    <script>
+    function redirectToStatistic() {
+        Swal.fire({
+        title: 'Opening..\nOptimized Analytics',
+        timer: 2000, // Time in milliseconds (2 seconds in this case)
+        timerProgressBar: true,
+        didOpen: () =>  {
+            Swal.showLoading();
+            window.location.href = 'statistic.php';
+        },
+        willClose: () => {
+            // Redirect to the desired location after the SweetAlert timer finishes
+            window.location.href = 'statistic.php';
+        }
+        });
+    }
     </script>
 </body>
 </html>
