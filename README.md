@@ -15,7 +15,7 @@ Furthermore, the inventory manager plays a crucial role by assigning tasks to ge
 
 
 ## Preview 
-| ![Super Admin](Screenshot%202023-10-01%20113950.png "Super Admin") | ![Sub-Admin](Screenshot%202023-10-01%20114658.png "Sub-Admin") | ![Staff](Screenshot%202023-10-01%20114049.png "Staff") |
+| ![Super Admin](Screenshot%202023-10-01%20113955.png "Super Admin") | ![Sub-Admin](Screenshot%202023-10-01%20114658.png "Sub-Admin") | ![Staff](Screenshot%202023-10-01%20114049.png "Staff") |
 | --- | --- | --- |
 | Super Admin | Sub-Admin | Staff |
 
