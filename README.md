@@ -8,7 +8,7 @@ The system encompasses four user roles: admin, branch manager, inventory staff, 
 
 Furthermore, the inventory manager plays a crucial role by assigning tasks to general staff members for assessing open assemblies upon sale. This process automatically deducts assembly components from the inventory database, ensuring the accuracy of inventory alerts. The admin, on the other hand, has the authority to resolve inter-branch issues, approve personnel attendance, and perform qualitative analytics on yearly or monthly sales data. Both the admin and branch managers can add personnel to facilitate specific tasks upon login.
 
-### Affiliates:
+### Meet the Interns
 - Aragon, Fernando Estrella Jr. (DEV)
 - Tan, Kenneth Fernandez (QA)
 - Wong, Steffi (UI/UX)
