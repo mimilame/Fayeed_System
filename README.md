@@ -27,7 +27,7 @@ There are two options to set up this management system:
 
 1. Click "Fork" in the top right to fork this repo
 2. Clone your forked repo to your local machine
-3. Same procedure from the previous Step 3-5.
+3. Same procedure from the previous Step `3`-`5`.
 4. Register as a new admin user to get started
 
 And that's it! From your admin dashboard you can explore and manage the entire system. Let us know if you have any other questions!
