@@ -10,7 +10,7 @@ Furthermore, the inventory manager plays a crucial role by assigning tasks to ge
 
 ### Meet the Interns
 - Aragon, Fernando Estrella Jr. (DEV)
-- Tan, Kenneth Fernandez (QA)
+- Tan, Kenneth Fernandez (TechSupport/QA)
 - Wong, Steffi (UI/UX)
 
 
