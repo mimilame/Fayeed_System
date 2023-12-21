@@ -1,10 +1,6 @@
 # Fayeed_Electronics_System
 
-#### Internship Blog Page 
-
-<p align="right">
-[sites.google.com/view/teppiy/weekly-report](https://sites.google.com/view/teppiy/weekly-report)
-</p>
+#### Internship Blog Page                                                                                [sites.google.com/view/teppiy/weekly-report](https://sites.google.com/view/teppiy/weekly-report)
 
 We, the interns at Fayeed Electronics, were tasked with the development of an information system for our organization. This project spanned from May 31 to July 13 in the academic year 2023, aligning with the Practicum/Immersion course at the College of Computing Studies, Western Mindanao State University.
 
